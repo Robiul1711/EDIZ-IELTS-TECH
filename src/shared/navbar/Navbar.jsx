@@ -1,14 +1,39 @@
 import { ImageAssets } from '@/lib/ImageProvider'
-import React from 'react'
+import React, { useState, useEffect } from 'react' // 1. Import hooks
 import { useTheme } from '@/context/ThemeContext'
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
   const { theme, toggleTheme } = useTheme();
+  const [isScrolled, setIsScrolled] = useState(false); // 2. State to track scroll
+
+  // 3. Effect to detect scroll position
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 20) { // Trigger effect after 20px of scrolling
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
-    <div className='bg-card sticky top-0 z-50 transition-colors duration-300'>
-      <div className="flex items-center justify-between p-4 container mx-auto">
-        <img src={ImageAssets.logo} alt="Logo" className='bg-white rounded' />
+    // 4. Conditional styling based on isScrolled state
+    <div className={`sticky top-0 z-50 transition-all duration-300 section-padding-x 
+      ${isScrolled 
+        ? 'bg-white/70 dark:bg-black/70 backdrop-blur-md border-b border-gray-200/50 dark:border-white/10 shadow-sm' 
+        : 'bg-transparent'
+      }`}
+    >
+      <div className="flex items-center justify-between py-3">
+        <Link to="/">
+        <img src={ImageAssets.logo} alt="Logo" className='' />
+        </Link>
+        
         <div className="flex gap-5 items-center">
 
           {/* Theme Toggle Button - Slider Style */}
@@ -53,10 +78,10 @@ const Navbar = () => {
             </div>
           </button>
 
-          <button className='px-8 py-3 bg-[#604CDF] text-primary-foreground  rounded-full font-semibold hover:opacity-90 transition-opacity shadow-md'>
+          <button className='px-8 py-3 bg-custom text-primary-foreground  rounded-full font-semibold hover:opacity-90 transition-opacity shadow-md'>
             Purchase
           </button>
-          <button className='px-8 py-3 border bg-primary font-semibold text-white hover:text-black border-border rounded-full hover:bg-accent transition-colors'>
+          <button className='px-8 py-3 border duration-300   bg-primary font-semibold text-white hover:text-black border-border rounded-full hover:bg-accent transition-colors'>
             Sign up
           </button>
 

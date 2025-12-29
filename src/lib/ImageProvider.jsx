@@ -10,6 +10,11 @@ import mock from '@/assets/images/mock.png';
 import reading from '@/assets/images/reading.png';
 import listening from '@/assets/images/listening.png';
 import howitwork from '@/assets/images/howitwork.png';
+import Full from '@/assets/images/Full.png';
+import R from '@/assets/images/R.png';
+import S from '@/assets/images/S.png';
+import W from '@/assets/images/W.png';
+import L from '@/assets/images/L.png';
 
 export const ImageAssets = {
     logo,
@@ -23,5 +28,10 @@ export const ImageAssets = {
     mock,
     reading,
     listening,
-    howitwork
+    howitwork,
+    Full,
+    R,
+    S,
+    W,
+    L
 }

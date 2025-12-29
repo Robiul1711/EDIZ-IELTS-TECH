@@ -44,11 +44,11 @@ const SectionHeader = ({ logoText, logoColor }) => (
       <span className="text-white font-bold text-xl">{logoText.charAt(0)}</span>
     </div>
     <div className="border-l-2 border-gray-300 pl-4 h-10 flex flex-col justify-center">
-      <h2 className="text-2xl font-bold text-gray-800 leading-none">
+      <h2 className="text-2xl font-bold text-gray-800 dark:text-white leading-none">
         {logoText}
       </h2>
       <div className="flex items-center gap-2 mt-1">
-        <span className="text-xs font-bold text-gray-600 tracking-wider">
+        <span className="text-xs font-bold text-gray-600 dark:text-gray-400 tracking-wider">
           TOP 5 MOST TAKEN TESTS
         </span>
         <span className="text-[10px] text-gray-400">TAKE YOUR TEST NOW</span>

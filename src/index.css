@@ -12,8 +12,9 @@
 
   /* color */
 
-  --color-primary: green;
+  --color-Primary: #8370FF;
   --color-bg-custom: linear-gradient(192deg, rgba(0, 0, 0, 0.04) 8.87%, rgba(36, 69, 203, 0.20) 89.58%), linear-gradient(113deg, #19B0FD 3.64%, #7C71F5 81.53%);
+  --color-bg-custom2: linear-gradient(90deg, #A22BDE 0%, #8673FF 100%);
 
   /* breakpoint */
   --breakpoint-xxs: 390px;
@@ -29,7 +30,7 @@
 
   /* shadow */
 
-  --shadow-custom: 0px 4px 16.2px 2px rgba(0, 0, 0, 0.2);
+  --shadow-custom: 0 -3px 5.1px 0 rgba(210, 146, 242, 0.31) inset, 0 14px 10.3px 0 rgba(80, 97, 228, 0.16), 0 4px 7.7px 1px rgba(123, 42, 214, 0.51);
 
   /* radius */
   --radius: 0.5rem;
@@ -220,6 +221,9 @@
 button{
   cursor: pointer;
 }
-.bg-custom {
+.bg-custom, .bg-custom2 {
   background: var(--color-bg-custom);
+}
+.bg-custom2 {
+  background: var(--color-bg-custom2);
 }

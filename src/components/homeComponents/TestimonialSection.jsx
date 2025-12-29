@@ -47,9 +47,9 @@ const testimonials = [
 
 const TestimonialCard = ({ data }) => {
   return (
-    <div className="bg-white rounded-2xl p-8 shadow-lg h-full flex flex-col transition-all duration-300 transform hover:-translate-y-2">
+    <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg h-full flex flex-col transition-all duration-300 transform hover:-translate-y-2">
       <div className="flex justify-between items-center mb-6">
-        <span className="bg-purple-100 text-purple-600 text-xs font-semibold px-3 py-1 rounded-full">
+        <span className="bg-purple-100  text-purple-600 text-xs font-semibold px-3 py-1 rounded-full">
           IELTS
         </span>
         <div className="flex text-yellow-400">
@@ -65,7 +65,7 @@ const TestimonialCard = ({ data }) => {
           className="w-14 h-14 rounded-full object-cover border-2 border-purple-100"
         />
         <div>
-          <p className="text-gray-600 italic mb-3 leading-relaxed">
+          <p className="text-gray-600 dark:text-gray-400 italic mb-3 leading-relaxed">
             “{data.text}”
           </p>
           <p className="text-[#8370FF] font-semibold">- {data.name}</p>
@@ -114,7 +114,7 @@ const TestimonialSection = () => {
       <div className="">
         <h2
           ref={headerRef}
-          className="text-3xl md:text-4xl lg:text-5xl max-w-[680px] mx-auto font-bold text-center text-gray-900 mb-16"
+          className="text-3xl md:text-4xl lg:text-5xl max-w-[680px] mx-auto font-bold text-center text-gray-900 dark:text-white mb-16"
         >
           They Succeeded online – Now it’s Your Turn
         </h2>

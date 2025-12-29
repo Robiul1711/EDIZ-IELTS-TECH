@@ -3,6 +3,7 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger"; // 1. Import ScrollTrigger
 import { ImageAssets } from "@/lib/ImageProvider";
+import { Link } from "react-router-dom";
 
 // 2. Register Plugin
 gsap.registerPlugin(ScrollTrigger);
@@ -65,14 +66,14 @@ const Banner = () => {
   return (
     <div ref={containerRef} className="section-padding-x section-padding-y">
       <div ref={iconsRef} className="flex justify-center gap-20 flex-wrap">
-        <div className="flex items-center gap-3 group">
+        <Link to="/ielts" className="flex items-center gap-3 group">
           <img
             src={ImageAssets.I}
             className="w-16 group-hover:rotate-12 duration-300"
             alt="IELTS"
           />
           <p className="text-4xl font-bold">IELTS</p>
-        </div>
+        </Link>
         <div className="flex items-center gap-3 group">
           <img
             src={ImageAssets.P}

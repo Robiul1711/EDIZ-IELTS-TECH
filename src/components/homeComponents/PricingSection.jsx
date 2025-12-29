@@ -163,7 +163,7 @@ const PricingSection = () => {
   return (
     <section
       ref={containerRef}
-      className="bg-[#F3F0FF]/80  section-padding-x my-20 "
+      className="bg-[#F3F0FF]/80 dark:bg-[#1A1A1A]/80  section-padding-x my-20 "
     >
       <div className="section-padding-y ">
         {/* Header */}
@@ -178,14 +178,14 @@ const PricingSection = () => {
 
           {/* Toggle Switch */}
           <div className="mt-8 flex justify-center">
-            <div className="bg-white p-1 rounded-xl inline-flex shadow-sm border border-gray-100">
+            <div className="bg-white dark:bg-gray-800 p-1 rounded-xl inline-flex shadow-sm border border-gray-100">
               {["IELTS", "PTE"].map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
                   className={`px-8 py-2.5 rounded-lg text-sm font-semibold transition-all duration-300 ${
                     activeTab === tab
-                      ? "bg-white text-[#7B5BF2] shadow-md border border-gray-100 transform scale-105"
+                      ? "bg-white dark:bg-gray-800 text-[#7B5BF2] shadow-md border border-gray-100 transform scale-105"
                       : "text-gray-500 hover:text-gray-700"
                   }`}
                 >
@@ -212,13 +212,13 @@ const PricingSection = () => {
                   <div className="text-center text-white font-semibold text-sm py-3 tracking-wide">
                     BEST VALUE TO PRICE
                   </div>
-                  <div className="bg-white rounded-[28px] p-8 h-full">
+                  <div className="bg-white dark:bg-gray-800 rounded-[28px] p-8 h-full">
                     <PricingContent plan={plan} isPopular={true} />
                   </div>
                 </div>
               ) : (
                 /* Normal Card */
-                <div className="bg-white rounded-[32px] p-8 shadow-lg border border-gray-100 h-full transform transition-transform duration-300 hover:-translate-y-1">
+                <div className="bg-white rounded-[32px] p-8 shadow-lg border border-gray-100 dark:bg-gray-800 h-full transform transition-transform duration-300 hover:-translate-y-1">
                   <PricingContent plan={plan} isPopular={false} />
                 </div>
               )}
@@ -234,31 +234,31 @@ const PricingSection = () => {
 const PricingContent = ({ plan, isPopular }) => (
   <div className="flex flex-col h-full">
     <div className="mb-6">
-      <h3 className="text-xl font-bold text-[#1C1C33]">{plan.title}</h3>
+      <h3 className="text-xl font-bold text-[#1C1C33] dark:text-white">{plan.title}</h3>
       <p className="text-xs text-gray-500 mt-1">{plan.subtitle}</p>
     </div>
 
     <div className="mb-6">
       <div className="flex items-baseline gap-2">
-        <span className="text-lg italic font-semibold text-gray-500">BDT</span>
+        <span className="text-lg italic font-semibold text-gray-500 dark:text-gray-400  ">BDT</span>
 
         {plan.originalPrice && (
-          <span className="text-2xl text-gray-400 line-through decoration-gray-400 decoration-2">
+          <span className="text-2xl text-gray-400 line-through decoration-gray-400 dark:decoration-gray-600 decoration-2">
             {plan.originalPrice}
           </span>
         )}
 
-        <span className="text-4xl font-bold text-[#1C1C33]">{plan.price}</span>
+        <span className="text-4xl font-bold text-[#1C1C33] dark:text-white">{plan.price}</span>
         <span className="text-gray-500 text-sm font-medium">/month</span>
       </div>
-      <p className="text-sm text-gray-500 mt-3">{plan.description}</p>
+      <p className="text-sm text-gray-500 mt-3 dark:text-gray-400">{plan.description}</p>
     </div>
 
     <ul className="space-y-4 mb-8 flex-grow">
       {plan.features.map((feature, i) => (
         <li key={i} className="flex items-start gap-3">
           <FaCheckCircle className="text-[#604CDF] text-xl shrink-0 mt-0.5" />
-          <span className="text-[#5D5D75] text-sm leading-relaxed">
+          <span className="text-[#5D5D75] dark:text-white text-sm leading-relaxed">
             {feature}
           </span>
         </li>

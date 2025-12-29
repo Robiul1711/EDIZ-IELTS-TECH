@@ -42,17 +42,17 @@ const WelcomeBanner = () => {
 
   return (
     <section ref={containerRef} className="section-padding-x section-padding-y">
-      <div className="bg-[#EDE8FD] rounded-xl p-8 md:p-12  flex flex-col md:flex-row items-center justify-between w-full gap-8">
+      <div className="bg-[#EDE8FD] dark:bg-[#1C1C33] rounded-xl p-8 md:p-12  flex flex-col md:flex-row items-center justify-between w-full gap-8">
         {/* Left Content */}
         <div ref={contentRef} className="md:w-2/5 mb-8 md:mb-0">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#1C1C33] mb-4">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#1C1C33] dark:text-white mb-4">
             Welcome Offer For New Students
           </h2>
           <p className="text-[#5D5D75] text-base md:text-lg lg:text-xl mb-8">
             Enroll now to receive 68% savings on your membership and a free mock
             test to elevate your preparation.
           </p>
-          <button className="bg-[#1C1C33] text-white font-semibold py-3 px-8 rounded-full hover:bg-opacity-90 transition-colors">
+          <button className="bg-[#1C1C33] dark:bg-[#604CDF] text-white font-semibold py-3 px-8 rounded-full hover:bg-opacity-90 transition-colors">
             JOIN NOW
           </button>
         </div>

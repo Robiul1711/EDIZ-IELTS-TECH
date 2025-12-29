@@ -31,7 +31,7 @@ const Navbar = () => {
     >
       <div className="flex items-center justify-between py-3">
         <Link to="/">
-        <img src={ImageAssets.logo} alt="Logo" className='' />
+        <img src={ImageAssets.logo} alt="Logo" className='dark:invert' />
         </Link>
         
         <div className="flex gap-5 items-center">
@@ -81,9 +81,9 @@ const Navbar = () => {
           <button className='px-8 py-3 bg-custom text-primary-foreground  rounded-full font-semibold hover:opacity-90 transition-opacity shadow-md'>
             Purchase
           </button>
-          <button className='px-8 py-3 border duration-300   bg-primary font-semibold text-white hover:text-black border-border rounded-full hover:bg-accent transition-colors'>
+          <Link to="/auth" className='px-8 py-3 hover:opacity-90 duration-300  dark:bg-Primary   bg-primary font-semibold  text-white hover:text-black  border rounded-full hover:bg-accent transition-colors'>
             Sign up
-          </button>
+          </Link>
 
 
         </div>

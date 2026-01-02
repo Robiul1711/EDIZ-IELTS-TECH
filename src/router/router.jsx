@@ -26,6 +26,17 @@ import SpeakingLayout from "@/layout/SpeakingLayout";
 import IELTSAcademicSpeaking from "@/pages/speakingPages/IELTSAcademicSpeaking";
 import SpeakingPartOneMain from "@/pages/speakingPages/partOne/SpeakingPartOneMain";
 import SpeakingPartTwoMain from "@/pages/speakingPages/partTwo/SpeakingPartTwoMain";
+import StudentDashboardLayout from "@/layout/StudentDashboardLayout";
+import StudentDashboard from "@/pages/stundetDashboard/StudentDashboard";
+import StudentIELTS from "@/pages/stundetDashboard/StudentIELTS";
+
+import StudentIeltsReading from "@/pages/stundetDashboard/allIeltsCourse/StudentIeltsReading";
+import StudentIeltsWriting from "@/pages/stundetDashboard/allIeltsCourse/StudentIeltsWriting";
+import StudentIeltsSpeaking from "@/pages/stundetDashboard/allIeltsCourse/StudentIeltsSpeaking";
+import StudentIeltsListening from "@/pages/stundetDashboard/allIeltsCourse/StudentIeltsListening";
+import StudentPteCourse from "@/pages/stundetDashboard/pte/StudentPteCourse";
+import StudentClassRoom from "@/pages/stundetDashboard/classroom/StudentClassRoom";
+import StudentScoreDashboard from "@/pages/stundetDashboard/score/StudentScoreDashboard";
 
 const router = createBrowserRouter([
   // Auth routes
@@ -93,6 +104,21 @@ const router = createBrowserRouter([
     element: <AdminLayout />,
     children: [
       { index: true, element: <Dashboard /> },
+    ],
+  },
+  {
+    path: "/student-dashboard",
+    element: <StudentDashboardLayout />,
+    children: [
+      { index: true, element: <StudentDashboard /> },
+      { path: "ielts", element: <StudentIELTS /> },
+      { path: "ielts/reading", element: <StudentIeltsReading /> },
+      { path: "ielts/writing", element: <StudentIeltsWriting /> },
+      { path: "ielts/speaking", element: <StudentIeltsSpeaking /> },
+      { path: "ielts/listening", element: <StudentIeltsListening /> },
+      { path: "pte", element: <StudentPteCourse /> },
+      { path: "classroom", element: <StudentClassRoom /> },
+      { path: "score", element: <StudentScoreDashboard  /> },
     ],
   },
 ]);

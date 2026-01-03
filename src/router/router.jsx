@@ -37,6 +37,12 @@ import StudentIeltsListening from "@/pages/stundetDashboard/allIeltsCourse/Stude
 import StudentPteCourse from "@/pages/stundetDashboard/pte/StudentPteCourse";
 import StudentClassRoom from "@/pages/stundetDashboard/classroom/StudentClassRoom";
 import StudentScoreDashboard from "@/pages/stundetDashboard/score/StudentScoreDashboard";
+import ReadingLayout from "@/layout/ReadingLayout";
+import IELTSAcademicReading from "@/pages/readingPage/IELTSAcademicReading";
+import ReadingPartOneMain from "@/pages/readingPage/partOne/ReadingPartOneMain";
+import ReadingPartTwoMain from "@/pages/readingPage/partTwo/ReadingPartTwoMain";
+import ClassroomLayout from "@/layout/ClassroomLayout";
+import Register from "@/pages/classroomDashboard/Register";
 
 const router = createBrowserRouter([
   // Auth routes
@@ -98,6 +104,17 @@ const router = createBrowserRouter([
 
   ],
 },
+//Reading routes
+{
+  path: "/reading",
+  element: <ReadingLayout />,
+  children: [
+    { index: true, element: <IELTSAcademicReading /> },
+    { path: "part1", element: <ReadingPartOneMain /> },
+    { path: "part2", element: <ReadingPartTwoMain /> },
+
+  ],
+},
   // Admin routes
   {
     path: "/dashboard",
@@ -119,6 +136,14 @@ const router = createBrowserRouter([
       { path: "pte", element: <StudentPteCourse /> },
       { path: "classroom", element: <StudentClassRoom /> },
       { path: "score", element: <StudentScoreDashboard  /> },
+    ],
+  },
+  {
+    path: "/classroom",
+    element: <ClassroomLayout />,
+    children: [
+      { index: true, element: <Register /> },
+
     ],
   },
 ]);

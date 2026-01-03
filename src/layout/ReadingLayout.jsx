@@ -1,7 +1,7 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 
-const SpeakingLayout = () => {
+const ReadingLayout = () => {
   return (
     <div className="flex items-center justify-center w-full">
       <Outlet />
@@ -9,4 +9,4 @@ const SpeakingLayout = () => {
   );
 };
 
-export default SpeakingLayout;
+export default ReadingLayout;

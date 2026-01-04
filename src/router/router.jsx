@@ -42,7 +42,21 @@ import IELTSAcademicReading from "@/pages/readingPage/IELTSAcademicReading";
 import ReadingPartOneMain from "@/pages/readingPage/partOne/ReadingPartOneMain";
 import ReadingPartTwoMain from "@/pages/readingPage/partTwo/ReadingPartTwoMain";
 import ClassroomLayout from "@/layout/ClassroomLayout";
-import Register from "@/pages/classroomDashboard/Register";
+import Register from "@/pages/classroomDashboard/register/Register";
+import TeacherDashboard from "@/pages/classroomDashboard/teacherClassRoom/TeacherDashboard";
+import Exams from "@/pages/classroomDashboard/teacherClassRoom/Exams";
+import StudentList from "@/pages/classroomDashboard/teacherClassRoom/StudentList";
+import SelectExamType from "@/pages/classroomDashboard/teacherClassRoom/SelectExamType";
+import ChooseExamList from "@/pages/classroomDashboard/teacherClassRoom/ChooseExamList";
+import ExamStartCountdown from "@/pages/classroomDashboard/teacherClassRoom/ExamStartCountdown";
+import ExamSuccessfullyCompleted from "@/pages/classroomDashboard/teacherClassRoom/ExamSuccessfullyCompleted";
+import GradingProgess from "@/pages/classroomDashboard/teacherClassRoom/GradingProgess";
+import StudentsResults from "@/pages/classroomDashboard/teacherClassRoom/StudentsResults";
+import ChooseExamListPTE from "@/pages/classroomDashboard/teacherClassRoom/ChooseExamListPTE";
+import StudentClassroomLayout from "@/layout/StudentClassroomLayout";
+import ExamTime from "@/pages/classroomDashboard/studentClassRoom/ExamTime";
+import Report from "@/pages/classroomDashboard/studentClassRoom/Report";
+import ExamHistory from "@/pages/classroomDashboard/studentClassRoom/ExamHistory";
 
 const router = createBrowserRouter([
   // Auth routes
@@ -138,11 +152,44 @@ const router = createBrowserRouter([
       { path: "score", element: <StudentScoreDashboard  /> },
     ],
   },
+  // TeacherDashboard routes
   {
     path: "/classroom",
-    element: <ClassroomLayout />,
+    element: <Register />,
     children: [
       { index: true, element: <Register /> },
+      
+
+    ],
+  },
+  {
+    path: "/classroom/register-as-teacher",
+    element: <ClassroomLayout />,
+    children: [
+      { index: true, element: <TeacherDashboard /> },
+      { path: "exams", element: <Exams /> },
+      { path: "student-list", element: <StudentList /> },
+      { path: "select-exam", element: <SelectExamType /> },
+      { path: "choose-exam-list-ielts", element: <ChooseExamList /> },
+      { path: "choose-exam-list-pte", element: <ChooseExamListPTE /> },
+      { path: "exam-start", element: <ExamStartCountdown /> },
+      { path: "exam-completed", element: <ExamSuccessfullyCompleted /> },
+      { path: "grading", element: <GradingProgess /> },
+      { path: "results", element: <StudentsResults /> },
+      
+
+    ],
+  },
+  // StudentDashboard routes
+  {
+    path: "/classroom/register-as-student",
+    element: <StudentClassroomLayout />,
+    children: [
+{index: true, element: <ExamTime />},
+{path: "report", element: <Report />},
+{path: "exam-history", element: <ExamHistory />},
+
+      
 
     ],
   },

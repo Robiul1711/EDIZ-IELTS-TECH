@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Outlet, ScrollRestoration, useLocation } from "react-router-dom";
 import GridBackgroundView from "@/components/common/GridBackgroundView";
 import StudentNavbar from "@/pages/stundetDashboard/StudentNavbar";
-import TeacherSidebar from "@/pages/classroomDashboard/TeacherSidebar";
+import StudentSidebar from "@/pages/classroomDashboard/StudentSidebar";
 
-const ClassroomLayout = () => {
+const StudentClassroomLayout = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
 
@@ -27,7 +27,7 @@ const ClassroomLayout = () => {
         
         <div className="w-full flex flex-col xmd:flex-row gap-6 lg:gap-10 pb-10">
           {/* Sidebar: Desktop (Always visible xmd+) & Mobile (Drawer mode) */}
-          <TeacherSidebar isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
+          <StudentSidebar isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
 
           <main className="flex-1 w-full overflow-hidden">
             <Outlet />
@@ -38,4 +38,4 @@ const ClassroomLayout = () => {
   );
 };
 
-export default ClassroomLayout;
+export default StudentClassroomLayout;

@@ -58,7 +58,8 @@ import ExamTime from "@/pages/classroomDashboard/studentClassRoom/ExamTime";
 import Report from "@/pages/classroomDashboard/studentClassRoom/Report";
 import ExamHistory from "@/pages/classroomDashboard/studentClassRoom/ExamHistory";
 import SpeakingWritingPTELayout from "@/layout/PTE/SpeakingWritingPTELayout";
-import { pteRoutes } from "@/lib/ImageProvider";
+import PTEHomePage from "@/pages/ptePage/PTEHomePage";
+import { pteExaminationRoutes, pteRoutes } from "./PTErouter";
 
 const router = createBrowserRouter([
   // Auth routes
@@ -82,6 +83,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Home /> },
       { path: "ielts", element: <IELTSPage /> },
+      { path: "pte", element: <PTEHomePage /> },
 
     ],
   },
@@ -193,8 +195,8 @@ const router = createBrowserRouter([
     ],
   },
 
-
-  pteRoutes
+  pteRoutes,
+  pteExaminationRoutes,
 ]);
 
 

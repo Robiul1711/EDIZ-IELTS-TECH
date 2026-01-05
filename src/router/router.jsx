@@ -57,6 +57,8 @@ import StudentClassroomLayout from "@/layout/StudentClassroomLayout";
 import ExamTime from "@/pages/classroomDashboard/studentClassRoom/ExamTime";
 import Report from "@/pages/classroomDashboard/studentClassRoom/Report";
 import ExamHistory from "@/pages/classroomDashboard/studentClassRoom/ExamHistory";
+import SpeakingWritingPTELayout from "@/layout/PTE/SpeakingWritingPTELayout";
+import { pteRoutes } from "@/lib/ImageProvider";
 
 const router = createBrowserRouter([
   // Auth routes
@@ -83,7 +85,7 @@ const router = createBrowserRouter([
 
     ],
   },
-  
+
   // Listening routes
   {
     path: "/listening",
@@ -96,39 +98,39 @@ const router = createBrowserRouter([
       { path: "part4", element: <ListeningPartFour /> },
     ],
   },
-//Writing routes
-{
-  path: "/writing",
-  element: <WritingLayout />,
-  children: [
-    { index: true, element: <IELTSAcademicWriting /> },
-    { path: "part1", element: <WritingPartOne /> },
-    { path: "part2", element: <WritingPartTwo/> },
+  //Writing routes
+  {
+    path: "/writing",
+    element: <WritingLayout />,
+    children: [
+      { index: true, element: <IELTSAcademicWriting /> },
+      { path: "part1", element: <WritingPartOne /> },
+      { path: "part2", element: <WritingPartTwo /> },
 
-  ],
-},
-//speaking routes can be added here
-{
-  path: "/speaking",
-  element: <SpeakingLayout />,
-  children: [
-    { index: true, element: <IELTSAcademicSpeaking /> },
-    { path: "part1", element: <SpeakingPartOneMain /> },
-    { path: "part2", element: <SpeakingPartTwoMain /> },
+    ],
+  },
+  //speaking routes can be added here
+  {
+    path: "/speaking",
+    element: <SpeakingLayout />,
+    children: [
+      { index: true, element: <IELTSAcademicSpeaking /> },
+      { path: "part1", element: <SpeakingPartOneMain /> },
+      { path: "part2", element: <SpeakingPartTwoMain /> },
 
-  ],
-},
-//Reading routes
-{
-  path: "/reading",
-  element: <ReadingLayout />,
-  children: [
-    { index: true, element: <IELTSAcademicReading /> },
-    { path: "part1", element: <ReadingPartOneMain /> },
-    { path: "part2", element: <ReadingPartTwoMain /> },
+    ],
+  },
+  //Reading routes
+  {
+    path: "/reading",
+    element: <ReadingLayout />,
+    children: [
+      { index: true, element: <IELTSAcademicReading /> },
+      { path: "part1", element: <ReadingPartOneMain /> },
+      { path: "part2", element: <ReadingPartTwoMain /> },
 
-  ],
-},
+    ],
+  },
   // Admin routes
   {
     path: "/dashboard",
@@ -149,7 +151,7 @@ const router = createBrowserRouter([
       { path: "ielts/listening", element: <StudentIeltsListening /> },
       { path: "pte", element: <StudentPteCourse /> },
       { path: "classroom", element: <StudentClassRoom /> },
-      { path: "score", element: <StudentScoreDashboard  /> },
+      { path: "score", element: <StudentScoreDashboard /> },
     ],
   },
   // TeacherDashboard routes
@@ -158,7 +160,7 @@ const router = createBrowserRouter([
     element: <Register />,
     children: [
       { index: true, element: <Register /> },
-      
+
 
     ],
   },
@@ -176,7 +178,7 @@ const router = createBrowserRouter([
       { path: "exam-completed", element: <ExamSuccessfullyCompleted /> },
       { path: "grading", element: <GradingProgess /> },
       { path: "results", element: <StudentsResults /> },
-      
+
 
     ],
   },
@@ -185,14 +187,19 @@ const router = createBrowserRouter([
     path: "/classroom/register-as-student",
     element: <StudentClassroomLayout />,
     children: [
-{index: true, element: <ExamTime />},
-{path: "report", element: <Report />},
-{path: "exam-history", element: <ExamHistory />},
-
-      
-
+      { index: true, element: <ExamTime /> },
+      { path: "report", element: <Report /> },
+      { path: "exam-history", element: <ExamHistory /> },
     ],
   },
+
+
+  pteRoutes
 ]);
+
+
+// PTE related routes can be added here 
+
+
 
 export default router;

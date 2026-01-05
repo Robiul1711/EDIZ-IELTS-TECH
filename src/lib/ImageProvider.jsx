@@ -15,6 +15,7 @@ import R from '@/assets/images/R.png';
 import S from '@/assets/images/S.png';
 import W from '@/assets/images/W.png';
 import L from '@/assets/images/L.png';
+import SpeakingWritingPTELayout from '@/layout/PTE/SpeakingWritingPTELayout';
 
 export const ImageAssets = {
     logo,
@@ -34,4 +35,19 @@ export const ImageAssets = {
     S,
     W,
     L
+}
+
+export const pteRoutes = {
+    path: "/pte",
+    element: <SpeakingWritingPTELayout />,
+    children: [
+        {
+            index: true,
+            element: <h1>Welcome to PTE Section</h1>,
+        },
+        {
+            path: "speaking-writing",
+            element: <h1>PTE Speaking and Writing Main Page</h1>,
+        }
+    ]
 }

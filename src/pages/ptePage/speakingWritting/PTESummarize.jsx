@@ -102,7 +102,7 @@ While international agreements like the Paris Climate Accord have established fr
                         <File size={26} /> Save & Exist
                     </button>
 
-                    <Link to="/pte-examination/write-essay" className="w-full md:w-auto">
+                    <Link to="/pte/result" className="w-full md:w-auto">
                         <button className="bg-gradient-to-r from-[#A22BDE] to-[#8673FF] text-white px-16 py-4 rounded-2xl font-bold flex items-center justify-center gap-3 text-lg shadow-2xl hover:opacity-95 transition-all active:scale-[0.98] w-full">
                             Next <MdDoubleArrow size={26} className="mt-1" />
                         </button>

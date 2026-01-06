@@ -59,7 +59,7 @@ import Report from "@/pages/classroomDashboard/studentClassRoom/Report";
 import ExamHistory from "@/pages/classroomDashboard/studentClassRoom/ExamHistory";
 import SpeakingWritingPTELayout from "@/layout/PTE/SpeakingWritingPTELayout";
 import PTEHomePage from "@/pages/ptePage/PTEHomePage";
-import { pteExaminationRoutes, pteRoutes } from "./PTErouter";
+import { pteExaminationListeningRoutes, pteExaminationReadingRoutes, pteExaminationSpeakingWrittingRoutes, pteRoutes } from "./PTErouter";
 
 const router = createBrowserRouter([
   // Auth routes
@@ -196,7 +196,9 @@ const router = createBrowserRouter([
   },
 
   pteRoutes,
-  pteExaminationRoutes,
+  pteExaminationSpeakingWrittingRoutes,
+  pteExaminationReadingRoutes,
+  pteExaminationListeningRoutes
 ]);
 
 

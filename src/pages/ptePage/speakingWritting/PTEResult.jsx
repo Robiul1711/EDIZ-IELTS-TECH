@@ -19,7 +19,7 @@ const PTEResult = () => {
                 </div>
 
                 <div className="flex flex-col-reverse gap-4 w-full md:w-auto mt-auto md:mt-0">
-                    <Link to={'/pte'} >
+                    <Link to={'/pte'}>
                         <button className='bg-black  text-white w-full md:w-auto px-16 py-4 text-lg shadow-lg rounded-lg font-semibold flex items-center justify-center gap-2'>
                             TAKE ANOTHER TEST
                         </button>
@@ -28,7 +28,7 @@ const PTEResult = () => {
                     <div className="border "></div>
 
                     <Link to="/pte-examination">
-                        <button className='bg-[#A22BDE] text-white w-full md:w-auto px-16 py-4 text-lg shadow-lg rounded-lg font-semibold flex items-center justify-center gap-2'>
+                        <button className='bg-[#A22BDE] text-white w-full md:w-auto px-[85px] py-4 text-lg shadow-lg rounded-lg font-semibold flex items-center justify-center gap-2'>
                             SEE THE RESULT
                         </button>
                     </Link>

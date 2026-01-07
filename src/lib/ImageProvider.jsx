@@ -15,9 +15,22 @@ import R from '@/assets/images/R.png';
 import S from '@/assets/images/S.png';
 import W from '@/assets/images/W.png';
 import L from '@/assets/images/L.png';
-import SpeakingWritingPTELayout from '@/layout/PTE/SpeakingWritingPTELayout';
+import SW from '@/assets/images/SW.png';
+import headset from '@/assets/images/headset.png';
+import keyboard from '@/assets/images/keyboard.png';
+import describeImage from '@/assets/images/describeImage.png';
+import audio from '@/assets/images/audio.mp3';
+import lecture from '@/assets/images/lecture.png';
+import group from '@/assets/images/group.png';
+
 
 export const ImageAssets = {
+    group,
+    lecture,
+    describeImage,
+    keyboard,
+    audio,
+    SW,
     logo,
     I,
     P,
@@ -34,20 +47,7 @@ export const ImageAssets = {
     R,
     S,
     W,
-    L
+    L,
+    headset
 }
 
-export const pteRoutes = {
-    path: "/pte",
-    element: <SpeakingWritingPTELayout />,
-    children: [
-        {
-            index: true,
-            element: <h1>Welcome to PTE Section</h1>,
-        },
-        {
-            path: "speaking-writing",
-            element: <h1>PTE Speaking and Writing Main Page</h1>,
-        }
-    ]
-}

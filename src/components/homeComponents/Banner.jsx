@@ -74,14 +74,14 @@ const Banner = () => {
           />
           <p className="text-4xl font-bold">IELTS</p>
         </Link>
-        <div className="flex items-center gap-3 group">
+        <Link to={"/pte"} className="flex items-center gap-3 group">
           <img
             src={ImageAssets.P}
             className="w-16 group-hover:rotate-12 duration-300"
             alt="PTE"
           />
           <p className="text-4xl font-bold">PTE</p>
-        </div>
+        </Link>
         <Link to="/classroom" className="flex items-center gap-3 group">
           <img
             src={ImageAssets.C}

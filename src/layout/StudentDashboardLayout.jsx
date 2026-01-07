@@ -25,7 +25,7 @@ const StudentDashboardLayout = () => {
         {/* Pass toggle function to Navbar */}
         <StudentNavbar onMenuClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} />
         
-        <div className="w-full flex flex-col xmd:flex-row gap-6 lg:gap-10 pb-10">
+        <div className="w-full flex flex-col xmd:flex-row gap-6  pb-10">
           {/* Sidebar: Desktop (Always visible xmd+) & Mobile (Drawer mode) */}
           <StudentSider isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
 

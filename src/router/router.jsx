@@ -60,6 +60,11 @@ import ExamHistory from "@/pages/classroomDashboard/studentClassRoom/ExamHistory
 import SpeakingWritingPTELayout from "@/layout/PTE/SpeakingWritingPTELayout";
 import PTEHomePage from "@/pages/ptePage/PTEHomePage";
 import { pteExaminationListeningRoutes, pteExaminationReadingRoutes, pteExaminationSpeakingWrittingRoutes, pteRoutes } from "./PTErouter";
+import { pteRoutes } from "@/lib/ImageProvider";
+import WritingReview from "@/pages/stundetDashboard/review/WritingReview";
+import SpeakingReview from "@/pages/stundetDashboard/review/SpeakingReview";
+import ListeningReview from "@/pages/stundetDashboard/review/ListeningReview";
+import ReadingReview from "@/pages/stundetDashboard/review/ReadingReview";
 
 const router = createBrowserRouter([
   // Auth routes
@@ -154,6 +159,10 @@ const router = createBrowserRouter([
       { path: "pte", element: <StudentPteCourse /> },
       { path: "classroom", element: <StudentClassRoom /> },
       { path: "score", element: <StudentScoreDashboard /> },
+      { path: "reading-review/:id", element: <ReadingReview /> },
+      { path: "writing-review/:id", element: <WritingReview /> },
+      { path: "speaking-review/:id", element: <SpeakingReview /> },
+      { path: "listening-review/:id", element: <ListeningReview /> },
     ],
   },
   // TeacherDashboard routes

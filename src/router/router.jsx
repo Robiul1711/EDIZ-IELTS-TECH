@@ -60,7 +60,7 @@ import ExamHistory from "@/pages/classroomDashboard/studentClassRoom/ExamHistory
 import SpeakingWritingPTELayout from "@/layout/PTE/SpeakingWritingPTELayout";
 import PTEHomePage from "@/pages/ptePage/PTEHomePage";
 import { pteExaminationListeningRoutes, pteExaminationReadingRoutes, pteExaminationSpeakingWrittingRoutes, pteRoutes } from "./PTErouter";
-import { pteRoutes } from "@/lib/ImageProvider";
+// import { pteRoutes } from "@/lib/ImageProvider";
 import WritingReview from "@/pages/stundetDashboard/review/WritingReview";
 import SpeakingReview from "@/pages/stundetDashboard/review/SpeakingReview";
 import ListeningReview from "@/pages/stundetDashboard/review/ListeningReview";

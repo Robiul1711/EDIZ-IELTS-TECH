@@ -12,7 +12,11 @@ const StudentSider = ({ isOpen, onClose }) => {
     { name: "Dashboard", icon: DashboardImage, path: "/student-dashboard" },
     { name: "IELTS", icon: IeltsImage, path: "/student-dashboard/ielts" },
     { name: "PTE", icon: PTEImage, path: "/student-dashboard/pte" },
-    { name: "CLASSROOM", icon: ClassRoomImage, path: "/student-dashboard/classroom" },
+    {
+      name: "CLASSROOM",
+      icon: ClassRoomImage,
+      path: "/student-dashboard/classroom",
+    },
     { name: "Score", icon: ScoreImage, path: "/student-dashboard/score" },
   ];
 
@@ -20,14 +24,15 @@ const StudentSider = ({ isOpen, onClose }) => {
     <>
       {/* Overlay for Mobile - only visible below xmd */}
       {isOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[60] xmd:hidden"
           onClick={onClose}
         />
       )}
 
       {/* Sidebar Container */}
-      <div className={`
+      <div
+        className={`
         /* Mobile Styles */
         fixed top-0 left-0 h-full w-72 z-[70] rounded-r-[2.5rem]
         
@@ -38,11 +43,14 @@ const StudentSider = ({ isOpen, onClose }) => {
         bg-[#604CDF] p-6 
         transition-transform duration-300 ease-in-out shadow-2xl
         ${isOpen ? "translate-x-0" : "-translate-x-full xmd:translate-x-0"}
-      `}>
-        
+      `}
+      >
         {/* Mobile Close Button */}
         <div className="flex justify-end xmd:hidden mb-6">
-          <button onClick={onClose} className="p-2 text-white/80 hover:text-white bg-white/10 rounded-full">
+          <button
+            onClick={onClose}
+            className="p-2 text-white/80 hover:text-white bg-white/10 rounded-full"
+          >
             <X size={24} />
           </button>
         </div>
@@ -57,7 +65,7 @@ const StudentSider = ({ isOpen, onClose }) => {
               className={({ isActive }) =>
                 `flex items-center gap-4 rounded-[1.2rem] px-5 py-4 transition-all duration-300 border-2 ${
                   isActive
-                    ? "bg-white border-white shadow-xl shadow-black/10 scale-[1.03]"
+                    ? "bg-white dark:bg-slate-800 border-white dark:border-slate-700 shadow-xl shadow-black/10 scale-[1.03]"
                     : "bg-transparent border-white/10 hover:bg-white/5 text-white"
                 }`
               }
@@ -71,7 +79,11 @@ const StudentSider = ({ isOpen, onClose }) => {
                       className="h-full w-full object-contain drop-shadow-md"
                     />
                   </div>
-                  <span className={`text-[15px] font-bold tracking-wider uppercase ${isActive ? "text-[#333]" : "text-white"}`}>
+                  <span
+                    className={`text-[15px] font-bold tracking-wider uppercase ${
+                      isActive ? "text-[#333] dark:text-white" : "text-white"
+                    }`}
+                  >
                     {item.name}
                   </span>
                 </>

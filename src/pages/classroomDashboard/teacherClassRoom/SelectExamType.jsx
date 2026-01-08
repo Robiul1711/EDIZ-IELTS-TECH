@@ -22,12 +22,12 @@ const SelectExamType = () => {
 
       <div className="text-center">
         {/* Title */}
-        <h2 className="text-4xl font-bold text-gray-900 mb-2">
+        <h2 className="text-4xl font-bold text-gray-900 mb-2  dark:text-white">
           Select Exam Type
         </h2>
 
         {/* Subtitle */}
-        <p className="text-lg text-gray-500 mb-6">
+        <p className="text-lg text-gray-500 mb-6 dark:text-gray-400">
           select whether you want to take the IELTS or PTE exam
         </p>
 
@@ -46,7 +46,7 @@ const SelectExamType = () => {
             >
               I
             </div>
-            <span className="text-3xl font-bold text-gray-800">IELTS</span>
+            <span className="text-3xl font-bold text-gray-800 ">IELTS</span>
           </Link>
 
           {/* PTE */}

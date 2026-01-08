@@ -78,10 +78,10 @@ const Navbar = () => {
             </div>
           </button>
 
-          <button className='px-8 py-3 bg-custom text-primary-foreground  rounded-full font-semibold hover:opacity-90 transition-opacity shadow-md'>
+          <button className='px-8 py-3 dark:text-white bg-custom text-primary-foreground  rounded-full font-semibold hover:opacity-90 transition-opacity shadow-md'>
             Purchase
           </button>
-          <Link to="/auth" className='px-8 py-3 hover:opacity-90 duration-300  dark:bg-Primary   bg-primary font-semibold  text-white hover:text-black  border rounded-full hover:bg-accent transition-colors'>
+          <Link to="/auth" className='px-8 py-3 dark:text-white hover:opacity-90 duration-300  dark:bg-Primary   bg-primary font-semibold  text-white hover:text-black  border rounded-full hover:bg-accent transition-colors'>
             Sign up
           </Link>
 

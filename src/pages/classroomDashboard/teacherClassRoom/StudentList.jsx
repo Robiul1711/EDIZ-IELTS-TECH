@@ -43,7 +43,7 @@ const StudentList = () => {
       </div>
 
       {/* Table Container */}
-      <div className="bg-white border border-[#d7dbf0] rounded-lg p-4">
+      <div className="bg-white dark:bg-gray-800 dark:text-white border border-[#d7dbf0] rounded-lg p-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {columns.map((group, colIndex) => (
             <div
@@ -53,7 +53,7 @@ const StudentList = () => {
               }`}
             >
               {/* Header */}
-              <div className="grid grid-cols-3 text-sm md:text-base font-semibold text-gray-800 mb-3">
+              <div className="grid grid-cols-3 text-sm md:text-base font-semibold text-gray-800 mb-3 dark:text-white">
                 <span>SL</span>
                 <span>Name</span>
                 <span>ID</span>
@@ -64,7 +64,7 @@ const StudentList = () => {
                 {group.map((student) => (
                   <div
                     key={student.sl}
-                    className="grid grid-cols-3 text-sm md:text-base text-gray-700"
+                    className="grid grid-cols-3 text-sm md:text-base text-gray-700 dark:text-white"
                   >
                     <span>{student.sl}</span>
                     <span>{student.name}</span>

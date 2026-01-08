@@ -6,7 +6,7 @@ const SpeakingReview = () => {
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
 
   return (
-    <div className="relative min-h-screen bg-[#F8FAFC] p-4 rounded-xl font-sans">
+    <div className="relative min-h-screen bg-[#F8FAFC] dark:bg-slate-950 p-4 rounded-xl font-sans">
       <div className="mb-6">
         <PaginationSection />
       </div>
@@ -21,24 +21,28 @@ const SpeakingReview = () => {
             {/* Left Column: User Response */}
             <div className="space-y-6">
               <div className="flex items-center gap-2">
-                <span className="text-xl font-bold text-slate-800">Q1:</span>
+                <span className="text-xl font-bold text-slate-800 dark:text-white">
+                  Q1:
+                </span>
                 <span className="text-slate-400 font-medium text-sm">
                   Part 1
                 </span>
               </div>
-              <h1 className="text-2xl font-bold text-slate-800 leading-snug">
+              <h1 className="text-2xl font-bold text-slate-800 dark:text-white leading-snug">
                 Let's talk about your home. What kind of house or flat do you
                 live in?
               </h1>
 
               <div className="space-y-4">
-                <h3 className="text-lg font-bold text-slate-400">My Answer</h3>
-                <div className="bg-[#F1F5F9] rounded-full px-6 py-3 flex items-center gap-4 w-full max-w-md">
+                <h3 className="text-lg font-bold text-slate-400 dark:text-slate-500">
+                  My Answer
+                </h3>
+                <div className="bg-[#F1F5F9] dark:bg-slate-900 rounded-full px-6 py-3 flex items-center gap-4 w-full max-w-md">
                   <audio className="h-8 w-full custom-audio" controls>
                     <source src="" type="audio/mpeg" />
                   </audio>
                 </div>
-                <p className="text-slate-600 italic">
+                <p className="text-slate-600 dark:text-slate-300 italic">
                   "I live in a apartment with my family."
                 </p>
               </div>
@@ -46,12 +50,14 @@ const SpeakingReview = () => {
 
             {/* Right Column: Score & Model Answer */}
             <div className="space-y-8 lg:border-l lg:pl-12 border-slate-200">
-              <div className="bg-[#F4F7FF] rounded-3xl p-8 border border-blue-50">
+              <div className="bg-[#F4F7FF] dark:bg-slate-900 rounded-3xl p-8 border border-blue-50 dark:border-slate-800">
                 <div className="flex items-baseline gap-1">
-                  <span className="text-5xl font-black text-slate-800">
+                  <span className="text-5xl font-black text-slate-800 dark:text-white">
                     6.0
                   </span>
-                  <span className="text-xl font-bold text-slate-400">/9.0</span>
+                  <span className="text-xl font-bold text-slate-400 dark:text-slate-500">
+                    /9.0
+                  </span>
                 </div>
                 <p className="text-slate-400 font-bold text-xs uppercase tracking-widest mt-1">
                   Raw score
@@ -61,12 +67,12 @@ const SpeakingReview = () => {
                 <span className="inline-block bg-[#6C5CE7] text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg shadow-indigo-200">
                   Model Answer
                 </span>
-                <div className="bg-[#F1F5F9] rounded-full px-6 py-3 flex items-center gap-4 w-full max-w-md">
+                <div className="bg-[#F1F5F9] dark:bg-slate-900 rounded-full px-6 py-3 flex items-center gap-4 w-full max-w-md">
                   <audio className="h-8 w-full" controls>
                     <source src="#" type="audio/mpeg" />
                   </audio>
                 </div>
-                <p className="text-slate-600">
+                <p className="text-slate-600 dark:text-slate-300">
                   I live in a apartment with my family.
                 </p>
               </div>
@@ -76,14 +82,14 @@ const SpeakingReview = () => {
 
         {/* AI Feedback Panel */}
         {isFeedbackOpen && (
-          <div className="fixed top-10 bottom-10 right-10 w-[360px] bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 flex flex-col overflow-hidden z-40 animate-in slide-in-from-right-8 duration-300">
-            <div className="p-6 border-b border-slate-50 flex justify-between items-center">
+          <div className="fixed top-10 bottom-10 right-10 w-[360px] bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-2xl border border-slate-100 dark:border-slate-800 flex flex-col overflow-hidden z-40 animate-in slide-in-from-right-8 duration-300">
+            <div className="p-6 border-b border-slate-50 dark:border-slate-800 flex justify-between items-center bg-white dark:bg-slate-900">
               <h2 className="text-[#6C5CE7] font-black text-xl">AI Feedback</h2>
               <button
                 onClick={() => setIsFeedbackOpen(false)}
-                className="p-2 hover:bg-slate-50 rounded-full transition-colors"
+                className="p-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-full transition-colors"
               >
-                <X className="w-5 h-5 text-slate-400" />
+                <X className="w-5 h-5 text-slate-400 dark:text-slate-500" />
               </button>
             </div>
 
@@ -94,7 +100,7 @@ const SpeakingReview = () => {
                 </span>
               </div>
 
-              <div className="text-slate-600 text-[14px] leading-relaxed space-y-4 font-medium">
+              <div className="text-slate-600 dark:text-slate-300 text-[14px] leading-relaxed space-y-4 font-medium">
                 <p>
                   Your description is clear, natural, and easy to understand.
                   You used good vocabulary like{" "}
@@ -106,7 +112,7 @@ const SpeakingReview = () => {
                   <span className="text-[#6C5CE7]">"peaceful retreat."</span>
                 </p>
 
-                <p className="font-bold text-slate-800">
+                <p className="font-bold text-slate-800 dark:text-white">
                   To improve even more:
                 </p>
                 <ul className="list-disc pl-5 space-y-2">
@@ -116,8 +122,8 @@ const SpeakingReview = () => {
               </div>
             </div>
 
-            <div className="p-6 space-y-3 bg-slate-50/50">
-              <button className="w-full py-3 border-2 border-[#8B7EFF] text-[#8B7EFF] font-bold rounded-2xl text-sm hover:bg-white transition-all">
+            <div className="p-6 space-y-3 bg-slate-50/50 dark:bg-slate-800/50">
+              <button className="w-full py-3 border-2 border-[#8B7EFF] text-[#8B7EFF] font-bold rounded-2xl text-sm hover:bg-white dark:hover:bg-slate-800 transition-all">
                 Explanation
               </button>
               <button className="w-full py-3 bg-[#E8E4FF] text-[#6C5CE7] font-bold rounded-2xl text-sm hover:bg-[#DCD5FF] transition-all">

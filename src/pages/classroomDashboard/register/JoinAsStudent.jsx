@@ -20,7 +20,7 @@ const JoinAsStudent = ({ onBack }) => {
   };
 
   return (
-    <div className="bg-white dark:bg-slate-900 w-[380px] rounded-2xl shadow-xl px-8 py-7 dark:border dark:border-slate-800">
+    <div className="bg-white dark:bg-slate-900 w-full max-w-[380px] mx-4 rounded-2xl shadow-xl px-6 xxs:px-8 py-7 dark:border dark:border-slate-800">
       {/* Back */}
       <button onClick={onBack} className="text-sm text-purple-600 mb-4">
         ← Back

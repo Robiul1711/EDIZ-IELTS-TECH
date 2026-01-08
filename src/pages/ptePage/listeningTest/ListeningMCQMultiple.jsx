@@ -38,7 +38,7 @@ const ListeningMCQMultiple = () => {
   return (
     <div className="flex flex-col items-center gap-8 py-6 w-full max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 font-poppins">
       {/* Instruction Header Card */}
-      <div className="bg-white dark:bg-slate-900 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.06)] border border-gray-100 dark:border-slate-800 p-8 md:p-10 w-full max-w-3xl text-center ring-1 ring-black/5 dark:ring-slate-800">
+      <div className="bg-white dark:bg-slate-900 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.06)] border border-gray-100 dark:border-slate-800 p-6 xxs:p-8 md:p-10 w-full max-w-3xl text-center ring-1 ring-black/5 dark:ring-slate-800">
         <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white mb-6 tracking-tight">
           Multiple-choice, choose multiple answers
         </h1>
@@ -148,14 +148,17 @@ const ListeningMCQMultiple = () => {
       </div>
 
       {/* Action Footer */}
-      <div className="flex justify-between w-full mt-4">
-        <button className="bg-[#0F172A] dark:bg-slate-800 text-white px-10 py-4 text-lg shadow-xl rounded-2xl font-semibold flex items-center gap-3 transition-all hover:scale-[1.02] hover:shadow-2xl active:scale-95">
+      <div className="flex flex-col xs:flex-row justify-between w-full mt-4 gap-4">
+        <button className="bg-[#0F172A] dark:bg-slate-800 text-white px-8 xxs:px-10 py-4 text-base xxs:text-lg shadow-xl rounded-2xl font-semibold flex items-center justify-center gap-3 transition-all hover:scale-[1.02] hover:shadow-2xl active:scale-95 w-full xs:w-auto">
           <FileText size={22} className="text-gray-400 dark:text-slate-500" />{" "}
           Save & Exist
         </button>
 
-        <Link to="/pte-examination-listening/fill-in-blanks">
-          <button className="bg-gradient-to-r from-[#A22BDE] to-[#8673FF] text-white px-16 py-4 text-lg shadow-xl rounded-2xl font-semibold flex items-center justify-center gap-3 transition-all hover:scale-[1.02] hover:shadow-2xl active:scale-95">
+        <Link
+          to="/pte-examination-listening/fill-in-blanks"
+          className="w-full xs:w-auto"
+        >
+          <button className="bg-gradient-to-r from-[#A22BDE] to-[#8673FF] text-white px-8 xxs:px-16 py-4 text-base xxs:text-lg shadow-xl rounded-2xl font-semibold flex items-center justify-center gap-3 transition-all hover:scale-[1.02] hover:shadow-2xl active:scale-95 w-full">
             Next <MdDoubleArrow size={24} />
           </button>
         </Link>

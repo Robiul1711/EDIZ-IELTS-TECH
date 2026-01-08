@@ -15,7 +15,7 @@ const Register = () => {
     >
       {/* Selection Card */}
       {!joinAs && (
-        <div className="bg-white dark:bg-slate-900 w-[380px] rounded-2xl shadow-xl px-8 py-7 relative dark:border dark:border-slate-800">
+        <div className="bg-white dark:bg-slate-900 w-full max-w-[380px] mx-4 rounded-2xl shadow-xl px-6 xxs:px-8 py-7 relative dark:border dark:border-slate-800">
           <div className="absolute top-2 left-4">
             <Link to="/" className="text-sm  text-purple-600">
               ← Back

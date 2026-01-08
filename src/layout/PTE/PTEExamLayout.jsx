@@ -42,14 +42,14 @@ const PTEExamLayout = () => {
       </div>
 
       {/* Header: Question Info & Global Timer */}
-      <header className="z-10 w-full pt-10 px-4 md:px-10">
+      <header className="z-10 w-full pt-6 md:pt-10 px-4 md:px-10">
         <div className="max-w-7xl mx-auto flex flex-col items-center">
-          <div className="w-full flex justify-center items-center gap-8 mb-6">
-            <div className="text-lg font-bold text-gray-800 dark:text-white">
+          <div className="w-full flex justify-between xxs:justify-center items-center gap-4 md:gap-8 mb-6">
+            <div className="text-base md:text-lg font-bold text-gray-800 dark:text-white">
               {currentQuestion} Of {totalQuestions}
             </div>
-            <div className="flex items-center gap-2 text-lg font-bold text-gray-800 dark:text-white">
-              <Clock size={20} className="text-gray-600 dark:text-slate-400" />
+            <div className="flex items-center gap-2 text-base md:text-lg font-bold text-gray-800 dark:text-white">
+              <Clock className="w-4 h-4 md:w-5 md:h-5 text-gray-600 dark:text-slate-400" />
               {globalTime}
             </div>
           </div>

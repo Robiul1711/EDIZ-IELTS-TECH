@@ -70,19 +70,19 @@ const ExamRow = ({
 }) => {
   return (
     <div
-      className="bg-white border border-gray-200 rounded-lg px-6 py-4
+      className="bg-white dark:bg-gray-800 dark:text-white border border-gray-200 rounded-lg px-6 py-4
                  flex flex-wrap items-center justify-between gap-4"
     >
       {/* Index */}
-      <span className="text-sm text-gray-400 w-8">{index}</span>
+      <span className="text-sm text-gray-400 w-8 dark:text-gray-500">{index}</span>
 
       {/* Title */}
-      <span className="text-sm font-medium text-gray-800 flex-1 min-w-[200px]">
+      <span className="text-sm font-medium text-gray-800 flex-1 min-w-[200px] dark:text-white">
         {title}
       </span>
 
       {/* Date */}
-      <div className="flex items-center gap-2 text-sm text-gray-500">
+      <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
         <Calendar size={16} />
         {date}
       </div>
@@ -90,17 +90,17 @@ const ExamRow = ({
       {/* Duration */}
       <div className="flex items-center gap-2 text-sm">
         <Clock size={16} className="text-gray-500" />
-        <span className="text-gray-700">{duration}</span>
+        <span className="text-gray-700 dark:text-gray-400">{duration}</span>
         {active && (
-          <span className="text-red-500 ml-1">{timer}</span>
+          <span className="text-red-500 ml-1 dark:text-red-400">{timer}</span>
         )}
       </div>
 
       {/* Result Button */}
       {showResult && (
         <button
-          className="ml-auto h-10 px-6 rounded-xl text-white text-sm font-medium
-                     bg-[#0f172a] shadow-md hover:bg-[#020617] transition"
+          className="ml-auto h-10 px-6 rounded-xl text-white text-sm font-medium dark:text-black
+                     bg-[#0f172a] dark:text-white dark:bg-gray-700 shadow-md hover:bg-[#020617] dark:hover:bg-gray-600 transition"
         >
           Student Results
         </button>

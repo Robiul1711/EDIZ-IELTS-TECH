@@ -87,15 +87,15 @@ const StudentScoreDashboard = () => {
     <div className="w-full space-y-8 animate-in fade-in duration-500">
       {/* Top Level Toggle (IELTS/PTE) */}
       <div className="flex justify-center">
-        <div className="flex bg-white/80 backdrop-blur-sm rounded-2xl p-1.5 shadow-sm border border-slate-100">
+        <div className="flex bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-2xl p-1.5 shadow-sm border border-slate-100 dark:border-slate-800">
           {["IELTS", "PTE"].map((type) => (
             <button
               key={type}
               onClick={() => setExamType(type)}
               className={`px-10 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${
                 examType === type
-                  ? "bg-white shadow-md text-[#604CDF] border border-slate-50"
-                  : "text-slate-400 hover:text-slate-600"
+                  ? "bg-white dark:bg-slate-800 shadow-md text-[#604CDF] dark:text-white border border-slate-50 dark:border-slate-700"
+                  : "text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300"
               }`}
             >
               {type}
@@ -105,7 +105,7 @@ const StudentScoreDashboard = () => {
       </div>
 
       {/* Main Container */}
-      <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-50 overflow-hidden">
+      <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-sm border border-slate-50 dark:border-slate-800 overflow-hidden">
         {/* Uniform Pill Tab Switcher */}
         <div className="px-8 pt-8 pb-4 flex items-center gap-4">
           <button
@@ -113,7 +113,7 @@ const StudentScoreDashboard = () => {
             className={`px-6 py-2.5 rounded-full text-[13px] font-bold transition-all duration-300 ${
               activeTab === "section"
                 ? "bg-[#8B7EFF] text-white shadow-lg shadow-[#8B7EFF]/20"
-                : "text-slate-400 bg-slate-50 hover:bg-slate-100"
+                : "text-slate-400 dark:text-slate-500 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700"
             }`}
           >
             Section test scores
@@ -124,7 +124,7 @@ const StudentScoreDashboard = () => {
             className={`px-6 py-2.5 rounded-full text-[13px] font-bold transition-all duration-300 ${
               activeTab === "full"
                 ? "bg-[#8B7EFF] text-white shadow-lg shadow-[#8B7EFF]/20"
-                : "text-slate-400 bg-slate-50 hover:bg-slate-100"
+                : "text-slate-400 dark:text-slate-500 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700"
             }`}
           >
             Full test scores
@@ -132,14 +132,14 @@ const StudentScoreDashboard = () => {
         </div>
 
         {/* Divider */}
-        <div className="mx-8 border-b border-slate-100" />
+        <div className="mx-8 border-b border-slate-100 dark:border-slate-800" />
 
         {/* Dynamic Content List */}
-        <div className="px-8 pb-8 divide-y divide-slate-50">
+        <div className="px-8 pb-8 divide-y divide-slate-50 dark:divide-slate-800">
           {currentScores.map((item) => (
             <div
               key={item.id}
-              className="py-6 flex flex-col lg:flex-row lg:items-center justify-between gap-6 hover:bg-slate-50/50 transition-colors px-4 -mx-4 rounded-2xl"
+              className="py-6 flex flex-col lg:flex-row lg:items-center justify-between gap-6 hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-colors px-4 -mx-4 rounded-2xl"
             >
               <div className="flex items-center gap-5">
                 {/* Visual Icon */}
@@ -149,7 +149,7 @@ const StudentScoreDashboard = () => {
                   {item.icon}
                 </div>
                 <div>
-                  <h3 className="font-bold text-slate-700 text-lg">
+                  <h3 className="font-bold text-slate-700 dark:text-slate-200 text-lg">
                     {item.category}
                   </h3>
                   <p className="text-[13px] text-slate-400 font-medium">
@@ -165,7 +165,7 @@ const StudentScoreDashboard = () => {
                     {item.status}
                   </span>
                 ) : (
-                  <div className="px-5 py-2 bg-slate-50 text-slate-600 text-sm font-black rounded-xl border border-slate-100 min-w-[65px] text-center">
+                  <div className="px-5 py-2 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-sm font-black rounded-xl border border-slate-100 dark:border-slate-700 min-w-[65px] text-center">
                     {item.score}
                   </div>
                 )}
@@ -174,8 +174,8 @@ const StudentScoreDashboard = () => {
                 <div className="flex items-center gap-3">
                   <Link
                     to={getReviewPath(item.category, item.id)}
-                    className="px-7 py-2.5 bg-[#3E4555] text-white text-xs font-bold rounded-xl 
-             hover:bg-[#2D3440] transition-all active:scale-95 shadow-sm"
+                    className="px-7 py-2.5 bg-[#3E4555] dark:bg-slate-700 text-white text-xs font-bold rounded-xl 
+             hover:bg-[#2D3440] dark:hover:bg-slate-600 transition-all active:scale-95 shadow-sm"
                   >
                     Review
                   </Link>

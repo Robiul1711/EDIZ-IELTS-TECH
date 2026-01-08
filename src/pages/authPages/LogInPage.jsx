@@ -17,7 +17,7 @@ const LogInPage = () => {
   };
 
   return (
-    <div className="w-full max-w-sm bg-white dark:bg-slate-900 rounded-3xl overflow-hidden shadow-xl dark:shadow-slate-800/50">
+    <div className="w-full max-w-[90%] sm:max-w-sm md:max-w-md bg-white dark:bg-slate-900 rounded-3xl overflow-hidden shadow-xl dark:shadow-slate-800/50 mx-auto">
       {/* Header Section */}
       <div className="bg-gradient-to-b from-[#5D5FEF] to-[#705CF6] p-8 text-white">
         <p className="text-sm font-medium mb-1 opacity-90">
@@ -29,7 +29,7 @@ const LogInPage = () => {
       </div>
 
       {/* Body Section */}
-      <div className="p-8">
+      <div className="p-6 xxs:p-8">
         {/* Back Link */}
         <Link
           to="/auth"

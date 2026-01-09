@@ -52,7 +52,7 @@ const StudentDashboardSlide = () => {
         >
           {slideContent.map((item, index) => (
             <SwiperSlide key={index}>
-              <div className="flex h-full w-full items-center justify-end px-6  py-10">
+              <div className="flex h-full w-full items-center justify-end px-6 py-10">
                 {/* Content Box - Aligned to the right as per image */}
                 <div className="max-w-[500px] text-left md:text-left flex flex-col items-start gap-3">
                   <p className="text-white text-sm md:text-base font-medium opacity-90">

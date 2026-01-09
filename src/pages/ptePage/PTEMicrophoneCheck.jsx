@@ -65,30 +65,27 @@ const PTEMicrophoneCheck = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen items-center gap-6 md:gap-10 px-4 pb-10 font-poppins bg-[#FBFBFF] dark:bg-slate-950">
+    <div className="flex flex-col min-h-screen items-center gap-6 md:gap-10 px-4 pb-10 font-poppins bg-[#FBFBFF] dark:bg-slate-950 transition-colors duration-300">
       {/* Header */}
-      <h1 className="text-2xl md:text-3xl font-bold text-center mt-6 md:mt-10 dark:text-white">
+      <h1 className="text-2xl md:text-4xl font-bold text-center mt-6 md:mt-12 text-slate-900 dark:text-white">
         Microphone Check
       </h1>
-      <p className="text-[#555555] dark:text-slate-400 text-lg font-medium text-center -mt-4">
-        This Is An Opportunity To Check That Your Microphone Is Working
-        Correctly
+      <p className="text-slate-600 dark:text-slate-400 text-sm md:text-lg font-medium text-center -mt-4 max-w-md px-2">
+        This is an opportunity to check that your microphone is working
+        correctly.
       </p>
 
       {/* Record Answer Card */}
-      <div className="bg-white dark:bg-slate-900 rounded-xl shadow-lg p-6 md:p-8 w-full max-w-md flex flex-col items-center gap-6 border border-gray-100 dark:border-slate-800">
-        <h2 className="text-xl font-bold text-black dark:text-white">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl md:rounded-[2rem] shadow-xl md:shadow-2xl p-6 md:p-10 w-full max-w-md flex flex-col items-center gap-6 border border-gray-100 dark:border-slate-800">
+        <h2 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white">
           Record Answer
         </h2>
 
-        <div className="w-full text-left space-y-2">
-          <p className="text-gray-600 dark:text-slate-400 font-semibold">
-            Current Status:{" "}
-            <span className="text-black dark:text-slate-200 uppercase">
-              {status}
-            </span>
+        <div className="w-full text-left space-y-2 bg-gray-50 dark:bg-slate-800/50 p-4 rounded-xl">
+          <p className="text-gray-500 dark:text-slate-400 text-sm font-semibold uppercase tracking-wider">
+            Current Status
           </p>
-          <p className="text-black dark:text-white font-bold">
+          <p className="text-slate-900 dark:text-slate-200 font-bold text-lg md:text-xl">
             {status === "recording"
               ? "Recording Started..."
               : status === "playing"
@@ -99,12 +96,12 @@ const PTEMicrophoneCheck = () => {
           </p>
         </div>
 
-        {/* Progress Bar (Animate if recording or playing) */}
-        <div className="w-full h-2.5 bg-gray-100 dark:bg-slate-800 rounded-full overflow-hidden">
+        {/* Progress Bar */}
+        <div className="w-full h-3 bg-gray-100 dark:bg-slate-800 rounded-full overflow-hidden">
           <div
             className={`h-full bg-gradient-to-r from-[#A22BDE] to-[#8673FF] rounded-full transition-all duration-300 ${
               status === "recording" || status === "playing"
-                ? "w-full animate-pulse"
+                ? "w-full animate-pulse shadow-[0_0_15px_rgba(162,43,222,0.4)]"
                 : status === "completed"
                 ? "w-full"
                 : "w-0"
@@ -115,10 +112,10 @@ const PTEMicrophoneCheck = () => {
         {/* Controls */}
         <div className="grid grid-cols-3 gap-3 w-full">
           <button
-            className={`py-2.5 rounded-lg font-bold transition-all active:scale-95 text-sm ${
+            className={`py-3 md:py-4 rounded-xl font-bold transition-all active:scale-95 text-xs md:text-sm ${
               status === "recording" || status === "playing"
-                ? "bg-gray-300 dark:bg-slate-800 dark:text-slate-500 cursor-not-allowed"
-                : "bg-[#8673FF] text-white hover:opacity-90"
+                ? "bg-gray-200 dark:bg-slate-800 text-gray-400 dark:text-slate-600 cursor-not-allowed"
+                : "bg-indigo-600 text-white hover:bg-indigo-700 shadow-md shadow-indigo-100 dark:shadow-none"
             }`}
             onClick={startRecording}
             disabled={status === "recording" || status === "playing"}
@@ -126,10 +123,10 @@ const PTEMicrophoneCheck = () => {
             Record
           </button>
           <button
-            className={`py-2.5 rounded-lg font-bold transition-all active:scale-95 text-sm ${
+            className={`py-3 md:py-4 rounded-xl font-bold transition-all active:scale-95 text-xs md:text-sm ${
               !audioUrl || status === "playing"
-                ? "bg-gray-200 dark:bg-slate-800 dark:text-slate-500 text-gray-400 cursor-not-allowed"
-                : "bg-[#8673FF] text-white hover:opacity-90"
+                ? "bg-gray-100 dark:bg-slate-800 text-gray-300 dark:text-slate-600 cursor-not-allowed"
+                : "bg-indigo-600 text-white hover:bg-indigo-700 shadow-md shadow-indigo-100 dark:shadow-none"
             }`}
             onClick={playRecording}
             disabled={!audioUrl || status === "playing"}
@@ -137,10 +134,10 @@ const PTEMicrophoneCheck = () => {
             Playback
           </button>
           <button
-            className={`py-2.5 rounded-lg font-bold transition-all active:scale-95 text-sm ${
+            className={`py-3 md:py-4 rounded-xl font-bold transition-all active:scale-95 text-xs md:text-sm ${
               status !== "recording"
-                ? "bg-gray-200 dark:bg-slate-800 dark:text-slate-500 text-gray-400 cursor-not-allowed"
-                : "bg-[#C5B8FF] text-white hover:opacity-90"
+                ? "bg-gray-100 dark:bg-slate-800 text-gray-300 dark:text-slate-600 cursor-not-allowed"
+                : "bg-rose-500 text-white hover:bg-rose-600 shadow-md shadow-rose-100 dark:shadow-none"
             }`}
             onClick={stopRecording}
             disabled={status !== "recording"}
@@ -151,46 +148,44 @@ const PTEMicrophoneCheck = () => {
       </div>
 
       {/* Instructions */}
-      <ol className="list-decimal space-y-3 mt-4 text-base md:text-lg max-w-2xl px-6 dark:text-slate-300">
+      <ol className="list-decimal space-y-4 mt-4 text-sm md:text-base lg:text-lg max-w-2xl px-6 font-medium text-slate-700 dark:text-slate-300">
         <li>
-          Make sure your headset is on and the microphone is in the downward
-          position near your mouth.
+          Put on your headset and position the microphone downward near your
+          mouth.
         </li>
         <li>
-          When you are ready, click on the Record button and say "Testing,
-          testing, one, two, three" into the microphone
+          Click <strong>Record</strong> and say{" "}
+          <em>"Testing, testing, one, two, three"</em>.
         </li>
         <li>
-          After you have spoken, click on the Stop button. Your recording is now
-          complete
+          Click <strong>Stop</strong> once you're done speaking.
         </li>
         <li>
-          If you can not hear your voice clearly, please raise your hand to get
-          the attention of the Test Administrator
+          Click <strong>Playback</strong>. You should clearly hear your voice.
         </li>
         <li>
-          Now click on the Playback button. You should clearly hear yourself
-          speaking
+          If you can't hear yourself, please notify the Test Administrator
+          immediately.
         </li>
       </ol>
 
       {/* Action Buttons */}
-      <div className="flex flex-col-reverse md:flex-row gap-4 w-full md:w-auto mt-auto md:mt-0">
-        <button className="bg-black dark:bg-slate-800 text-white w-full md:w-auto px-8 py-4 text-lg shadow-lg rounded-lg font-semibold flex items-center justify-center gap-2 transition-transform active:scale-95">
+      <div className="flex flex-col-reverse md:flex-row gap-4 w-full md:w-auto mt-auto md:mt-6 px-4">
+        <button className="bg-slate-900 dark:bg-slate-800 text-white w-full md:w-auto px-10 py-4 text-base md:text-lg shadow-lg rounded-xl font-semibold flex items-center justify-center gap-2 transition-all hover:bg-slate-800 dark:hover:bg-slate-700 active:scale-95">
           <File size={20} /> Save & Exit
         </button>
 
-        <Link to="/pte/keyboard-check">
-          <button className="bg-[#A22BDE] text-white w-full md:w-auto px-16 py-4 text-lg shadow-lg rounded-lg font-semibold flex items-center justify-center gap-2 transition-transform active:scale-95">
+        <Link to="/pte/listening/keyboard-check" className="w-full md:w-auto">
+          <button className="bg-[#A22BDE] hover:bg-[#8e24c5] text-white w-full md:w-auto px-16 py-4 text-base md:text-lg shadow-lg rounded-xl font-semibold flex items-center justify-center gap-2 transition-all active:scale-95">
             Next <MdDoubleArrow />
           </button>
         </Link>
       </div>
 
       {/* Footer Disclaimer */}
-      <p className="text-center font-medium opacity-70 dark:text-slate-400">
-        In the actual test, you will not have Record, Playback, and Stop
-        buttons. The voice recording will start automatically.
+      <p className="text-center text-xs md:text-sm font-medium opacity-60 dark:text-slate-400 max-w-md px-4 mt-4">
+        Note: In the actual test, recording and playback start automatically.
+        Handlers will be deactivated.
       </p>
     </div>
   );

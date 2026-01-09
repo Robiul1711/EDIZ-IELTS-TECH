@@ -88,7 +88,7 @@ const FillinBlank2 = () => {
   );
 
   return (
-    <div className="flex flex-col items-center gap-8 py-6 w-full max-w-6xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 font-poppins">
+    <div className="flex flex-col items-center gap-8  w-full max-w-6xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 font-poppins">
       {/* Page Title */}
       <div className="w-full text-left">
         <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white mb-6">

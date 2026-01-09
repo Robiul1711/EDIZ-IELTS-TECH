@@ -51,16 +51,16 @@ const PTERetellLecture = () => {
     return (
         <div className="w-full flex flex-col items-center font-poppins">
             {/* Top Instruction Card */}
-            <div className="bg-white rounded-3xl shadow-lg p-8 md:p-10 w-full mb-10 border border-gray-50 flex flex-col gap-6 max-w-4xl">
-                <h2 className="text-2xl font-bold text-black">Re-tell lecture</h2>
+            <div className="bg-white    dark:bg-slate-900 rounded-3xl shadow-lg p-4 md:p-10 w-full mb-10 border border-gray-50 dark:border-slate-800 flex flex-col gap-6 max-w-4xl">
+                <h2 className="text-2xl font-bold text-black dark:text-white">Re-tell lecture</h2>
 
-                <div className="bg-[#FFFCE5] border border-yellow-200 rounded-xl p-4">
-                    <p className="text-base font-semibold text-black">
+                <div className="bg-[#FFFCE5]    dark:bg-slate-800 border border-yellow-200 rounded-xl p-4">
+                    <p className="text-base font-semibold text-black dark:text-white">
                         You have to finish this "Ray-Tel Lecture" within 40 seconds.
                     </p>
                 </div>
 
-                <div className="text-gray-700 text-base leading-relaxed space-y-2">
+                <div className="text-gray-700 dark:text-white text-base leading-relaxed space-y-2">
                     <p>
                         You will hear a lecture. After listening to the lecture, in 10 seconds, please speak into the microphone and retell what you have just heard from the lecture in your own words. You will have 40 seconds to give your response.
                     </p>
@@ -72,13 +72,13 @@ const PTERetellLecture = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full mb-12 max-w-7xl">
 
                 {/* Left Card: Audio Standby / Preparation */}
-                <div className="bg-white rounded-3xl shadow-xl p-8 border border-gray-50 flex flex-col items-center gap-6">
-                    <div className="w-full py-16 flex flex-col items-center justify-center gap-6 border border-gray-100 rounded-[2rem]">
+                <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-xl p-4 border border-gray-50 dark:border-slate-800 flex flex-col items-center gap-6">
+                    <div className="w-full py-16 flex flex-col items-center justify-center gap-6 border border-gray-100 dark:border-slate-800 rounded-[2rem]">
                         <div className="bg-[#F0F2F5] p-6 rounded-full text-gray-400">
                             <MicOff size={32} />
                         </div>
                         <div className="text-center space-y-1">
-                            <h3 className="text-xl font-bold text-black">Audio Recorder</h3>
+                            <h3 className="text-xl font-bold text-black dark:text-white">Audio Recorder</h3>
                             <p className="text-gray-500 font-medium text-base">
                                 Recording will begin automatically
                             </p>
@@ -105,8 +105,8 @@ const PTERetellLecture = () => {
                 </div>
 
                 {/* Right Card: Active Recording */}
-                <div className="bg-white rounded-3xl shadow-xl p-8 border border-gray-50 flex flex-col items-center gap-6">
-                    <div className="w-full py-16 flex flex-col items-center justify-center gap-6 border border-gray-100 rounded-[2rem]">
+                <div className="bg-white dark:bg-slate-900 rounded  -3xl shadow-xl p-4 border border-gray-50 dark:border-slate-800 flex flex-col items-center gap-6">
+                    <div className="w-full py-16 flex flex-col items-center justify-center gap-6 border border-gray-100 dark:border-slate-800 rounded-[2rem]">
                         {status === 'recording' ? (
                             <div className="w-12 h-12 bg-black rounded-full shadow-lg ring-4 ring-gray-100"></div>
                         ) : (
@@ -114,7 +114,7 @@ const PTERetellLecture = () => {
                         )}
 
                         <div className="text-center space-y-4">
-                            <h3 className="text-xl font-bold text-black">Audio Recorder</h3>
+                            <h3 className="text-xl font-bold text-black dark:text-white">Audio Recorder</h3>
                             {status === 'recording' && <Waveform />}
                             <p className={`text-base font-semibold ${status === 'recording' ? 'text-[#8673FF]' : 'text-gray-500'}`}>
                                 {status === 'recording' ? 'Recording.......' : status === 'finished' ? 'Completed' : 'Standby'}
@@ -124,14 +124,14 @@ const PTERetellLecture = () => {
 
                     {/* Progress Bar Footer */}
                     <div className="w-full flex items-center gap-4 pt-4">
-                        <div className={`p-2 rounded-full ${status === 'recording' ? 'bg-[#101828] text-white' : 'bg-gray-50 text-gray-400'}`}>
+                        <div className={`p-2 rounded-full ${status === 'recording' ? 'bg-[#101828] text-white' : 'bg-gray-50 dark:bg-slate-800 text-gray-400'}`}>
                             <Mic size={20} />
-                        </div>
+                            </div>
                         <div className="flex-1 flex flex-col gap-1">
                             <div className="flex justify-between text-sm font-bold text-gray-500">
                                 <span>{`00:${recordTimer < 10 ? '0' + recordTimer : recordTimer}`} / 00:10</span>
                             </div>
-                            <div className="w-full h-2.5 bg-gray-100 rounded-full overflow-hidden">
+                            <div className="w-full h-2.5 bg-gray-100 dark:bg-slate-800 rounded-full overflow-hidden">
                                 <div
                                     className={`h-full bg-[#A22BDE] rounded-full transition-all duration-1000 ease-linear shadow-[0_0_8px_rgba(162,43,222,0.4)]`}
                                     style={{ width: `${(recordTimer / 10) * 100}%` }}

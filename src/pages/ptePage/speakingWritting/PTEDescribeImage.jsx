@@ -71,13 +71,13 @@ const PTEDescribeImage = () => {
     }, [prepTimer, isRecording, recordTimer]);
 
     return (
-        <div className="w-full flex flex-col items-center">
+        <div className="w-full  flex flex-col items-center">
             {/* Main Content: Dual Cards */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 w-full mb-12">
+            <div className="grid grid-cols-1  lg:grid-cols-2 gap-10 w-full mb-12">
 
                 {/* Left Card: Instructions */}
-                <div className="bg-white rounded-3xl shadow-xl p-8 md:p-10 flex flex-col gap-6 border border-gray-50">
-                    <h2 className="text-2xl font-bold text-black">Describe image</h2>
+                <div className="bg-white dark:bg-slate-900 dark:border-slate-800 rounded-3xl shadow-xl p-4 md:p-10 flex flex-col gap-6 border border-gray-50">
+                    <h2 className="text-2xl font-bold text-black dark:text-white">Describe image</h2>
 
                     <div className="bg-[#FFFCE5] border border-yellow-200 rounded-xl p-4">
                         <p className="text-base font-semibold text-black">
@@ -99,8 +99,8 @@ const PTEDescribeImage = () => {
                 </div>
 
                 {/* Right Card: Audio Recorder */}
-                <div className="bg-white rounded-3xl shadow-xl p-8 md:p-12 flex flex-col items-center justify-between border border-gray-50 min-h-[450px]">
-                    <div className="w-full flex flex-col items-center gap-8 py-8 px-6 border border-gray-100 rounded-[2rem]">
+                <div className="bg-white dark:bg-slate-900 dark:border-slate-800 rounded-3xl shadow-xl p-4 md:p-12 flex flex-col items-center justify-between border border-gray-50 min-h-[450px]">
+                    <div className="w-full flex flex-col items-center gap-8 py-8 px-6 border dark:border-gray-800 border-gray-100 rounded-[2rem]">
 
                         {/* Prep Timer Circle */}
                         {!isFinished ? (
@@ -116,7 +116,7 @@ const PTEDescribeImage = () => {
                         )}
 
                         <div className="text-center space-y-2">
-                            <h3 className="text-xl font-bold text-black">Audio Recorder</h3>
+                            <h3 className="text-xl font-bold text-black dark:text-white">Audio Recorder</h3>
                             <p className="text-gray-500 font-medium text-base">
                                 {isRecording ? "Recording..." : isFinished ? "Recording finished" : "Recording will begin automatically"}
                             </p>

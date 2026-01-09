@@ -51,22 +51,22 @@ const PTERespondSituation = () => {
     return (
         <div className="w-full flex flex-col items-center font-poppins">
             {/* Top Instruction Card */}
-            <div className="bg-white rounded-3xl shadow-lg p-8 md:p-10 w-full mb-10 border border-gray-50 flex flex-col gap-6 max-w-4xl">
-                <h2 className="text-2xl font-bold text-black">Respond to a situation</h2>
+            <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-lg p-8 md:p-10 w-full mb-10 border border-gray-50 dark:border-slate-800 flex flex-col gap-6 max-w-4xl">
+                <h2 className="text-2xl font-bold text-black dark:text-white">Respond to a situation</h2>
 
-                <div className="bg-[#FFFCE5] border border-yellow-200 rounded-xl p-4">
-                    <p className="text-base font-semibold text-black">
+                <div className="bg-[#FFFCE5] dark:bg-slate-800 border border-yellow-200 dark:border-yellow-800 rounded-xl p-4">
+                    <p className="text-base font-semibold text-black dark:text-white">
                         You have 10 Seconds to prepare and 40 Seconds to record.
                     </p>
                 </div>
 
-                <div className="text-gray-700 text-base leading-relaxed space-y-2">
+                <div className="text-gray-700 dark:text-white text-base leading-relaxed space-y-2">
                     <p>
                         Listen to and read a description ofa situation. You will have 10 seconds to think about your answer. Then you will hear beep. You will have 40 seconds to answer the question. Please answer as completely as you can.
                     </p>
                 </div>
 
-                <div className="text-gray-700 text-base leading-relaxed space-y-2">
+                <div className="text-gray-700 dark:text-white text-base leading-relaxed space-y-2">
                     <p>
                         You are a university student working on a research project for a history course, but a book you need for your research is only available at the library of a different university.
                     </p>
@@ -80,13 +80,13 @@ const PTERespondSituation = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full mb-12 max-w-7xl">
 
                 {/* Left Card: Audio Standby / Preparation */}
-                <div className="bg-white rounded-3xl shadow-xl p-8 border border-gray-50 flex flex-col items-center gap-6">
-                    <div className="w-full py-16 flex flex-col items-center justify-center gap-6 border border-gray-100 rounded-[2rem]">
-                        <div className="bg-[#F0F2F5] p-6 rounded-full text-gray-400">
+                <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-xl p-4 border border-gray-50 dark:border-slate-800 flex flex-col items-center gap-6">
+                    <div className="w-full py-16 flex flex-col items-center justify-center gap-6 border border-gray-100 dark:border-slate-800 rounded-[2rem]">
+                        <div className="bg-[#F0F2F5] dark:bg-slate-800 p-6 rounded-full text-gray-400">
                             <MicOff size={32} />
                         </div>
                         <div className="text-center space-y-1">
-                            <h3 className="text-xl font-bold text-black">Audio Recorder</h3>
+                            <h3 className="text-xl font-bold text-black dark:text-white">Audio Recorder</h3>
                             <p className="text-gray-500 font-medium text-base">
                                 Recording will begin automatically
                             </p>
@@ -113,16 +113,16 @@ const PTERespondSituation = () => {
                 </div>
 
                 {/* Right Card: Active Recording */}
-                <div className="bg-white rounded-3xl shadow-xl p-8 border border-gray-50 flex flex-col items-center gap-6">
-                    <div className="w-full py-16 flex flex-col items-center justify-center gap-6 border border-gray-100 rounded-[2rem]">
+                <div className="bg-white    dark:bg-slate-900 rounded-3xl shadow-xl p-8 border border-gray-50 dark:border-slate-800 flex flex-col items-center gap-6">
+                    <div className="w-full py-16 flex flex-col items-center justify-center gap-6 border border-gray-100 dark:border-slate-800 rounded-[2rem]">
                         {status === 'recording' ? (
                             <div className="w-12 h-12 bg-black rounded-full shadow-lg ring-4 ring-gray-100"></div>
                         ) : (
-                            <div className="w-12 h-12 border-4 border-gray-200 rounded-full"></div>
+                            <div className="w-12 h-12 border-4 border-gray-200 dark:border-slate-800 rounded-full"></div>
                         )}
 
                         <div className="text-center space-y-4">
-                            <h3 className="text-xl font-bold text-black">Audio Recorder</h3>
+                            <h3 className="text-xl font-bold text-black dark:text-white ">Audio Recorder</h3>
                             {status === 'recording' && <Waveform />}
                             <p className={`text-base font-semibold ${status === 'recording' ? 'text-[#8673FF]' : 'text-gray-500'}`}>
                                 {status === 'recording' ? 'Recording.......' : status === 'finished' ? 'Completed' : 'Standby'}

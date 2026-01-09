@@ -2,6 +2,7 @@ import GridBackgroundView from "@/components/common/GridBackgroundView";
 import Footer from "@/shared/footer/Footer";
 import Navbar from "@/shared/navbar/Navbar";
 import { Outlet } from "react-router-dom";
+import ScrollToTop from "@/components/common/ScrollToTop";
 
 const Layout = () => {
   return (
@@ -17,6 +18,9 @@ const Layout = () => {
         <Outlet />
       </main>
       <Footer />
+
+      {/* Global Scroll to Top Button */}
+      <ScrollToTop />
     </div>
   );
 };

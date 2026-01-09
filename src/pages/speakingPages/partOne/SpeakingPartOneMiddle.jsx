@@ -3,7 +3,7 @@ import { Mic } from "lucide-react";
 
 const SpeakingPartOneMiddle = () => {
   return (
-    <div className="min-h-screen section-padding-x py-10 dark:bg-slate-950">
+    <div className="min-h-screen section-padding-x py-6 md:py-10 dark:bg-slate-950">
       {/* Header */}
       <div className=" mb-6">
         <div className="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-800 px-6 py-4 text-sm sm:text-base text-gray-700 dark:text-slate-300">

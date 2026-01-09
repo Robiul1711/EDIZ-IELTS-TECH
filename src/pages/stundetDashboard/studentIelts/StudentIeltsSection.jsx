@@ -44,10 +44,10 @@ const IELTSCategory = [
 
 const StudentIeltsSection = () => {
   return (
-    <div className=" py-12  w-full">
+    <div className=" md:py-12  w-full">
       {/* Full Test Banner */}
       <Link to="/ielts/full-test" className="group block w-full">
-        <div className="p-10 rounded lg:rounded-2xl  bg-[#E2E2E2] hover:bg-gray-200 transition-all duration-300 flex items-center justify-between gap-6 relative overflow-hidden shadow-sm hover:shadow-md">
+        <div className="p-6 md:p-10 rounded lg:rounded-2xl  bg-[#E2E2E2] hover:bg-gray-200 transition-all duration-300 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden shadow-sm hover:shadow-md">
           <div className="z-10">
             <h1 className="text-3xl md:text-4xl font-bold text-[#334156] transition-colors">
               Full Test
@@ -68,7 +68,7 @@ const StudentIeltsSection = () => {
       </Link>
 
       {/* Categories Grid */}
-      <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
         {IELTSCategory.map((category) => (
           <Link
             to={category.link}
@@ -76,7 +76,7 @@ const StudentIeltsSection = () => {
             className="group relative block"
           >
             <div
-              className="p-10 h-full rounded lg:rounded-2xl flex items-center justify-between gap-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+              className="p-6 md:p-10 h-full rounded lg:rounded-2xl flex items-center justify-between gap-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
               style={{ backgroundColor: category.bg }}
             >
               <div className="flex flex-col justify-center">

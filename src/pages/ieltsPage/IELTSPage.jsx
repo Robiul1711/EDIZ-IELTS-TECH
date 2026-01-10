@@ -9,7 +9,7 @@ const IELTSCategory = [
     name: "Reading",
     title: "",
     image: ImageAssets.R,
-    link: "/ielts",
+    link: "/reading",
     bg: "#B6A4FF",
     color: "#6144D8",
   },

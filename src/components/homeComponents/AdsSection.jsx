@@ -60,7 +60,7 @@ const AdsSection = () => {
         {/* Left Section - Purple */}
         <div
           ref={leftSectionRef}
-          className="bg-[#604CDF] p-8 md:p-12 lg:p-16 rounded-l-3xl shadow-sm text-white flex-1 flex flex-col justify-center"
+          className="bg-[#604CDF] p-8 md:p-12 lg:p-16 md:rounded-l-3xl shadow-sm text-white flex-1 flex flex-col justify-center"
         >
           <div ref={contentRef}>
             <div className="w-12 h-1 bg-white mb-6 rounded-full"></div>
@@ -80,7 +80,7 @@ const AdsSection = () => {
         {/* Right Section - Light Purple/Placeholder */}
         <div
           ref={rightSectionRef}
-          className="bg-[#F5F3FF] p-8 md:p-12 lg:p-16 flex-1 flex items-center rounded-r-3xl shadow-sm justify-center relative min-h-[300px]"
+          className="bg-[#F5F3FF] p-8 md:p-12 lg:p-16 flex-1 flex items-center md:rounded-r-3xl shadow-sm justify-center relative min-h-[300px]"
         >
           {/* Placeholder Icon (simulated with svg) */}
           <div className="text-[#604CDF]/10">

@@ -161,7 +161,7 @@ const PricingSection = () => {
   );
 
   return (
-    <section
+    <section id="pricing"
       ref={containerRef}
       className="bg-[#F3F0FF]/80 dark:bg-[#1A1A1A]/80  section-padding-x my-20 "
     >
@@ -171,7 +171,7 @@ const PricingSection = () => {
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4 max-w-5xl mx-auto">
             Transparent pricing, built for every {activeTab} learner
           </h2>
-          <p className="text-[#5D5D75] max-w-2xl mx-auto">
+          <p className="text-[#5D5D75]  max-w-2xl mx-auto">
             Flexible plans tailored to your goals clear, simple, and
             result-focused.
           </p>

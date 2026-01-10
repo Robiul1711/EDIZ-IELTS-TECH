@@ -15,19 +15,19 @@ const StudentDashboardSlide = () => {
       subtitle: "Get ready in advance",
       title: "Get yourself prepared ahead of time by taking 2026 free mock test",
       buttonText: "Get free mock test",
-      link: "/mock-test"
+      link: "/ielts"
     },
     {
       subtitle: "Master your skills",
       title: "Unlock premium resources to boost your IELTS score today",
       buttonText: "View Resources",
-      link: "/resources"
+      link: "/student-dashboard"
     },
     {
       subtitle: "Track your progress",
       title: "Analyze your performance with our advanced 2026 dashboard",
       buttonText: "Check Progress",
-      link: "/scores"
+      link: "/student-dashboard"
     }
   ];
 

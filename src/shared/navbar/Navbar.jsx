@@ -37,26 +37,32 @@ const Navbar = () => {
       >
         <div className="flex items-center justify-between py-3">
           <Link to="/">
-            <img src={ImageAssets.logo} alt="Logo" className="dark:invert w-24 sm:w-28 md:w-auto" />
+            <img
+              src={ImageAssets.logo}
+              alt="Logo"
+              className="dark:invert w-24 sm:w-28 md:w-auto"
+            />
           </Link>
 
           <div className="flex gap-5 items-center">
             {/* Theme Toggle Button - Slider Style */}
             <button
               onClick={toggleTheme}
-              className="relative w-20 h-10 rounded-full bg-gradient-to-r from-purple-600 to-indigo-700 p-1 transition-all duration-300 hover:shadow-lg flex items-center"
+              className="relative w-16 sm:w-20 h-8 sm:h-10 rounded-full bg-gradient-to-r from-purple-600 to-indigo-700 p-1 transition-all duration-300 hover:shadow-lg flex items-center overflow-hidden"
               aria-label="Toggle theme"
             >
               {/* Sliding Circle Indicator */}
               <div
-                className={`absolute w-8 h-8 rounded-full bg-white shadow-md transform transition-all duration-300 flex items-center justify-center ${
-                  theme === "light" ? "translate-x-0" : "translate-x-10"
+                className={`absolute w-6 sm:w-8 h-6 sm:h-8 rounded-full bg-white shadow-md transform transition-all duration-300 flex items-center justify-center z-10 ${
+                  theme === "light"
+                    ? "translate-x-0"
+                    : "translate-x-8 sm:translate-x-10"
                 }`}
               >
                 {/* Active Icon inside the circle */}
                 {theme === "light" ? (
                   <svg
-                    className="w-5 h-5 text-yellow-500"
+                    className="w-3.5 sm:w-5 h-3.5 sm:h-5 text-yellow-500"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >
@@ -68,7 +74,7 @@ const Navbar = () => {
                   </svg>
                 ) : (
                   <svg
-                    className="w-5 h-5 text-indigo-700"
+                    className="w-3.5 sm:w-5 h-3.5 sm:h-5 text-indigo-700"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >
@@ -78,9 +84,9 @@ const Navbar = () => {
               </div>
 
               {/* Background Icons */}
-              <div className="w-full flex items-center justify-between px-2 relative z-0">
+              <div className="w-full flex items-center justify-between px-1.5 sm:px-2 relative z-0">
                 <svg
-                  className="w-4 h-4 text-white/70"
+                  className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-white/70"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                 >
@@ -91,7 +97,7 @@ const Navbar = () => {
                   />
                 </svg>
                 <svg
-                  className="w-4 h-4 text-white/70"
+                  className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-white/70"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                 >
@@ -101,9 +107,18 @@ const Navbar = () => {
             </button>
 
             <div className="hidden md:flex gap-4 items-center">
-              <button className="px-8 py-3 dark:text-white bg-custom text-primary-foreground  rounded-full font-semibold hover:opacity-90 transition-opacity shadow-md">
+              <Link
+                to="/"
+                onClick={() =>
+                  window.scrollTo({
+                    top: document.getElementById("pricing").offsetTop,
+                    behavior: "smooth",
+                  })
+                }
+                className="px-8 py-3 dark:text-white bg-custom text-primary-foreground  rounded-full font-semibold hover:opacity-90 transition-opacity shadow-md"
+              >
                 Purchase
-              </button>
+              </Link>
               <Link
                 to="/auth"
                 className="px-8 py-3 dark:text-white hover:opacity-90 duration-300  dark:bg-Primary   bg-primary font-semibold  text-white hover:text-black  border rounded-full hover:bg-accent transition-colors"

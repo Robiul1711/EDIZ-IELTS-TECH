@@ -44,7 +44,7 @@ const StudentDashboardInfo = () => {
 
           <div className="flex-1 p-6 flex flex-col justify-center">
             <div className="flex justify-between items-center mb-4">
-              <span className="text-lg font-bold text-slate-700">
+              <span className="text-lg font-bold text-slate-700 dark:text-slate-300">
                 Set Exam Date
               </span>
               <Edit3 size={18} className="text-[#635BFF] cursor-pointer" />

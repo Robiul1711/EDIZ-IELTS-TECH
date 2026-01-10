@@ -1,6 +1,7 @@
 import StudentDashboardInfo from "@/components/studentDashboard/StudentDashboardInfo";
 import StudentDashboardSlide from "@/components/studentDashboard/StudentDashboardSlide";
 import TestSection from "@/components/studentDashboard/TestSection";
+import VideosSection from "@/components/studentDashboard/VideosSection";
 import React from "react";
 
 const StudentDashboard = () => {
@@ -9,6 +10,7 @@ const StudentDashboard = () => {
       <StudentDashboardSlide />
       <StudentDashboardInfo />
       <TestSection/>
+      <VideosSection/>
     </div>
   );
 };

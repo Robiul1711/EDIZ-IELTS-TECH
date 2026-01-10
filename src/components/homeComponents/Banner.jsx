@@ -67,26 +67,26 @@ const Banner = () => {
   );
 
   return (
-    <div ref={containerRef} className="section-padding-x section-padding-y">
+    <div ref={containerRef} className="section-padding-x section-padding-y mb-10 sm:mb-0">
       <div
         ref={iconsRef}
-        className="flex justify-center gap-10 lg:gap-20 flex-wrap"
+        className="flex justify-center gap-8 sm:gap-10 lg:gap-20 flex-wrap"
       >
         <Link to="/ielts" className="flex items-center gap-2 md:gap-3 group">
           <img
             src={ImageAssets.I}
-            className="w-12 md:w-20 group-hover:rotate-12 duration-300"
+            className="w-8 sm:w-12 md:w-20 group-hover:rotate-12 duration-300"
             alt="IELTS"
           />
-          <p className="text-2xl md:text-5xl font-bold">IELTS</p>
+          <p className=" sm:text-2xl md:text-5xl font-bold">IELTS</p>
         </Link>
         <Link to={"/pte"} className="flex items-center gap-2 md:gap-3 group">
           <img
             src={ImageAssets.P}
-            className="w-12 md:w-20 group-hover:rotate-12 duration-300"
+            className="w-8 sm:w-12 md:w-20 group-hover:rotate-12 duration-300"
             alt="PTE"
           />
-          <p className="text-2xl md:text-5xl font-bold">PTE</p>
+          <p className=" sm:text-2xl md:text-5xl font-bold">PTE</p>
         </Link>
         <Link
           to="/classroom"
@@ -94,10 +94,10 @@ const Banner = () => {
         >
           <img
             src={ImageAssets.C}
-            className="w-12 md:w-20 group-hover:rotate-12 duration-300"
+            className="w-8 sm:w-12 md:w-20 group-hover:rotate-12 duration-300"
             alt="Classroom"
           />
-          <p className="text-2xl md:text-5xl font-bold">CLASSROOM</p>
+          <p className=" sm:text-2xl md:text-5xl font-bold">CLASSROOM</p>
         </Link>
       </div>
 
@@ -116,18 +116,18 @@ const Banner = () => {
                 <p className="text-lg mb-2 text-white font-bold tracking-wide uppercase opacity-90">
                   Get ready in advance
                 </p>
-                <h2 className="text-white text-2xl md:text-3xl lg:text-5xl font-bold mb-6 md:mb-8 leading-snug md:leading-tight">
+                <h2 className="text-white  sm:text-2xl md:text-3xl lg:text-5xl font-bold mb-6 md:mb-8 leading-snug md:leading-tight">
                   Get yourself prepared ahead of time by taking 2026 free mock
                   tests
                 </h2>
               </div>
-              <button className="bg-white text-purple-600 px-8 py-4 rounded-xl font-bold text-lg hover:bg-purple-50 hover:scale-105 transition-all duration-300 shadow-lg">
+              <Link to="/student-dashboard" className="bg-white text-purple-600 px-8 py-3 sm:py-4 rounded-xl font-bold text-lg hover:bg-purple-50 hover:scale-105 transition-all duration-300 shadow-lg">
                 Get free mock test
-              </button>
+              </Link>
             </div>
           </div>
         </div>
-        <div className="absolute right-4 bottom-4 md:-bottom-14 md:right-0 z-10 flex flex-col items-end gap-4">
+        <div className="absolute right-4  md:-bottom-14 md:right-0 z-10 flex flex-col items-end gap-4">
           {isChatOpen && (
             <div className="mb-2">
               <ChatBox onClose={() => setIsChatOpen(false)} />

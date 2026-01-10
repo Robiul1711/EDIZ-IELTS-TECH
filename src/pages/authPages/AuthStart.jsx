@@ -1,3 +1,4 @@
+import NavigationButton from "@/components/common/NavigationButton";
 import React from "react";
 import { Link } from "react-router-dom";
 
@@ -7,6 +8,9 @@ const AuthStart = () => {
     <div className="w-full max-w-sm bg-white dark:bg-slate-900 rounded-[32px] overflow-hidden shadow-2xl border border-transparent dark:border-slate-800">
       {/* Header Section */}
       <div className="bg-[#604CDF] p-8 pb-10">
+      <div className="flex items-center justify-end">
+        <NavigationButton href="/" label="Back" />
+      </div>
         <p className="text-white/90 text-sm mb-2 font-medium">
           No Payment Required
         </p>

@@ -49,12 +49,12 @@ const ChooseExamList = () => {
 
       {/* Full Test Banner */}
       <Link to="/ielts/full-test" className="group block w-full">
-        <div className="p-10 rounded lg:rounded-2xl  bg-[#E2E2E2] hover:bg-gray-200 transition-all duration-300 flex items-center justify-between gap-6 relative overflow-hidden shadow-sm hover:shadow-md">
+        <div className="p-10 rounded lg:rounded-2xl  bg-[#E2E2E2] hover:bg-gray-200 transition-all duration-300 flex dark:bg-slate-800 flex-col md:flex-row dark:hover:bg-slate-700 items-center justify-between gap-6 relative overflow-hidden shadow-sm hover:shadow-md">
           <div className="z-10">
-            <h1 className="text-3xl md:text-4xl font-bold text-[#334156] transition-colors">
+            <h1 className="text-3xl md:text-4xl font-bold text-[#334156] transition-colors dark:text-white">
               Full Test
             </h1>
-            <p className="text-gray-500 mt-2 font-medium">
+            <p className="text-gray-500 mt-2 font-medium dark:text-gray-400">
               Take a complete mock exam
             </p>
           </div>

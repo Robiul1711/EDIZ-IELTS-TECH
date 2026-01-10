@@ -23,7 +23,7 @@ const TestCard = ({ title, count, colorClass, imagePlaceholder }) => {
         <img
           src={imagePlaceholder}
           alt={title}
-          className=" object-contain relative z-10 drop-shadow-2xl"
+          className=" object-contain relative z-10 drop-shadow-2xl w-full "
         />
       </div>
 

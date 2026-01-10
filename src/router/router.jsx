@@ -59,12 +59,22 @@ import Report from "@/pages/classroomDashboard/studentClassRoom/Report";
 import ExamHistory from "@/pages/classroomDashboard/studentClassRoom/ExamHistory";
 import SpeakingWritingPTELayout from "@/layout/PTE/SpeakingWritingPTELayout";
 import PTEHomePage from "@/pages/ptePage/PTEHomePage";
-import { pteExaminationListeningRoutes, pteExaminationReadingRoutes, pteExaminationSpeakingWrittingRoutes, pteRoutes } from "./PTErouter";
+import {
+  pteExaminationListeningRoutes,
+  pteExaminationReadingRoutes,
+  pteExaminationSpeakingWrittingRoutes,
+  pteRoutes,
+} from "./PTErouter";
 // import { pteRoutes } from "@/lib/ImageProvider";
 import WritingReview from "@/pages/stundetDashboard/review/WritingReview";
 import SpeakingReview from "@/pages/stundetDashboard/review/SpeakingReview";
 import ListeningReview from "@/pages/stundetDashboard/review/ListeningReview";
 import ReadingReview from "@/pages/stundetDashboard/review/ReadingReview";
+import PrivacyPolicy from "@/pages/legal/PrivacyPolicy";
+import TermsAndConditions from "@/pages/legal/TermsAndConditions";
+import Profile from "@/pages/stundetDashboard/Profile";
+import HomeWork from "@/pages/classroomDashboard/teacherClassRoom/HomeWork";
+import HomeWorkDetails from "@/pages/classroomDashboard/teacherClassRoom/HomeWorkDetails";
 
 const router = createBrowserRouter([
   // Auth routes
@@ -89,7 +99,8 @@ const router = createBrowserRouter([
       { index: true, element: <Home /> },
       { path: "ielts", element: <IELTSPage /> },
       { path: "pte", element: <PTEHomePage /> },
-
+      { path: "privacy-policy", element: <PrivacyPolicy /> },
+      { path: "terms-and-conditions", element: <TermsAndConditions /> },
     ],
   },
 
@@ -113,7 +124,6 @@ const router = createBrowserRouter([
       { index: true, element: <IELTSAcademicWriting /> },
       { path: "part1", element: <WritingPartOne /> },
       { path: "part2", element: <WritingPartTwo /> },
-
     ],
   },
   //speaking routes can be added here
@@ -124,7 +134,6 @@ const router = createBrowserRouter([
       { index: true, element: <IELTSAcademicSpeaking /> },
       { path: "part1", element: <SpeakingPartOneMain /> },
       { path: "part2", element: <SpeakingPartTwoMain /> },
-
     ],
   },
   //Reading routes
@@ -135,16 +144,13 @@ const router = createBrowserRouter([
       { index: true, element: <IELTSAcademicReading /> },
       { path: "part1", element: <ReadingPartOneMain /> },
       { path: "part2", element: <ReadingPartTwoMain /> },
-
     ],
   },
   // Admin routes
   {
     path: "/dashboard",
     element: <AdminLayout />,
-    children: [
-      { index: true, element: <Dashboard /> },
-    ],
+    children: [{ index: true, element: <Dashboard /> }],
   },
   {
     path: "/student-dashboard",
@@ -159,6 +165,7 @@ const router = createBrowserRouter([
       { path: "pte", element: <StudentPteCourse /> },
       { path: "classroom", element: <StudentClassRoom /> },
       { path: "score", element: <StudentScoreDashboard /> },
+      { path: "profile", element: <Profile /> },
       { path: "reading-review/:id", element: <ReadingReview /> },
       { path: "writing-review/:id", element: <WritingReview /> },
       { path: "speaking-review/:id", element: <SpeakingReview /> },
@@ -169,11 +176,7 @@ const router = createBrowserRouter([
   {
     path: "/classroom",
     element: <Register />,
-    children: [
-      { index: true, element: <Register /> },
-
-
-    ],
+    children: [{ index: true, element: <Register /> }],
   },
   {
     path: "/classroom/register-as-teacher",
@@ -181,6 +184,8 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <TeacherDashboard /> },
       { path: "exams", element: <Exams /> },
+      { path: "home-work", element: <HomeWork /> },
+      { path: "home-work/:id", element: <HomeWorkDetails /> },
       { path: "student-list", element: <StudentList /> },
       { path: "select-exam", element: <SelectExamType /> },
       { path: "choose-exam-list-ielts", element: <ChooseExamList /> },
@@ -189,8 +194,6 @@ const router = createBrowserRouter([
       { path: "exam-completed", element: <ExamSuccessfullyCompleted /> },
       { path: "grading", element: <GradingProgess /> },
       { path: "results", element: <StudentsResults /> },
-
-
     ],
   },
   // StudentDashboard routes
@@ -207,12 +210,9 @@ const router = createBrowserRouter([
   pteRoutes,
   pteExaminationSpeakingWrittingRoutes,
   pteExaminationReadingRoutes,
-  pteExaminationListeningRoutes
+  pteExaminationListeningRoutes,
 ]);
 
-
-// PTE related routes can be added here 
-
-
+// PTE related routes can be added here
 
 export default router;

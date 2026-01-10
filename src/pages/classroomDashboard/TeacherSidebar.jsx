@@ -4,12 +4,14 @@ import { X } from "lucide-react";
 import {
   DashboardIcon,
   ExamIcon,
+  HomeWorkIcon,
   StudentListIcon,
 } from "@/components/svg/TeacherClassRoom";
 
 const TeacherSidebar = ({ isOpen, onClose }) => {
   const menuItems = [
     { name: "Dashboard", icon: DashboardIcon, path: "/classroom/register-as-teacher" },
+    { name: "HomeWork", icon: HomeWorkIcon, path: "/classroom/register-as-teacher/home-work" },
     { name: "Exam", icon: ExamIcon, path: "/classroom/register-as-teacher/exams" },
     { name: "Student list", icon: StudentListIcon, path: "/classroom/register-as-teacher/student-list" },
   ];

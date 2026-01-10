@@ -46,9 +46,18 @@ const Sidebar = ({ isOpen, onClose }) => {
 
           {/* Action Buttons */}
           <div className="mt-auto flex flex-col gap-4">
-            <button className="w-full px-8 py-3 dark:text-white bg-custom text-primary-foreground rounded-full font-semibold hover:opacity-90 transition-opacity shadow-md">
+            <Link
+              to="/"
+              onClick={() =>
+                window.scrollTo({
+                  top: document.getElementById("pricing").offsetTop,
+                  behavior: "smooth",
+                })
+              }
+              className="w-full px-8 py-3 dark:text-white text-center bg-custom text-primary-foreground rounded-full font-semibold hover:opacity-90 transition-opacity shadow-md"
+            >
               Purchase
-            </button>
+            </Link>
             <Link
               to="/auth"
               onClick={onClose}

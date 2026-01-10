@@ -5,7 +5,7 @@ const Exams = () => {
   return (
     <div className="">
       {/* Page Title */}
-      <h1 className="text-xl font-semibold text-gray-900 mb-6">
+      <h1 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
         Exams
       </h1>
 
@@ -23,7 +23,7 @@ const Exams = () => {
 
       {/* Active Section */}
       <div className="mb-10">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
           Active
         </h2>
 
@@ -39,7 +39,7 @@ const Exams = () => {
 
       {/* Previous Exam */}
       <div>
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
           Previous exam
         </h2>
 

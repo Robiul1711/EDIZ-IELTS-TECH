@@ -37,7 +37,7 @@ const ScrollToTop = () => {
       {isVisible && (
         <button
           onClick={scrollToTop}
-          className="group relative flex items-center justify-center w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-indigo-600 to-purple-700 text-white rounded-full shadow-lg shadow-indigo-500/30 dark:shadow-indigo-900/50 hover:shadow-xl hover:shadow-indigo-500/40 dark:hover:shadow-indigo-900/60 transition-all duration-500 animate-in fade-in zoom-in slide-in-from-bottom-5 hover:scale-110 active:scale-95 ring-4 ring-white/10 dark:ring-slate-800/50"
+          className="group relative flex items-center justify-center w-12 h-12  bg-gradient-to-br from-indigo-600 to-purple-700 text-white rounded-full shadow-lg shadow-indigo-500/30 dark:shadow-indigo-900/50 hover:shadow-xl hover:shadow-indigo-500/40 dark:hover:shadow-indigo-900/60 transition-all duration-500 animate-in fade-in zoom-in slide-in-from-bottom-5 hover:scale-110 active:scale-95 ring-4 ring-white/10 dark:ring-slate-800/50"
           aria-label="Scroll to top"
         >
           {/* Subtle Glow Effect */}

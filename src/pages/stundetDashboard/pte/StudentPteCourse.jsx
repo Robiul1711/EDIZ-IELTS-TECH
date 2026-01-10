@@ -23,7 +23,7 @@ const IELTSCategory = [
     id: 3,
     name: "Speaking & Writing",
     image: [ImageAssets.S, ImageAssets.W], // Array for combined icons
-    link: "/student-dashboard/ielts/speaking-writing",
+    link: "/pte/headset-check",
     bg: "#D7F26F", // Matches the lime green
     color: "#6D8A00",
   },

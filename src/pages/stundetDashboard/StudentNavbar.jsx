@@ -78,10 +78,10 @@ const StudentNavbar = ({ onMenuClick }) => {
 
           {isOpen && (
             <div className="absolute right-0 mt-4 w-56 md:w-64 origin-top-right rounded-2xl bg-white py-2 shadow-2xl z-50 ring-1 ring-black/5">
-              <button className="flex w-full items-center gap-4 px-5 py-3 text-slate-600 hover:bg-slate-50 transition-colors">
+              <Link to="/student-dashboard/profile" className="flex w-full items-center gap-4 px-5 py-3 text-slate-600 hover:bg-slate-50 transition-colors">
                 <User size={18} strokeWidth={1.5} />{" "}
                 <span className="font-medium">Profile</span>
-              </button>
+              </Link>
               <div className="mx-5 border-t border-slate-100"></div>
               <button className="flex w-full items-center gap-4 px-5 py-3 text-red-500 hover:bg-red-50 transition-colors">
                 <LogOut size={18} strokeWidth={1.5} />{" "}

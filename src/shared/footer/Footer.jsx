@@ -15,16 +15,16 @@ import edizLogo from "@/assets/images/edizLogo.png";
 
 const Footer = () => {
   return (
-    <footer className="bg-[#7B73F5] dark:bg-slate-900 text-white py-12 md:py-16 section-padding-x font-poppins transition-colors duration-300">
+    <footer className="bg-[#7B73F5] dark:bg-slate-900 text-white py-8 sm:py-12 md:py-16 section-padding-x font-poppins transition-colors duration-300">
       {/* Top Section */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 sm:gap-12 gap-6 mb-6 md:mb-12">
         {/* Left Column: Logo & Description */}
         <div className="flex flex-col items-start text-left">
           <div className="mb-6 group">
             <img
               src={ImageAssets.logo}
               alt="EDIZ IT Logo"
-              className="w-32 md:w-40 dark:invert transition-transform duration-300 group-hover:scale-105"
+              className="w-24 sm:w-32 md:w-40 dark:invert transition-transform duration-300 group-hover:scale-105"
             />
           </div>
           <p className="text-sm leading-relaxed max-w-xs opacity-80 dark:text-slate-400">
@@ -74,7 +74,7 @@ const Footer = () => {
             Popular Courses
             <span className="absolute -bottom-1 left-0 w-12 h-1 bg-white/30 rounded-full"></span>
           </h4>
-          <img src={edizLogo} alt="" className="w-32 md:w-40 py-1 dark:invert transition-transform duration-300 group-hover:scale-105" />
+          <img src={edizLogo} alt="" className="w-24 sm:w-32 md:w-40 py-1 dark:invert transition-transform duration-300 group-hover:scale-105" />
           {[
             "Graphic Design",
             "Basic Computer",
@@ -119,7 +119,7 @@ const Footer = () => {
       </div>
 
       {/* Bottom Section: Copyright & Links */}
-      <div className="border-t border-white/10 dark:border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center text-sm gap-4">
+      <div className="border-t border-white/10 dark:border-slate-800 sm:pt-8 pt-6 flex flex-col md:flex-row justify-between items-center text-sm gap-4">
         <p className="opacity-70">
           © {new Date().getFullYear()} EDIZ IT Institute. All rights reserved.
         </p>

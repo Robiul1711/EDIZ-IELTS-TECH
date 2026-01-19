@@ -3,6 +3,7 @@ import { NavLink } from "react-router-dom";
 import { X } from "lucide-react";
 import {
   ExamIcon,
+  HomeWorkIcon,
   ReportIcon,
 } from "@/components/svg/TeacherClassRoom";
 
@@ -11,6 +12,7 @@ const StudentSidebar = ({ isOpen, onClose }) => {
     
     { name: "Exam", icon: ReportIcon, path: "/classroom/register-as-student" },
     { name: "Report", icon: ExamIcon, path: "/classroom/register-as-student/report" },
+    { name: "HomeWork", icon: HomeWorkIcon, path: "/classroom/register-as-student/student-home-work" },
   ];
 
   return (

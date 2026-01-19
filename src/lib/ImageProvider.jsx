@@ -22,6 +22,9 @@ import describeImage from '@/assets/images/describeImage.png';
 import audio from '@/assets/images/audio.mp3';
 import lecture from '@/assets/images/lecture.png';
 import group from '@/assets/images/group.png';
+import ptelisten from '@/assets/images/ptelisten.png';
+import ptereadandwrite from '@/assets/images/ptereadandwrite.png';
+import ptespeak from '@/assets/images/ptespeak.png';
 
 
 export const ImageAssets = {
@@ -48,6 +51,9 @@ export const ImageAssets = {
     S,
     W,
     L,
-    headset
+    headset,
+    ptelisten,
+    ptereadandwrite,
+    ptespeak
 }
 

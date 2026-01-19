@@ -75,6 +75,7 @@ import TermsAndConditions from "@/pages/legal/TermsAndConditions";
 import Profile from "@/pages/stundetDashboard/Profile";
 import HomeWork from "@/pages/classroomDashboard/teacherClassRoom/HomeWork";
 import HomeWorkDetails from "@/pages/classroomDashboard/teacherClassRoom/HomeWorkDetails";
+import StudentHomeWork from "@/pages/classroomDashboard/studentClassRoom/StudentHomeWork";
 
 const router = createBrowserRouter([
   // Auth routes
@@ -204,6 +205,7 @@ const router = createBrowserRouter([
       { index: true, element: <ExamTime /> },
       { path: "report", element: <Report /> },
       { path: "exam-history", element: <ExamHistory /> },
+      { path: "student-home-work", element: <StudentHomeWork /> },
     ],
   },
 

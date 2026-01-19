@@ -15,7 +15,7 @@ const Banner = () => {
   const iconsRef = useRef(null);
   const bannerImageRef = useRef(null);
   const textContentRef = useRef(null);
-  const [isChatOpen, setIsChatOpen] = useState(false);
+
 
   useGSAP(
     () => {
@@ -127,22 +127,7 @@ const Banner = () => {
             </div>
           </div>
         </div>
-        <div className="absolute right-4  md:-bottom-14 md:right-0 z-10 flex flex-col items-end gap-4">
-          {isChatOpen && (
-            <div className="mb-2">
-              <ChatBox onClose={() => setIsChatOpen(false)} />
-            </div>
-          )}
 
-          {!isChatOpen && (
-            <button
-              onClick={() => setIsChatOpen(true)}
-              className="p-2 rounded-full bg-[#604CDF] shadow-lg hover:scale-110 transition-all duration-300 cursor-pointer"
-            >
-              <ChatBot />
-            </button>
-          )}
-        </div>
       </div>
     </div>
   );

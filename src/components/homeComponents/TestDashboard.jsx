@@ -9,7 +9,7 @@ gsap.registerPlugin(ScrollTrigger);
 const TestCard = ({ title, count, colorClass, imagePlaceholder }) => {
   return (
     <div
-      className={`relative ${colorClass} rounded-3xl h-[320px] w-full overflow-hidden group cursor-pointer transition-transform hover:scale-[1.02] duration-300 shadow-xl`}
+      className={`relative ${colorClass} rounded-3xl h-[180px] sm:h-[260px] xl:h-[320px] w-full overflow-hidden group cursor-pointer transition-transform hover:scale-[1.02] duration-300 shadow-xl`}
     >
       {/* Ai Badge */}
       <div className="absolute top-4 left-4 bg-white/20 backdrop-blur-sm w-10 h-10 rounded-full flex items-center justify-center z-20 border border-white/10">
@@ -28,8 +28,8 @@ const TestCard = ({ title, count, colorClass, imagePlaceholder }) => {
       </div>
 
       {/* Glassmorphism Label */}
-      <div className="absolute bottom-4 left-4 right-4 bg-white/20 backdrop-blur-md border border-white/30 rounded-2xl p-4 text-center z-20 shadow-lg">
-        <h3 className="text-white font-bold text-xl tracking-wide">{title}</h3>
+      <div className="absolute bottom-4 left-4 right-4 bg-white/20 backdrop-blur-md border border-white/30 rounded-2xl p-2 sm:p-4 text-center z-20 shadow-lg">
+        <h3 className="text-white font-bold sm:text-xl tracking-wide">{title}</h3>
         <p className="text-white/90 text-xs mt-1">Test Takers {count}</p>
       </div>
     </div>
@@ -59,7 +59,7 @@ const SectionHeader = ({ logoText, logoColor }) => (
 
 const TestDashboard = () => {
   // Data for the cards
-  const cardsData = [
+  const IELTS = [
     {
       title: "READING",
       color: "bg-gradient-to-b from-purple-500 to-purple-700",
@@ -84,6 +84,38 @@ const TestDashboard = () => {
       placeholder: ImageAssets.speaking, // Replace with Speaking Avatar
       count: "65000+",
     },
+    {
+      title: "FULL TEST",
+      color: "bg-gradient-to-b from-lime-400 to-lime-600",
+      placeholder: ImageAssets.mock, // Replace with Mock Test Icon
+      count: "65000+",
+    },
+  ];
+  const PTE = [
+    {
+      title: "Reading & Writing",
+      color: "bg-gradient-to-b from-orange-400 to-orange-600",
+      placeholder: ImageAssets.ptereadandwrite, // Replace with Writing Avatar
+      count: "65000+",
+    },
+    {
+      title: "SPEAKING",
+      color: "bg-gradient-to-b from-purple-500 to-purple-700",
+      placeholder: ImageAssets.ptespeak, // Replace with Reading Avatar
+      count: "65000+",
+    },
+    {
+      title: "LISTENING",
+      color: "bg-gradient-to-b from-yellow-500 to-yellow-600",
+      placeholder: ImageAssets.ptelisten, // Replace with Listening Avatar
+      count: "65000+",
+    },
+    // {
+    //   title: "SPEAKING",
+    //   color: "bg-gradient-to-b from-rose-500 to-rose-700",
+    //   placeholder: ImageAssets.speaking, // Replace with Speaking Avatar
+    //   count: "65000+",
+    // },
     {
       title: "FULL TEST",
       color: "bg-gradient-to-b from-lime-400 to-lime-600",
@@ -134,8 +166,8 @@ const TestDashboard = () => {
       {/* Section 1: IELTS */}
       <section>
         <SectionHeader logoText="IELTS" logoColor="bg-blue-600" />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
-          {cardsData.map((card, index) => (
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 lg:gap-6">
+          {IELTS?.map((card, index) => (
             <TestCard
               key={`ielts-${index}`}
               title={card.title}
@@ -150,8 +182,8 @@ const TestDashboard = () => {
       {/* Section 2: PTE */}
       <section>
         <SectionHeader logoText="PTE" logoColor="bg-blue-500" />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
-          {cardsData.map((card, index) => (
+         <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 lg:gap-6">
+          {PTE?.map((card, index) => (
             <TestCard
               key={`pte-${index}`}
               title={card.title}

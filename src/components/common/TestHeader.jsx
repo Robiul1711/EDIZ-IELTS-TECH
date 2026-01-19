@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ChevronLeft, Clock, LayoutGrid } from "lucide-react";
 import { Link } from "react-router-dom";
+import DarkLightToggle from "./DarkLightToggle";
 
 const TestHeader = ({ durationInSeconds = 1800, onExit }) => {
   // Default 30 minutes
@@ -65,6 +66,9 @@ const TestHeader = ({ durationInSeconds = 1800, onExit }) => {
       </div>
 
       {/* RIGHT: Finish Section Button */}
+      <div className="flex items-center gap-2 md:gap-3">
+
+      <DarkLightToggle />
       <button className="flex items-center gap-2 hover:bg-white/10 py-1.5 px-3 md:py-2 md:px-4 rounded-lg transition-colors group">
         <span className="hidden md:inline text-lg font-medium tracking-wide whitespace-nowrap">
           Finish Section
@@ -74,6 +78,7 @@ const TestHeader = ({ durationInSeconds = 1800, onExit }) => {
         </span>
         <LayoutGrid className="w-5 h-5 md:w-6 md:h-6 text-white group-hover:scale-110 transition-transform" />
       </button>
+      </div>
     </div>
   );
 };

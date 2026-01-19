@@ -23,7 +23,7 @@ const VideosSection = () => {
   ];
 
   return (
-    <div className="bg-white dark:bg-[#121214] rounded-[32px] p-6 md:p-10 shadow-sm border border-zinc-100 dark:border-zinc-800/50  transition-colors duration-300">
+    <div className="bg-white dark:bg-[#121214] rounded-[32px] p-6 mt-8 shadow-sm border border-zinc-100 dark:border-zinc-800/50  transition-colors duration-300">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
           <div className="flex items-center gap-2 mb-2 group">

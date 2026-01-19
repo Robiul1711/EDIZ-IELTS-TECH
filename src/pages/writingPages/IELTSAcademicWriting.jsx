@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 const IELTSAcademicWriting = () => {
   return (
-    <div className="min-h-screen bg-white dark:bg-slate-950 flex flex-col items-center justify-center p-4 md:p-8 transition-colors duration-300">
+    <div className="min-h-screen  flex flex-col items-center justify-center p-4 md:p-8 transition-colors duration-300">
       {/* Title Section */}
       <div className="flex items-center justify-start w-full max-w-5xl mb-8">
         <NavigationButton href="/ielts" label="Back" />

@@ -67,7 +67,52 @@ const StudentScoreDashboard = () => {
     },
   ];
 
-  const currentScores = activeTab === "section" ? sectionScores : fullScores;
+  // Data for Homework Tests
+  const homeworkScores = [
+    {
+      id: 1,
+      category: "Reading",
+      date: "02 Dec 2025, 14:02",
+      score: null,
+      status: "Grading in progess",
+      icon: "📘",
+      iconBg: "bg-[#B6A4FF]/20",
+    },
+    {
+      id: 2,
+      category: "Writing",
+      date: "01 Dec 2025, 14:02",
+      score: "0/9",
+      status: null,
+      icon: "🖋️",
+      iconBg: "bg-[#D7F26F]/30",
+    },
+    {
+      id: 3,
+      category: "Speaking",
+      date: "01 Dec 2025, 14:02",
+      score: "0/9",
+      status: null,
+      icon: "🎙️",
+      iconBg: "bg-[#C6F7FC]/50",
+    },
+    {
+      id: 4,
+      category: "Listening",
+      date: "01 Dec 2025, 14:02",
+      score: "0/9",
+      status: null,
+      icon: "🎧",
+      iconBg: "bg-[#FFCB74]/30",
+    },
+  ];
+
+  const currentScores =
+    activeTab === "section"
+      ? sectionScores
+      : activeTab === "full"
+        ? fullScores
+        : homeworkScores;
   const getReviewPath = (category, id) => {
     switch (category.toLowerCase()) {
       case "reading":
@@ -129,6 +174,17 @@ const StudentScoreDashboard = () => {
           >
             Full test scores
           </button>
+
+          <button
+            onClick={() => setActiveTab("homework")}
+            className={`px-6 py-2.5 rounded-full text-[13px] font-bold transition-all duration-300 ${
+              activeTab === "homework"
+                ? "bg-[#8B7EFF] text-white shadow-lg shadow-[#8B7EFF]/20"
+                : "text-slate-400 dark:text-slate-500 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700"
+            }`}
+          >
+            Homework scores
+          </button>
         </div>
 
         {/* Divider */}
@@ -143,11 +199,13 @@ const StudentScoreDashboard = () => {
             >
               <div className="flex items-center gap-5">
                 {/* Visual Icon */}
-                <div
-                  className={`w-14 h-14 flex items-center justify-center rounded-2xl text-2xl shadow-inner ${item.iconBg}`}
-                >
-                  {item.icon}
-                </div>
+                {activeTab !== "homework" && (
+                  <div
+                    className={`w-14 h-14 flex items-center justify-center rounded-2xl text-2xl shadow-inner ${item.iconBg}`}
+                  >
+                    {item.icon}
+                  </div>
+                )}
                 <div>
                   <h3 className="font-bold text-slate-700 dark:text-slate-200 text-lg">
                     {item.category}
@@ -180,9 +238,11 @@ const StudentScoreDashboard = () => {
                     Review
                   </Link>
 
-                  <button className="px-7 py-2.5 bg-[#604CDF] text-white text-xs font-bold rounded-xl hover:bg-[#4A3AFF] transition-all active:scale-95 shadow-md shadow-[#604CDF]/20">
-                    Retake exam
-                  </button>
+                  {activeTab !== "homework" && (
+                    <button className="px-7 py-2.5 bg-[#604CDF] text-white text-xs font-bold rounded-xl hover:bg-[#4A3AFF] transition-all active:scale-95 shadow-md shadow-[#604CDF]/20">
+                      Retake exam
+                    </button>
+                  )}
                 </div>
               </div>
             </div>

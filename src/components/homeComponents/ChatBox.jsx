@@ -6,11 +6,11 @@ const ChatBox = ({ onClose }) => {
   return (
     <div className="w-[calc(100vw-px)] sm:w-[350px] md:w-[400px] h-[450px] sm:h-[550px] max-h-[80vh] bg-white dark:bg-slate-900 rounded-3xl shadow-2xl overflow-hidden flex flex-col border border-purple-100 dark:border-slate-800 animate-in fade-in slide-in-from-bottom-10 duration-300">
       {/* Header */}
-      <div className="bg-purple-50/80 dark:bg-gray-800 p-4 flex justify-between items-start h-[80px] relative">
+      <div className="bg-purple-50/80 dark:bg-gray-800 p-4 flex justify-between items-start h-[70px] relative">
         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-[#EAE6FF] to-transparent opacity-50"></div>
         <div className="bg-[#604CDF] p-2 rounded-full z-10 w-fit shadow-md">
-          <div className="w-8 h-8 flex items-center justify-center text-white">
-            <ChatBot />
+          <div className="w-6 h-6 flex items-center justify-center text-white">
+            <ChatBot className="w-6 h-6" />
           </div>
         </div>
         <div className="flex gap-2 z-10">

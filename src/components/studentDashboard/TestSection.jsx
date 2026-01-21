@@ -1,30 +1,34 @@
 import { ImageAssets } from "@/lib/ImageProvider";
-import React from "react";  
+import React from "react";
 
 const TestCard = ({ title, count, colorClass, imagePlaceholder }) => {
   return (
     <div
-      className={`relative ${colorClass} rounded-3xl h-[180px] sm:h-[260px] xl:h-[320px] w-full overflow-hidden group cursor-pointer transition-transform hover:scale-[1.02] duration-300 shadow-xl`}
+      className={`relative ${colorClass} rounded-3xl h-[180px] sm:h-[260px] xl:h-[320px] w-full overflow-hidden group cursor-pointer transition-all duration-500 hover:scale-[1.03] hover:shadow-2xl hover:shadow-white/10`}
     >
+      {/* Shine effect */}
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out z-30"></div>
+
       {/* Ai Badge */}
-      <div className="absolute top-4 left-4 bg-white/20 backdrop-blur-sm w-10 h-10 rounded-full flex items-center justify-center z-20 border border-white/10">
+      <div className="absolute top-4 left-4 bg-white/20 backdrop-blur-sm w-10 h-10 rounded-full flex items-center justify-center z-20 border border-white/10 group-hover:scale-110 transition-transform duration-300">
         <span className="text-white font-medium text-sm">Ai</span>
       </div>
 
-      {/* 3D Avatar Placeholder - Replace 'src' with your actual 3D images */}
+      {/* 3D Avatar Placeholder */}
       <div className="absolute inset-0 flex items-center justify-center pt-8">
-        {/* Using a colored div to simulate the 3D character for now */}
-        <div className="w-48 h-48 rounded-full bg-white/10 blur-3xl absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
+        <div className=" rounded-full bg-white/10 blur-3xl absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 group-hover:bg-white/20 transition-colors duration-500"></div>
         <img
           src={imagePlaceholder}
           alt={title}
-          className=" object-contain relative z-10 drop-shadow-2xl w-full "
+          className="object-cover w-full relative z-10 drop-shadow-2xl group-hover:scale-110 transition-transform duration-500"
         />
       </div>
 
       {/* Glassmorphism Label */}
-      <div className="absolute bottom-4 left-4 right-4 bg-white/20 backdrop-blur-md border border-white/30 rounded-2xl p-2 sm:p-4 text-center z-20 shadow-lg">
-        <h3 className="text-white font-bold sm:text-xl tracking-wide">{title}</h3>
+      <div className="absolute bottom-4 left-4 right-4 bg-white/20 backdrop-blur-md border border-white/30 rounded-2xl p-2 sm:p-4 text-center z-20 shadow-lg group-hover:bottom-6 transition-all duration-500">
+        <h3 className="text-white font-bold sm:text-xl tracking-wide">
+          {title}
+        </h3>
         <p className="text-white/90 text-xs mt-1">Test Takers {count}</p>
       </div>
     </div>
@@ -32,14 +36,14 @@ const TestCard = ({ title, count, colorClass, imagePlaceholder }) => {
 };
 
 const SectionHeader = ({ logoText, logoColor }) => (
-  <div className="flex items-center gap-4 mb-8">
+  <div className="flex items-center gap-4 mb-8 group cursor-default">
     <div
-      className={`w-12 h-12 bg-custom rounded-xl flex items-center justify-center shadow-md`}
+      className={`w-12 h-12 bg-custom rounded-xl flex items-center justify-center shadow-md group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300`}
     >
       <span className="text-white font-bold text-xl">{logoText.charAt(0)}</span>
     </div>
-    <div className="border-l-2 border-gray-300 pl-4 h-10 flex flex-col justify-center">
-      <h2 className="text-2xl font-bold text-gray-800 dark:text-white leading-none">
+    <div className="border-l-2 border-gray-300 dark:border-gray-700 pl-4 h-10 flex flex-col justify-center group-hover:border-Primary transition-colors duration-300">
+      <h2 className="text-2xl font-bold text-gray-800 dark:text-white leading-none group-hover:text-Primary transition-colors duration-300">
         {logoText}
       </h2>
       <div className="flex items-center gap-2 mt-1">
@@ -79,7 +83,6 @@ const TestSection = () => {
       placeholder: ImageAssets.speaking, // Replace with Speaking Avatar
       count: "65000+",
     },
-
   ];
   const PTE = [
     {
@@ -100,12 +103,10 @@ const TestSection = () => {
       placeholder: ImageAssets.ptelisten, // Replace with Listening Avatar
       count: "65000+",
     },
-
   ];
 
-
   return (
-    <div  className=" relative z-10 grid md:grid-cols-2 gap-5 ">
+    <div className=" relative z-10 grid md:grid-cols-2 gap-5 ">
       {/* Section 1: IELTS */}
       <section className="bg-white/20 dark:bg-gray-900 backdrop-blur-md border border-white/30 dark:border-gray-800 rounded-2xl p-2 sm:p-4">
         <SectionHeader logoText="IELTS" logoColor="bg-blue-600" />
@@ -125,7 +126,7 @@ const TestSection = () => {
       {/* Section 2: PTE */}
       <section className="bg-white/20 dark:bg-gray-900 backdrop-blur-md border border-white/30 dark:border-gray-800 rounded-2xl p-2 sm:p-4">
         <SectionHeader logoText="PTE" logoColor="bg-blue-500" />
-         <div className="grid grid-cols-2  gap-3 lg:gap-6">
+        <div className="grid grid-cols-2  gap-3 lg:gap-6">
           {PTE?.map((card, index) => (
             <TestCard
               key={`pte-${index}`}

@@ -56,12 +56,12 @@ const IELTSPage = () => {
 
       {/* Full Test Banner */}
       <Link to="/ielts/full-test" className="group block w-full">
-        <div className="p-6 md:p-10 rounded-2xl md:rounded-3xl bg-[#E2E2E2] hover:bg-gray-200 transition-all duration-300 flex flex-col md:flex-row items-center md:items-center justify-between gap-6 relative overflow-hidden shadow-sm hover:shadow-md">
+        <div className="p-6 md:p-10 rounded-2xl md:rounded-3xl bg-[#E2E2E2] dark:bg-[#1E1E1E] dark:hover:bg-[#2B2B2B] hover:bg-gray-200 transition-all duration-300 flex flex-col md:flex-row items-center md:items-center justify-between gap-6 relative overflow-hidden shadow-sm hover:shadow-md">
           <div className="z-10 text-center md:text-left">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#334156] transition-colors leading-tight">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#334156] dark:text-white transition-colors leading-tight">
               Full Test
             </h1>
-            <p className="text-gray-500 mt-2 font-medium md:text-lg">
+            <p className="text-gray-500 mt-2 font-medium md:text-lg dark:text-white">
               Take a complete mock exam
             </p>
           </div>

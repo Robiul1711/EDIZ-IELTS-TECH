@@ -11,8 +11,10 @@ const TestCard = ({ title, count, colorClass, imagePlaceholder }) => {
     <div
       className={`relative ${colorClass} rounded-3xl h-[180px] sm:h-[260px] xl:h-[320px] w-full overflow-hidden group cursor-pointer transition-transform hover:scale-[1.02] duration-300 shadow-xl`}
     >
+            {/* Shine effect */}
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out z-30"></div>
       {/* Ai Badge */}
-      <div className="absolute top-4 left-4 bg-white/20 backdrop-blur-sm w-10 h-10 rounded-full flex items-center justify-center z-20 border border-white/10">
+      <div className="absolute top-4 left-4 bg-white/20 backdrop-blur-sm w-10 h-10 rounded-full flex items-center justify-center z-20 border border-white/10 group-hover:scale-110 transition-transform duration-300">
         <span className="text-white font-medium text-sm">Ai</span>
       </div>
 
@@ -23,7 +25,7 @@ const TestCard = ({ title, count, colorClass, imagePlaceholder }) => {
         <img
           src={imagePlaceholder}
           alt={title}
-          className=" object-contain relative z-10 drop-shadow-2xl w-full "
+          className=" object-contain relative z-10 drop-shadow-2xl w-full hover:scale-110 transition-transform duration-500 group-hover:scale-110"
         />
       </div>
 

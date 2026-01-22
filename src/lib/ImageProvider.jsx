@@ -6,7 +6,7 @@ import banner from '@/assets/images/banner3.png';
 import newStudents from '@/assets/images/newstudents.png';
 import speaking from '@/assets/images/speaking.png';
 import writing from '@/assets/images/writing.png';
-import mock from '@/assets/images/mock.png';
+import mock from '@/assets/images/mock.jpeg';
 import reading from '@/assets/images/reading.png';
 import listening from '@/assets/images/listening.png';
 import howitwork from '@/assets/images/howitwork.png';

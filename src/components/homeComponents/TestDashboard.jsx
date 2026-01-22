@@ -19,19 +19,19 @@ const TestCard = ({ title, count, colorClass, imagePlaceholder }) => {
       </div>
 
       {/* 3D Avatar Placeholder - Replace 'src' with your actual 3D images */}
-      <div className="absolute inset-0 flex items-center justify-center pt-8">
+      <div className="absolute inset-0 flex justify-center ">
         {/* Using a colored div to simulate the 3D character for now */}
-        <div className="w-48 h-48 rounded-full bg-white/10 blur-3xl absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
+        {/* <div className="w-48 h-48 rounded-full bg-white/10 blur-3xl absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div> */}
         <img
           src={imagePlaceholder}
           alt={title}
-          className=" object-contain relative z-10 drop-shadow-2xl w-full hover:scale-110 transition-transform duration-500 group-hover:scale-110"
+          className=" object-cover relative z-10 drop-shadow-2xl w-full  hover:scale-110 transition-transform duration-500 group-hover:scale-110"
         />
       </div>
 
       {/* Glassmorphism Label */}
-      <div className="absolute bottom-4 left-4 right-4 bg-white/20 backdrop-blur-md border border-white/30 rounded-2xl p-2 sm:p-4 text-center z-20 shadow-lg">
-        <h3 className="text-white font-bold sm:text-xl tracking-wide">{title}</h3>
+      <div className="absolute bottom-4 left-4 right-4 bg-black/30 backdrop-blur-md border border-white/30 rounded-2xl p-2 sm:p-4 text-center z-20 shadow-lg">
+        <h3 className="text-white font-bold sm:text-xl tracking-wide uppercase">{title}</h3>
         <p className="text-white/90 text-xs mt-1">Test Takers {count}</p>
       </div>
     </div>
@@ -39,7 +39,7 @@ const TestCard = ({ title, count, colorClass, imagePlaceholder }) => {
 };
 
 const SectionHeader = ({ logoText, logoColor }) => (
-  <div className="flex items-center gap-4 mb-8">
+  <div className="flex items-center justify-center jus gap-4 mb-8 sm:gap-6 ">
     <div
       className={`w-12 h-12 bg-custom rounded-xl flex items-center justify-center shadow-md`}
     >
@@ -164,7 +164,7 @@ const TestDashboard = () => {
   );
 
   return (
-    <div ref={containerRef} className=" relative z-10 space-y-20">
+    <div ref={containerRef} className=" relative z-10 space-y-20 md:space-y-30">
       {/* Section 1: IELTS */}
       <section>
         <SectionHeader logoText="IELTS" logoColor="bg-blue-600" />

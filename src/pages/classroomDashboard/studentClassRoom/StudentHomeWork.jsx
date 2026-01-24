@@ -25,7 +25,7 @@ const HomeworkCard = ({ data, onViewResult }) => {
             {data.category}
           </span>
           <span
-            className={`px-3 py-1 rounded-full bg-[#604CDF] text-white text-xs font-semibold`}
+            className={`px-3 py-1 rounded-full ${data.submitted === "Ongoing" ? "bg-indigo-600" : "bg-green-500"} text-white text-xs font-semibold`}
           >
             {data.submitted}
           </span>
@@ -73,17 +73,23 @@ const HomeworkCard = ({ data, onViewResult }) => {
 
       {data.submitted === "Ongoing" ? (
         <Link
-          to={`/listening`}
+          to={`/classroom/register-as-student/start-homework/${data.id}`}
           className="w-full py-2.5 rounded-lg bg-[#334156] hover:bg-[#2a3547] text-white font-semibold transition-colors mt-auto flex items-center justify-center"
         >
           Start Homework
         </Link>
       ) : (
         <div className="flex  gap-2">
-          <button onClick={() => onViewResult(data)} className="w-full py-2.5 rounded-lg bg-[#334156] hover:bg-[#2a3547] text-white font-semibold transition-colors mt-auto flex items-center justify-center">
+          <button
+            onClick={() => onViewResult(data)}
+            className="w-full py-2.5 rounded-lg bg-[#334156] hover:bg-[#2a3547] text-white font-semibold transition-colors mt-auto flex items-center justify-center"
+          >
             View Details
           </button>
-          <Link  to={`/classroom/register-as-teacher/home-work/${data.id}`} className="w-full py-2.5 rounded-lg bg-[#334156] hover:bg-[#2a3547] text-white font-semibold transition-colors mt-auto flex items-center justify-center">
+          <Link
+            to={`/classroom/register-as-student/view-results/${data.id}`}
+            className="w-full py-2.5 rounded-lg bg-[#334156] hover:bg-[#2a3547] text-white font-semibold transition-colors mt-auto flex items-center justify-center"
+          >
             View Result
           </Link>
         </div>

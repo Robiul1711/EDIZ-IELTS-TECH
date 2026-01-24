@@ -6,6 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 import { FaArrowRight } from "react-icons/fa6";
+import { Link } from "react-router-dom";
 
 const AdsSection = () => {
   const containerRef = React.useRef(null);
@@ -70,10 +71,10 @@ const AdsSection = () => {
               <br />
               to the next level
             </h2>
-            <button className="bg-white text-[#604CDF] font-bold py-3 px-8 rounded-xl inline-flex items-center group w-fit hover:bg-gray-100 transition-colors">
+            <Link to="/auth" className="bg-white text-[#604CDF] font-bold py-3 px-8 rounded-xl inline-flex items-center group w-fit hover:bg-gray-100 transition-colors">
               Get started
               <FaArrowRight className="ml-3 text-lg group-hover:translate-x-1 transition-transform" />
-            </button>
+            </Link>
           </div>
         </div>
 

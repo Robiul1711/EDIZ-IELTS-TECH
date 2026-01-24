@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Plus, BookOpen, Monitor, PieChart, Calendar } from "lucide-react";
 import AssignHomeworkModal from "./AssignHomeworkModal";
+import HomeWorkResultModal from "../../../components/modals/HomeWorkResultModal";
 
-const HomeworkCard = ({ data }) => {
+const HomeworkCard = ({ data, onView }) => {
   return (
     <div className="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-gray-100 dark:border-slate-700 shadow-sm flex flex-col gap-4 transition-all hover:shadow-md">
       {/* Title and Badges */}
@@ -61,23 +62,26 @@ const HomeworkCard = ({ data }) => {
       </div>
 
       {/* Action Button */}
-      <Link
-        to={`/classroom/register-as-teacher/home-work/${data.id}`}
+      <button
+        onClick={() => onView(data)}
         className="w-full py-2.5 rounded-lg bg-[#334156] hover:bg-[#2a3547] text-white font-semibold transition-colors mt-auto flex items-center justify-center"
       >
         View
-      </Link>
+      </button>
     </div>
   );
 };
 
 const HomeWork = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
-  const activeHomework = [
+  const [isModalOpen, setIsModalOpen] = useState(false); // Assign Modal state
+  const [isResultModalOpen, setIsResultModalOpen] = useState(false); // View Modal state
+  const [selectedHw, setSelectedHw] = useState(null);
+
+  const [activeHomework, setActiveHomework] = useState([
     {
       id: 1,
       title: "IELTS Writing Task - 1",
-      category: "Cambridge A",
+      category: "Academic",
       submitted: 9,
       total: 24,
       book: "Book 20",
@@ -89,37 +93,24 @@ const HomeWork = () => {
     },
     {
       id: 2,
-      title: "IELTS Writing Task - 1",
-      category: "Cambridge A",
-      submitted: 9,
-      total: 24,
-      book: "Book 20",
-      test: "Test 1",
-      part: "Part 2",
-      time: "40 min",
-      score: "7",
-      due: "12 Jan 2026",
+      title: "IELTS Writing Task - 2",
+      category: "General Training",
+      submitted: 15,
+      total: 30,
+      book: "Book 19",
+      test: "Test 2",
+      part: "Part 1",
+      time: "60 min",
+      score: "8",
+      due: "15 Jan 2026",
     },
-    {
-      id: 3,
-      title: "IELTS Writing Task - 1",
-      category: "Cambridge A",
-      submitted: 9,
-      total: 24,
-      book: "Book 20",
-      test: "Test 1",
-      part: "Part 2",
-      time: "40 min",
-      score: "7",
-      due: "12 Jan 2026",
-    },
-  ];
+  ]);
 
-  const homeworkHistory = [
+  const [homeworkHistory, setHomeworkHistory] = useState([
     {
       id: 4,
-      title: "IELTS Writing Task - 1",
-      category: "Cambridge A",
+      title: "IELTS Reading Mock",
+      category: "Academic",
       submitted: 24,
       total: 24,
       book: "Book 20",
@@ -129,33 +120,16 @@ const HomeWork = () => {
       score: "7",
       due: "12 Jan 2026",
     },
-    {
-      id: 5,
-      title: "IELTS Writing Task - 1",
-      category: "Cambridge A",
-      submitted: 24,
-      total: 24,
-      book: "Book 20",
-      test: "Test 1",
-      part: "Part 2",
-      time: "40 min",
-      score: "7",
-      due: "12 Jan 2026",
-    },
-    {
-      id: 6,
-      title: "IELTS Writing Task - 1",
-      category: "Cambridge A",
-      submitted: 24,
-      total: 24,
-      book: "Book 20",
-      test: "Test 1",
-      part: "Part 2",
-      time: "40 min",
-      score: "7",
-      due: "12 Jan 2026",
-    },
-  ];
+  ]);
+
+  const handleAssign = (newHw) => {
+    setActiveHomework((prev) => [newHw, ...prev]);
+  };
+
+  const handleView = (hw) => {
+    setSelectedHw(hw);
+    setIsResultModalOpen(true);
+  };
 
   return (
     <div className="min-h-screen ">
@@ -184,7 +158,7 @@ const HomeWork = () => {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {activeHomework.map((hw, idx) => (
-              <HomeworkCard key={idx} data={hw} />
+              <HomeworkCard key={hw.id} data={hw} onView={handleView} />
             ))}
           </div>
         </section>
@@ -196,7 +170,7 @@ const HomeWork = () => {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {homeworkHistory.map((hw, idx) => (
-              <HomeworkCard key={idx} data={hw} />
+              <HomeworkCard key={hw.id} data={hw} onView={handleView} />
             ))}
           </div>
         </section>
@@ -205,6 +179,14 @@ const HomeWork = () => {
       <AssignHomeworkModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
+        onAssign={handleAssign}
+      />
+
+      {/* View Homework Details Modal */}
+      <HomeWorkResultModal
+        isOpen={isResultModalOpen}
+        onClose={() => setIsResultModalOpen(false)}
+        data={selectedHw}
       />
     </div>
   );

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import examtime from "../../../assets/images/examtime.png";
+import Report from "./Report";
 
 const ExamTime = () => {
   // 'waiting' shows the initial image, 'counting' shows the number
@@ -56,6 +57,7 @@ const ExamTime = () => {
           <p className="text-xl sm:text-2xl font-medium text-gray-600 text-center max-w-md mb-12">
             The exam will start in…
           </p>
+          {/* <Report /> */}
         </div>
       )}
     </div>

@@ -52,7 +52,12 @@ const WelcomeBanner = () => {
             Enroll now to receive 68% savings on your membership and a free mock
             test to elevate your preparation.
           </p>
-          <button className="bg-[#1C1C33] dark:bg-[#604CDF] text-white font-semibold py-3 px-8 rounded-full hover:bg-opacity-90 transition-colors">
+          <button  onClick={() =>
+                  window.scrollTo({
+                    top: document.getElementById("pricing").offsetTop,
+                    behavior: "smooth",
+                  })
+                } className="bg-[#1C1C33] dark:bg-[#604CDF] text-white font-semibold py-3 px-8 rounded-full hover:bg-opacity-90 transition-colors">
             JOIN NOW
           </button>
         </div>

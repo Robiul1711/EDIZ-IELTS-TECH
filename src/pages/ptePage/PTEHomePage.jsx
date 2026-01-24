@@ -44,7 +44,7 @@ const PTEHomePage = () => {
       </nav>
 
       {/* Full Test Banner */}
-      <Link to="/ielts/full-test" className="group block w-full">
+      <Link to="/pte-examination-reading" className="group block w-full">
         <div className="p-6 xxs:p-8 md:p-10 rounded lg:rounded-2xl bg-white dark:bg-slate-900 hover:bg-gray-200 dark:hover:bg-slate-800 transition-all duration-300 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden shadow-sm hover:shadow-md border border-transparent dark:border-slate-800">
           <div className="z-10 w-full md:w-auto text-center md:text-left">
             <h1 className="text-2xl xs:text-3xl md:text-4xl font-bold text-[#334156] dark:text-white transition-colors">

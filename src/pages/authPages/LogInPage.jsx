@@ -11,7 +11,7 @@ const LogInPage = () => {
   } = useForm();
 
   const onSubmit = (data) => {
-    navigate("/auth/verify-otp");
+    navigate("/");
     console.log("Login Data:", data);
     // 🔗 API call will go here
   };
@@ -102,9 +102,9 @@ const LogInPage = () => {
 
           {/* Forgot Password */}
           <div className="text-right mb-6">
-            <a href="#" className="text-red-500 text-sm hover:underline">
+            <Link to="/auth/forgot-password" className="text-red-500 text-sm hover:underline">
               forgot password?
-            </a>
+            </Link>
           </div>
 
           {/* Submit Button */}

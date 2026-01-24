@@ -1,13 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import { Edit3, Clock } from "lucide-react";
+import ExamDateModal from "../modals/ExamDateModal";
+import TargetScoreModal from "../modals/TargetScoreModal";
+import dayjs from "dayjs";
+import { Link } from "react-router-dom";
 
 const StudentDashboardInfo = () => {
-  const targetScores = [
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isScoreModalOpen, setIsScoreModalOpen] = useState(false);
+  const [examDate, setExamDate] = useState(new Date("2025-12-22"));
+
+  const [scores, setScores] = useState([
     { label: "Listening", value: "0/9" },
     { label: "Reading", value: "0/9" },
     { label: "Speaking", value: "0/9" },
     { label: "Writing", value: "0/9" },
-  ];
+  ]);
+
+  const daysRemaining = dayjs(examDate).diff(dayjs(), "day");
 
   return (
     <div className="w-full relative">
@@ -24,14 +34,17 @@ const StudentDashboardInfo = () => {
               <span className="text-lg font-bold text-slate-700 dark:text-slate-300">
                 Target Score
               </span>
-              <button className="text-sm font-semibold text-slate-500 border border-slate-200 px-3 py-1 rounded-lg hover:bg-slate-50">
+              <button
+                onClick={() => setIsScoreModalOpen(true)}
+                className="text-sm font-semibold text-slate-500 border border-slate-200 px-3 py-1 rounded-lg hover:bg-slate-50 hover:border-[#635BFF] hover:text-[#635BFF] transition-all"
+              >
                 Change
               </button>
             </div>
             <div className="grid grid-cols-2 xs:grid-cols-4 gap-3">
-              {targetScores.map((item, idx) => (
+              {scores.map((item, idx) => (
                 <div key={idx} className="text-center">
-                  <div className="bg-[#604CDF]/5 border border-indigo-100 rounded-xl py-3 mb-2 text-[#604CDF] font-bold text-lg">
+                  <div className="bg-[#604CDF]/5 border border-indigo-100 dark:border-indigo-900/30 rounded-xl py-3 mb-2 text-[#604CDF] dark:text-[#8370FF] font-bold text-lg">
                     {item.value}
                   </div>
                   <span className="text-xs font-semibold text-slate-500">
@@ -47,13 +60,19 @@ const StudentDashboardInfo = () => {
               <span className="text-lg font-bold text-slate-700 dark:text-slate-300">
                 Set Exam Date
               </span>
-              <Edit3 size={18} className="text-[#635BFF] cursor-pointer" />
+              <Edit3
+                size={18}
+                className="text-[#635BFF] cursor-pointer hover:scale-110 transition-transform"
+                onClick={() => setIsModalOpen(true)}
+              />
             </div>
             <h2 className="text-xl md:text-2xl font-bold text-slate-800 dark:text-white">
-              Dec 22, 2025 (Mon)
+              {dayjs(examDate).format("MMM DD, YYYY (ddd)")}
             </h2>
             <p className="text-sm mt-2 text-slate-400">
-              <span className="text-[#635BFF] font-bold">30 Days</span>{" "}
+              <span className="text-[#635BFF] font-bold">
+                {Math.max(0, daysRemaining)} Days
+              </span>{" "}
               Remaining
             </p>
           </div>
@@ -65,7 +84,7 @@ const StudentDashboardInfo = () => {
             Band Score (Avg)
           </h3>
           <div className="grid grid-cols-4 gap-3">
-            {targetScores.map((item, idx) => (
+            {scores.map((item, idx) => (
               <div key={idx} className="text-center">
                 <div className="bg-white/5 border border-white/10 rounded-xl py-3 mb-2 text-white font-bold text-sm">
                   {item.value}
@@ -86,11 +105,13 @@ const StudentDashboardInfo = () => {
             title: "IELTS Full Mock Test",
             color: "#635BFF",
             shadow: "shadow-indigo-100",
+            link: "/student-dashboard/ielts",
           },
           {
             title: "PTE Full Mock Test",
             color: "#00A3FF",
             shadow: "shadow-blue-100",
+            link: "/student-dashboard/pte",
           },
         ].map((test, i) => (
           <div
@@ -113,12 +134,29 @@ const StudentDashboardInfo = () => {
                 </p>
               </div>
             </div>
-            <button className="w-full bg-white dark:bg-slate-800 dark:text-white  border border-slate-100 dark:border-slate-700 py-4 rounded-2xl text-[#635BFF] dark:text-[#8370FF] font-bold text-sm uppercase tracking-widest hover:bg-[#635BFF] hover:dark:bg-[#8370FF] hover:text-white transition-all">
+            <Link
+              to={test.link}
+              className="w-full inline-block text-center bg-white dark:bg-slate-800 dark:text-white  border border-slate-100 dark:border-slate-700 py-4 rounded-2xl text-[#635BFF] dark:text-[#8370FF] font-bold text-sm uppercase tracking-widest hover:bg-[#635BFF] hover:dark:bg-[#8370FF] hover:text-white transition-all"
+            >
               Show full test
-            </button>
+            </Link>
           </div>
         ))}
       </div>
+
+      <ExamDateModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        selectedDate={examDate}
+        onSelect={(date) => setExamDate(date)}
+      />
+
+      <TargetScoreModal
+        isOpen={isScoreModalOpen}
+        onClose={() => setIsScoreModalOpen(false)}
+        currentScores={scores}
+        onSave={(newScores) => setScores(newScores)}
+      />
     </div>
   );
 };

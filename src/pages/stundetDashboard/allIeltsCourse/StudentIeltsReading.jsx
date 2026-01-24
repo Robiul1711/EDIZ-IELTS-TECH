@@ -1,6 +1,6 @@
 import React from "react";
 import { Search, ChevronLeft, PlayCircle, Lock } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const StudentIeltsReading = () => {
   const navigate = useNavigate();
@@ -110,7 +110,7 @@ const StudentIeltsReading = () => {
                           />
                         )}
                       </div>
-                      <div>
+                      <Link to={test.id}>
                         <p
                           className={`text-[13px] font-medium leading-tight ${
                             test.status === "locked"
@@ -130,7 +130,7 @@ const StudentIeltsReading = () => {
                             Not started
                           </p>
                         )}
-                      </div>
+                      </Link>
                     </div>
                   ))}
                 </div>

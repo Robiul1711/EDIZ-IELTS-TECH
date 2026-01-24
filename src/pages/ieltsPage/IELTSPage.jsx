@@ -1,7 +1,8 @@
+import IeltsTypeSelectionModal from "@/components/modals/IeltsTypeSelectionModal";
 import { ImageAssets } from "@/lib/ImageProvider";
 import { ChevronRight } from "lucide-react"; // Optional: efficient icon
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 const IELTSCategory = [
   {
@@ -16,7 +17,7 @@ const IELTSCategory = [
   {
     id: 2,
     name: "Speaking",
-    title: "(Academic + General)",
+    // title: "(Academic + General)",
     image: ImageAssets.S,
     link: "/speaking",
     bg: "#FFCB74",
@@ -34,7 +35,7 @@ const IELTSCategory = [
   {
     id: 4,
     name: "Listening",
-    title: "(Academic + General)",
+    // title: "(Academic + General)",
     image: ImageAssets.L,
     link: "/listening",
     bg: "#C6F7FC",
@@ -43,8 +44,29 @@ const IELTSCategory = [
 ];
 
 const IELTSPage = () => {
+  const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [pendingLink, setPendingLink] = useState("");
+
+  const handleLinkClick = (e, link) => {
+    e.preventDefault();
+    setPendingLink(link);
+    setIsModalOpen(true);
+  };
+
+  const handleSelectType = (type) => {
+    setIsModalOpen(false);
+    if (pendingLink) {
+      navigate(`${pendingLink}?type=${type}`);
+    }
+  };
   return (
     <div className="section-padding-x py-6 md:py-12  w-full">
+      <IeltsTypeSelectionModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSelect={handleSelectType}
+      />
       {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-sm font-medium text-gray-500 mb-8">
         <Link to="/" className="hover:text-Primary transition-colors">
@@ -55,7 +77,10 @@ const IELTSPage = () => {
       </nav>
 
       {/* Full Test Banner */}
-      <Link to="/ielts/full-test" className="group block w-full">
+      <div
+        onClick={(e) => handleLinkClick(e, "/reading")}
+        className="group block w-full cursor-pointer"
+      >
         <div className="p-6 md:p-10 rounded-2xl md:rounded-3xl bg-[#E2E2E2] dark:bg-[#1E1E1E] dark:hover:bg-[#2B2B2B] hover:bg-gray-200 transition-all duration-300 flex flex-col md:flex-row items-center md:items-center justify-between gap-6 relative overflow-hidden shadow-sm hover:shadow-md">
           <div className="z-10 text-center md:text-left">
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#334156] dark:text-white transition-colors leading-tight">
@@ -74,15 +99,15 @@ const IELTSPage = () => {
             />
           </div>
         </div>
-      </Link>
+      </div>
 
       {/* Categories Grid */}
       <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:gap-8 gap-6">
         {IELTSCategory.map((category) => (
-          <Link
-            to={category.link}
+          <div
             key={category.id}
-            className="group relative block"
+            onClick={(e) => handleLinkClick(e, category.link)}
+            className="group relative block cursor-pointer"
           >
             <div
               className="p-6 md:p-10 h-full rounded-2xl md:rounded-3xl flex items-center justify-between gap-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg overflow-hidden"
@@ -113,7 +138,7 @@ const IELTSPage = () => {
                 />
               </div>
             </div>
-          </Link>
+          </div>
         ))}
       </div>
     </div>

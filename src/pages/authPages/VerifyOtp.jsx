@@ -1,8 +1,10 @@
 import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import OTPInput from "otp-input-react";
+import { useNavigate } from "react-router-dom";
 
 const VerifyOtp = () => {
+  const navigate = useNavigate();
   const {
     control,
     handleSubmit,
@@ -15,6 +17,8 @@ const VerifyOtp = () => {
 
   const onSubmit = (data) => {
     console.log("OTP Submitted:", data.otp);
+    navigate("/auth/reset-password");
+    
     // 🔗 API verification logic here
   };
 

@@ -1,9 +1,22 @@
 import { ImageAssets } from "@/lib/ImageProvider";
-import React from "react";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import IeltsTypeSelectionModal from "../modals/IeltsTypeSelectionModal";
 
-const TestCard = ({ title, count, colorClass, imagePlaceholder }) => {
+const TestCard = ({
+  title,
+  count,
+  colorClass,
+  imagePlaceholder,
+  link,
+  onClick,
+}) => {
+  const Component = onClick ? "div" : Link;
+  const props = onClick ? { onClick } : { to: link };
+
   return (
-    <div
+    <Component
+      {...props}
       className={`relative ${colorClass} rounded-3xl h-[180px] sm:h-[260px] xl:h-[320px] w-full overflow-hidden group cursor-pointer transition-all duration-500 hover:scale-[1.03] hover:shadow-2xl hover:shadow-white/10`}
     >
       {/* Shine effect */}
@@ -31,7 +44,7 @@ const TestCard = ({ title, count, colorClass, imagePlaceholder }) => {
         </h3>
         <p className="text-white/90 text-xs mt-1">Test Takers {count}</p>
       </div>
-    </div>
+    </Component>
   );
 };
 
@@ -57,6 +70,21 @@ const SectionHeader = ({ logoText, logoColor }) => (
 );
 
 const TestSection = () => {
+  const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [pendingLink, setPendingLink] = useState("");
+
+  const handleCardClick = (link) => {
+    setPendingLink(link);
+    setIsModalOpen(true);
+  };
+
+  const handleSelectType = (type) => {
+    setIsModalOpen(false);
+    if (pendingLink) {
+      navigate(`${pendingLink}?type=${type}`);
+    }
+  };
   // Data for the cards
   const IELTS = [
     {
@@ -64,24 +92,28 @@ const TestSection = () => {
       color: "bg-gradient-to-b from-purple-500 to-purple-700",
       placeholder: ImageAssets.reading, // Replace with Reading Avatar
       count: "65000+",
+      link: "/student-dashboard/ielts/reading",
     },
     {
       title: "WRITING",
       color: "bg-gradient-to-b from-orange-400 to-orange-600",
       placeholder: ImageAssets.writing, // Replace with Writing Avatar
       count: "65000+",
+      link: "/student-dashboard/ielts/writing",
     },
     {
       title: "LISTENING",
       color: "bg-gradient-to-b from-yellow-500 to-yellow-600",
       placeholder: ImageAssets.listening, // Replace with Listening Avatar
       count: "65000+",
+      link: "/student-dashboard/ielts/listening",
     },
     {
       title: "SPEAKING",
       color: "bg-gradient-to-b from-rose-500 to-rose-700",
       placeholder: ImageAssets.speaking, // Replace with Speaking Avatar
       count: "65000+",
+      link: "/student-dashboard/ielts/speaking",
     },
   ];
   const PTE = [
@@ -90,18 +122,21 @@ const TestSection = () => {
       color: "bg-gradient-to-b from-orange-400 to-orange-600",
       placeholder: ImageAssets.ptereadandwrite, // Replace with Writing Avatar
       count: "65000+",
+      link: "/pte/headset-check",
     },
     {
       title: "SPEAKING",
       color: "bg-gradient-to-b from-purple-500 to-purple-700",
       placeholder: ImageAssets.ptespeak, // Replace with Reading Avatar
       count: "65000+",
+      link: "/student-dashboard/ielts/speaking",
     },
     {
       title: "LISTENING",
       color: "bg-gradient-to-b from-yellow-500 to-yellow-600",
       placeholder: ImageAssets.ptelisten, // Replace with Listening Avatar
       count: "65000+",
+      link: "/student-dashboard/ielts/listening",
     },
   ];
 
@@ -118,6 +153,8 @@ const TestSection = () => {
               count={card.count}
               colorClass={card.color}
               imagePlaceholder={card.placeholder}
+              link={card.link}
+              onClick={() => handleCardClick(card.link)}
             />
           ))}
         </div>
@@ -134,10 +171,16 @@ const TestSection = () => {
               count={card.count}
               colorClass={card.color}
               imagePlaceholder={card.placeholder}
+              link={card.link}
             />
           ))}
         </div>
       </section>
+      <IeltsTypeSelectionModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSelect={handleSelectType}
+      />
     </div>
   );
 };

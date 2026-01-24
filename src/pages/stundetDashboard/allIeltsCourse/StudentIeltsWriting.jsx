@@ -1,6 +1,6 @@
 import React from "react";
 import { Search, ChevronLeft, PlayCircle, Lock } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const StudentIeltsWriting = () => {
   const navigate = useNavigate();
@@ -112,12 +112,12 @@ const StudentIeltsWriting = () => {
                 <div className="p-5 min-h-[120px]">
                   <div className="space-y-4">
                     {test.tasks.map((task, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center gap-3 group"
-                      >
+                      <div key={index}>
                         {group.status === "unlocked" ? (
-                          <>
+                          <Link
+                            to={`/writing/part${index + 1}`}
+                            className="flex items-center gap-3 group"
+                          >
                             <PlayCircle
                               className="text-[#604CDF] group-hover:scale-110 transition-transform duration-200"
                               size={20}
@@ -126,9 +126,9 @@ const StudentIeltsWriting = () => {
                             <span className="text-[14px] font-medium text-slate-600 dark:text-slate-300 group-hover:text-[#604CDF] transition-colors">
                               {task}
                             </span>
-                          </>
+                          </Link>
                         ) : (
-                          <>
+                          <div className="flex items-center gap-3 group opacity-60">
                             <div className="p-1 bg-red-50 dark:bg-red-900/20 rounded-full">
                               <Lock
                                 className="text-red-400 dark:text-red-500"
@@ -139,7 +139,7 @@ const StudentIeltsWriting = () => {
                             <span className="text-[14px] font-medium text-slate-400 dark:text-slate-500 italic">
                               {task} (Locked)
                             </span>
-                          </>
+                          </div>
                         )}
                       </div>
                     ))}

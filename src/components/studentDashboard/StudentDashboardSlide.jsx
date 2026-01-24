@@ -63,12 +63,12 @@ const StudentDashboardSlide = () => {
                     {item.title}
                   </h2>
                   
-                  <a
-                    href={item.link}
+                  <p
+                    // onClick={() => navigate(item.link)}
                     className="mt-4 inline-block rounded-xl bg-white px-6 py-3 text-sm font-bold text-[#635BFF] transition-transform hover:scale-105 active:scale-95 shadow-lg"
                   >
                     {item.buttonText}
-                  </a>
+                  </p>
                 </div>
               </div>
             </SwiperSlide>

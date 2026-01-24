@@ -11,7 +11,7 @@ const StudentsResults = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#f7f6ff] p-6 rounded-2xl">
+    <div className="min-h-screen bg-[#f7f6ff] dark:bg-[#1E1E1E] p-6 rounded-2xl">
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
         <Link
@@ -21,26 +21,26 @@ const StudentsResults = () => {
         >
           <ArrowLeft size={18} className="text-gray-700" />
         </Link>
-        <h2 className="text-lg lg:text-2xl font-semibold text-gray-900">
+        <h2 className="text-lg lg:text-2xl font-semibold text-gray-900 dark:text-white">
           Students results
         </h2>
       </div>
 
       {/* Exam Title Row */}
       <div className="flex items-center gap-4 mb-6">
-        <span className="text-sm sm:text-base font-medium text-gray-800 whitespace-nowrap">
+        <span className="text-sm sm:text-base font-medium text-gray-800 whitespace-nowrap dark:text-white">
           IELTS speaking test
         </span>
 
         <div className="flex-1 h-px bg-gray-300" />
 
-        <span className="text-sm sm:text-base font-semibold text-[#6366f1]">
+        <span className="text-sm sm:text-base font-semibold text-[#6366f1] dark:text-white">
           23/24
         </span>
       </div>
 
       {/* Table */}
-      <div className="grid grid-cols-5 text-sm sm:text-base font-semibold text-gray-800 mb-4">
+      <div className="grid grid-cols-5 text-sm sm:text-base font-semibold text-gray-800 mb-4 dark:text-white">
         <span>Name</span>
         <span>ID</span>
         <span>Attendance</span>
@@ -52,7 +52,7 @@ const StudentsResults = () => {
         {students.map((student, index) => (
           <div
             key={index}
-            className="grid grid-cols-5 items-center text-sm sm:text-base text-gray-700"
+            className="grid grid-cols-5 items-center text-sm sm:text-base text-gray-700 dark:text-white"
           >
             {/* Name */}
             <span>{student.name}</span>

@@ -1,7 +1,7 @@
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import IeltsTypeSelectionModal from "@/components/modals/IeltsTypeSelectionModal";
 import { ImageAssets } from "@/lib/ImageProvider";
-import { ChevronRight } from "lucide-react"; // Optional: efficient icon
-import React from "react";
-import { Link } from "react-router-dom";
 
 const IELTSCategory = [
   {
@@ -16,7 +16,7 @@ const IELTSCategory = [
   {
     id: 2,
     name: "Speaking",
-    title: "(Academic + General)",
+    // title: "(Academic + General)",
     image: ImageAssets.S,
     link: "/student-dashboard/ielts/speaking",
     bg: "#FFCB74",
@@ -27,14 +27,14 @@ const IELTSCategory = [
     name: "Writing",
     title: "",
     image: ImageAssets.W,
- link: "/student-dashboard/ielts/writing",
+    link: "/student-dashboard/ielts/writing",
     bg: "#D7F26F",
     color: "#8BC34A",
   },
   {
     id: 4,
     name: "Listening",
-    title: "(Academic + General)",
+    // title: "(Academic + General)",
     image: ImageAssets.L,
     link: "/student-dashboard/ielts/listening",
     bg: "#C6F7FC",
@@ -43,16 +43,41 @@ const IELTSCategory = [
 ];
 
 const StudentIeltsSection = () => {
+  const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [pendingLink, setPendingLink] = useState("");
+
+  const handleLinkClick = (e, link) => {
+    e.preventDefault();
+    setPendingLink(link);
+    setIsModalOpen(true);
+  };
+
+  const handleSelectType = (type) => {
+    setIsModalOpen(false);
+    if (pendingLink) {
+      navigate(`${pendingLink}?type=${type}`);
+    }
+  };
+
   return (
     <div className=" md:py-12  w-full">
+      <IeltsTypeSelectionModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSelect={handleSelectType}
+      />
       {/* Full Test Banner */}
-      <Link to="/ielts/full-test" className="group block w-full">
-        <div className="p-6 md:p-10 rounded lg:rounded-2xl  bg-[#E2E2E2] hover:bg-gray-200 transition-all duration-300 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden shadow-sm hover:shadow-md">
+      <div
+        onClick={(e) => handleLinkClick(e, "/reading")}
+        className="group block w-full cursor-pointer"
+      >
+        <div className="p-6 xxs:p-8  rounded lg:rounded-2xl bg-white dark:bg-slate-900 hover:bg-gray-200 dark:hover:bg-slate-800 transition-all duration-300 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden shadow-sm hover:shadow-md border border-transparent dark:border-slate-800">
           <div className="z-10">
-            <h1 className="text-3xl md:text-4xl font-bold text-[#334156] transition-colors">
+            <h1 className="text-3xl md:text-4xl font-bold text-[#334156] dark:text-white transition-colors">
               Full Test
             </h1>
-            <p className="text-gray-500 mt-2 font-medium">
+            <p className="text-gray-500 mt-2 font-medium dark:text-white">
               Take a complete mock exam
             </p>
           </div>
@@ -65,15 +90,15 @@ const StudentIeltsSection = () => {
             />
           </div>
         </div>
-      </Link>
+      </div>
 
       {/* Categories Grid */}
       <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
         {IELTSCategory.map((category) => (
-          <Link
-            to={category.link}
+          <div
             key={category.id}
-            className="group relative block"
+            onClick={(e) => handleLinkClick(e, category.link)}
+            className="group relative block cursor-pointer"
           >
             <div
               className="p-6 md:p-10 h-full rounded lg:rounded-2xl flex items-center justify-between gap-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
@@ -104,7 +129,7 @@ const StudentIeltsSection = () => {
                 />
               </div>
             </div>
-          </Link>
+          </div>
         ))}
       </div>
     </div>

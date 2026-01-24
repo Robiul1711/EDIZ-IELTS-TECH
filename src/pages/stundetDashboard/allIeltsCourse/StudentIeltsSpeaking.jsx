@@ -1,6 +1,6 @@
 import React from "react";
 import { Search, ChevronLeft, PlayCircle, Lock, Mic } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const StudentIeltsSpeaking = () => {
   const navigate = useNavigate();
@@ -159,34 +159,45 @@ const StudentIeltsSpeaking = () => {
                 {/* Parts List [Matches image_a671a8.png structure] */}
                 <div className="p-6 space-y-5">
                   {test.parts.map((part, index) => (
-                    <div key={index} className="flex items-start gap-3 group">
-                      <div className="mt-0.5">
-                        {group.status === "locked" ? (
-                          <div className="w-5 h-5 flex items-center justify-center bg-red-50 dark:bg-red-900/20 text-red-400 dark:text-red-500 rounded-full">
-                            <Lock size={12} strokeWidth={3} />
+                    <div key={index}>
+                      {group.status === "locked" ? (
+                        <div className="flex items-start gap-3 group opacity-80">
+                          <div className="mt-0.5">
+                            <div className="w-5 h-5 flex items-center justify-center bg-red-50 dark:bg-red-900/20 text-red-400 dark:text-red-500 rounded-full">
+                              <Lock size={12} strokeWidth={3} />
+                            </div>
                           </div>
-                        ) : (
-                          <PlayCircle
-                            className="text-[#604CDF] group-hover:scale-110 transition-transform duration-200"
-                            size={20}
-                            strokeWidth={2.5}
-                          />
-                        )}
-                      </div>
-                      <div>
-                        <p
-                          className={`text-[13px] font-semibold leading-tight ${
-                            group.status === "locked"
-                              ? "text-slate-400 dark:text-slate-500"
-                              : "text-slate-700 dark:text-slate-200"
-                          }`}
+                          <div>
+                            <p className="text-[13px] font-semibold text-slate-400 dark:text-slate-500 italic">
+                              {part}
+                            </p>
+                            <p className="text-[11px] italic text-slate-400 dark:text-slate-500 mt-1 font-medium">
+                              Locked
+                            </p>
+                          </div>
+                        </div>
+                      ) : (
+                        <Link
+                          to={index < 2 ? `/speaking/part${index + 1}` : "#"}
+                          className={`flex items-start gap-3 group ${index >= 2 ? "cursor-not-allowed opacity-60" : ""}`}
                         >
-                          {part}
-                        </p>
-                        <p className="text-[11px] italic text-slate-400 dark:text-slate-500 mt-1 font-medium">
-                          {group.status === "locked" ? "Locked" : "Not started"}
-                        </p>
-                      </div>
+                          <div className="mt-0.5">
+                            <PlayCircle
+                              className="text-[#604CDF] group-hover:scale-110 transition-transform duration-200"
+                              size={20}
+                              strokeWidth={2.5}
+                            />
+                          </div>
+                          <div>
+                            <p className="text-[13px] font-semibold text-slate-700 dark:text-slate-200 group-hover:text-[#604CDF] transition-colors leading-tight">
+                              {part}
+                            </p>
+                            <p className="text-[11px] italic text-slate-400 dark:text-slate-500 mt-1 font-medium">
+                              Not started
+                            </p>
+                          </div>
+                        </Link>
+                      )}
                     </div>
                   ))}
                 </div>

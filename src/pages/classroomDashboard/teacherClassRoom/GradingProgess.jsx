@@ -5,7 +5,7 @@ import { DotLoader } from "react-spinners";
 
 const GradingProgess = () => {
   return (
-    <div className="min-h-screen bg-[#f7f6ff] p-6 rounded-2xl">
+    <div className="min-h-screen bg-[#f7f6ff] dark:bg-[#1E1E1E] p-6 rounded-2xl">
       {/* Header */}
       <div className="flex items-center justify-between mb-10">
         <div className="flex items-center gap-3">
@@ -17,12 +17,12 @@ const GradingProgess = () => {
             <ArrowLeft size={18} className="text-gray-700" />
           </Link>
 
-          <h2 className="text-lg font-semibold text-gray-900">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
             Students results
           </h2>
         </div>
 
-        <span className="text-sm font-medium text-[#6366f1]">
+        <span className="text-sm font-medium text-[#6366f1] dark:text-white">
           23/24
         </span>
       </div>
@@ -35,7 +35,7 @@ const GradingProgess = () => {
           speedMultiplier={0.9}
         />
 
-        <p className="mt-4 text-sm font-medium text-[#7c3aed]">
+        <p className="mt-4 text-sm font-medium text-[#7c3aed] dark:text-white">
           Grading In Progress
         </p>
       </div>

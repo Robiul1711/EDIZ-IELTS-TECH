@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { User,  LogOut, Menu } from "lucide-react";
+import { User,  LogOut, Menu, KeyRound } from "lucide-react";
 import Logo from "@/assets/images/Navlogo.png";
 import { Link } from "react-router-dom";
 import DarkLightToggle from "@/components/common/DarkLightToggle";
@@ -60,6 +60,11 @@ const StudentNavbar = ({ onMenuClick }) => {
               <Link to="/student-dashboard/profile" className="flex w-full items-center gap-4 px-5 py-3 text-slate-600 hover:bg-slate-50 transition-colors">
                 <User size={18} strokeWidth={1.5} />{" "}
                 <span className="font-medium">Profile</span>
+              </Link>
+              <div className="mx-5 border-t border-slate-100"></div>
+              <Link to="" className="flex w-full items-center gap-4 px-5 py-3 text-slate-600 hover:bg-slate-50 transition-colors">
+                <KeyRound size={18} strokeWidth={1.5} />{" "}
+                <span className="font-medium">Forgot Password</span>
               </Link>
               <div className="mx-5 border-t border-slate-100"></div>
               <button className="flex w-full items-center gap-4 px-5 py-3 text-red-500 hover:bg-red-50 transition-colors">

@@ -110,12 +110,12 @@ const StudentIeltsReading = () => {
                           />
                         )}
                       </div>
-                      <Link to={test.id}>
+                      <Link to={`/reading/part${section.id}`}>
                         <p
                           className={`text-[13px] font-medium leading-tight ${
                             test.status === "locked"
                               ? "text-slate-400 dark:text-slate-500"
-                              : "text-slate-600 dark:text-slate-300"
+                              : "text-slate-600 dark:text-slate-300 group-hover:text-[#604CDF] transition-colors"
                           }`}
                         >
                           {section.name}

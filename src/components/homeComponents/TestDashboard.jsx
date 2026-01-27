@@ -184,7 +184,7 @@ const TestDashboard = () => {
       {/* Section 2: PTE */}
       <section>
         <SectionHeader logoText="PTE" logoColor="bg-blue-500" />
-         <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 lg:gap-6">
+         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-6">
           {PTE?.map((card, index) => (
             <TestCard
               key={`pte-${index}`}

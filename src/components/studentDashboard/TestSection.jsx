@@ -17,7 +17,7 @@ const TestCard = ({
   return (
     <Component
       {...props}
-      className={`relative ${colorClass} rounded-3xl h-[180px] sm:h-[260px] xl:h-[320px] w-full overflow-hidden group cursor-pointer transition-all duration-500 hover:scale-[1.03] hover:shadow-2xl hover:shadow-white/10`}
+      className={`relative ${colorClass} rounded-3xl h-[170px] sm:h-[220px]  xl:h-[350px] w-full overflow-hidden group cursor-pointer transition-all duration-500 hover:scale-[1.03] hover:shadow-2xl hover:shadow-white/10`}
     >
       {/* Shine effect */}
       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out z-30"></div>
@@ -33,13 +33,13 @@ const TestCard = ({
         <img
           src={imagePlaceholder}
           alt={title}
-          className="object-cover w-full relative z-10 drop-shadow-2xl group-hover:scale-110 transition-transform duration-500"
+          className="object-fill w-full relative z-10 drop-shadow-2xl group-hover:scale-110 transition-transform duration-500"
         />
       </div>
 
       {/* Glassmorphism Label */}
       <div className="absolute bottom-4 left-4 right-4 bg-white/20 backdrop-blur-md border border-white/30 rounded-2xl p-2 sm:p-4 text-center z-20 shadow-lg group-hover:bottom-6 transition-all duration-500">
-        <h3 className="text-white font-bold sm:text-xl tracking-wide">
+        <h3 className="text-white font-bold xl:text-xl tracking-wide">
           {title}
         </h3>
         <p className="text-white/90 text-xs mt-1">Test Takers {count}</p>

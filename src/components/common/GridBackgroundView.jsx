@@ -32,7 +32,7 @@ const GridBackground = () => {
       // UPDATED: 
       // 1. Added text-[#f2f3f5] for light mode grid color
       // 2. Added dark:text-slate-800 for dark mode grid color
-      className="absolute inset-0 w-full h-full overflow-hidden transition-transform duration-300 ease-out text-[#f2f3f5] dark:text-slate-800/50"
+      className="absolute inset-0 w-full h-full overflow-hidden transition-transform duration-300 ease-out text-[#f2f3f5]/50 md:text-[#f2f3f5] dark:text-slate-800/50"
       style={{
         // UPDATED: Replaced hex code with 'currentColor' to inherit from the className above
         backgroundImage: `
@@ -52,8 +52,8 @@ export default function GridBackgroundView() {
   return (
     // UPDATED: Added dark:bg-slate-950 to switch background to dark in dark mode
     <div className="relative w-full h-screen bg-white dark:bg-slate-950">
-       <div className="w-[871px] h-[871px] bg-[#C371EF] rounded-[871px] opacity-[0.37] blur-[403px] absolute top-[-40%] left-[-30%] "></div>
-       <div className="w-[871px] h-[871px] bg-[#C371EF] rounded-[871px] opacity-[0.37] blur-[403px] absolute top-[-40%] right-[-30%] "></div> 
+       <div className="w-[871px] h-[871px] md:bg-[#C371EF] rounded-[871px] opacity-[0.37] blur-[403px] absolute top-[-40%] left-[-30%] "></div>
+       <div className="w-[871px] h-[871px] md:bg-[#C371EF] rounded-[871px] opacity-[0.37] blur-[403px] absolute top-[-40%] right-[-30%] "></div> 
       <GridBackground />
     </div>
   );

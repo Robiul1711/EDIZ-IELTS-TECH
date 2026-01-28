@@ -9,7 +9,7 @@ gsap.registerPlugin(ScrollTrigger);
 const TestCard = ({ title, count, colorClass, imagePlaceholder }) => {
   return (
     <div
-      className={`relative ${colorClass} rounded-3xl h-[180px] sm:h-[260px] xl:h-[320px] w-full overflow-hidden group cursor-pointer transition-transform hover:scale-[1.02] duration-300 shadow-xl`}
+      className={`relative  rounded-3xl h-[200px] sm:h-[260px] xl:h-[400px] w-full overflow-hidden group cursor-pointer transition-transform hover:scale-[1.02] duration-300 shadow-xl`}
     >
       {/* Shine effect */}
       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out z-30"></div>
@@ -66,10 +66,10 @@ const SectionHeader = ({ logoText, logoColor }) => (
     <div className="border-l-4 border-Primary dark:border-Primary  lg:h-12 h-8 sm:h-10 flex flex-col justify-center group-hover:border-Primary transition-colors duration-300"></div>
     {/* Text Content */}
     <div className="flex flex-col justify-center gap-1">
-      <span className="text-xs sm:text-sm lg:text-base xl:text-lg font-bold text-gray-600 dark:text-white tracking-widest uppercase">
+      <span className="text-xs sm:text-sm lg:text-base xl:text-lg font-bold  dark:text-white tracking-widest uppercase">
         Top 5 Most Taken Tests
       </span>
-      <span className="text-[10px] sm:text-xs lg:text-sm xl:text-base text-gray-400 font-medium">
+      <span className="text-xs sm:text-sm lg:text-base xl:text-lg font-bold ">
         TAKE YOUR TEST NOW
       </span>
     </div>
@@ -185,7 +185,7 @@ const TestDashboard = () => {
       {/* Section 1: IELTS */}
       <section>
         <SectionHeader logoText="IELTS" logoColor="bg-blue-600" />
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 lg:gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 lg:gap-6">
           {IELTS?.map((card, index) => (
             <TestCard
               key={`ielts-${index}`}
@@ -201,7 +201,7 @@ const TestDashboard = () => {
       {/* Section 2: PTE */}
       <section>
         <SectionHeader logoText="PTE" logoColor="bg-blue-500" />
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 lg:gap-20 xl:gap-22">
           {PTE?.map((card, index) => (
             <TestCard
               key={`pte-${index}`}

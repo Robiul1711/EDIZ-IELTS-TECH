@@ -111,7 +111,7 @@ const TestimonialSection = () => {
 
   return (
     <section ref={containerRef} className="">
-      <div className="">
+      <div className="px-4">
         <h2
           ref={headerRef}
           className="text-3xl md:text-4xl lg:text-5xl max-w-[680px] mx-auto font-bold text-center text-gray-900 dark:text-white mb-16"
@@ -156,7 +156,7 @@ const TestimonialSection = () => {
                 spaceBetween: 40,
               },
             }}
-            className="testimonial-swiper !pb-16 !px-4 md:!px-0 "
+            className="testimonial-swiper !pb-16  md:!px-0 "
           >
             {testimonials.map((testimonial) => (
               <SwiperSlide key={testimonial.id} className="h-auto">

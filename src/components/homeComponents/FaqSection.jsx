@@ -87,7 +87,7 @@ const FaqSection = () => {
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
             Frequently Asked <span>Questions</span>
           </h1>
-          <p className="text-gray-500 dark:text-gray-400 text-lg">
+          <p className=" dark:text-gray-400 text-lg">
             Everything you need to know about our design philosophy and process.
           </p>
         </div>

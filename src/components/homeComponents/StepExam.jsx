@@ -38,7 +38,7 @@ const StepExam = () => {
         <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4  max-w-4xl mx-auto">
           Step Into the Exam Fully Ready EDIZIT Has You Covered
         </h1>
-        <p className="text-gray-500 dark:text-gray-400 text-lg">
+        <p className=" dark:text-gray-400 text-lg">
           Practice in an Environment That Feels Real
         </p>
       </div>

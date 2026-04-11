@@ -61,7 +61,7 @@ const StudentIeltsSection = () => {
   };
 
   return (
-    <div className=" md:py-12  w-full">
+    <div className="w-full">
       <IeltsTypeSelectionModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

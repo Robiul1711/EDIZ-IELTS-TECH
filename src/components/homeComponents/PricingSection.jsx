@@ -178,15 +178,15 @@ const PricingSection = () => {
 
           {/* Toggle Switch */}
           <div className="mt-8 flex justify-center">
-            <div className="bg-white dark:bg-gray-800 p-1 rounded-xl inline-flex shadow-sm border border-gray-100">
+            <div className="bg-white dark:bg-gray-800 p-1 rounded-xl inline-flex shadow-sm ">
               {["IELTS", "PTE"].map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
                   className={`px-8 py-2.5 rounded-lg text-sm font-semibold transition-all duration-300 ${
                     activeTab === tab
-                      ? "bg-white dark:bg-gray-800 text-[#7B5BF2] shadow-md border border-gray-100 transform scale-105"
-                      : "text-gray-500 hover:text-gray-700"
+                      ? "bg-white dark:bg-gray-800 text-[#7B5BF2] shadow-md border  border-gray-100 transform scale-105"
+                      : "text-gray-500 hover:text-[#7B5BF2]"
                   }`}
                 >
                   {tab}
@@ -269,7 +269,7 @@ const PricingContent = ({ plan, isPopular }) => (
       className={`w-full py-3.5 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all duration-300 ${
         isPopular
           ? "bg-[#604CDF] text-white hover:bg-[#4c3cb5] shadow-lg shadow-purple-200"
-          : "bg-white text-[#604CDF] border border-[#604CDF]/30 hover:bg-[#604CDF] hover:text-white"
+          : "bg-white dark:bg-gray-800 dark:text-white dark:hover:bg-Primary text-[#604CDF] border border-[#604CDF]/30 hover:bg-[#604CDF] hover:text-white"
       }`}
     >
       {plan.buttonText}

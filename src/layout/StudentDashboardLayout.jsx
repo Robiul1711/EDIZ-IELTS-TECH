@@ -20,7 +20,7 @@ const StudentDashboardLayout = () => {
         <GridBackgroundView />
       </div>
       <ScrollRestoration />
-      
+            
       <div className="flex flex-col gap-6 md:gap-10 w-full max-w-[1920px] mx-auto">
         {/* Pass toggle function to Navbar */}
         <StudentNavbar onMenuClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} />

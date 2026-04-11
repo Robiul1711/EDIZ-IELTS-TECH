@@ -56,14 +56,14 @@ const StudentSider = ({ isOpen, onClose }) => {
         </div>
 
         {/* Menu Items Container */}
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-3 sm:gap-4">
           {menuItems.map((item) => (
             <NavLink
               key={item.path}
               to={item.path}
               end={item.path === "/student-dashboard"}
               className={({ isActive }) =>
-                `flex items-center gap-4 rounded-[1.2rem] px-5 py-4 transition-all duration-300 border-2 ${
+                `flex items-center gap-4 rounded-[1.2rem] px-3 sm:px-5 py-2.5 sm:py-4 transition-all duration-300 border-2 ${
                   isActive
                     ? "bg-white dark:bg-slate-800 border-white dark:border-slate-700 shadow-xl shadow-black/10 scale-[1.03]"
                     : "bg-transparent border-white/10 hover:bg-white/5 text-white"

@@ -35,9 +35,9 @@ export const useApiQuery = ({
 
 //uses 
 
-const { data, isLoading } = useApiQuery({
-  queryKey: ["all-products"], // Just the base key
-  url: "/products",
-  params: { page: currentPage, category: "electronics" }, // Hook handles the rest!
-  secure: false
-});
+// const { data, isLoading } = useApiQuery({
+//   queryKey: ["all-products"], // Just the base key
+//   url: "/products",
+//   params: { page: currentPage, category: "electronics" }, // Hook handles the rest!
+//   secure: false
+// });

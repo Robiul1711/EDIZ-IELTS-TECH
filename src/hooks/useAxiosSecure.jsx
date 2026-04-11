@@ -1,10 +1,13 @@
 import axios from "axios";
-import { useAuth } from "./useAuth";
+// import { useAuth } from "./useAuth";
 
 const useAxiosSecure = () => {
-  const auth = useAuth();
-  // Ensure that auth and user are defined before destructuring
-  const access_token = auth?.user?.token;
+  // Option: You can use auth context if available.
+  // const auth = useAuth();
+  // const access_token = auth?.user?.token;
+
+  // fallback to localStorage token value
+  const access_token = localStorage.getItem("token") || null;
 
   const axiosSecure = axios.create({
     baseURL: import.meta.env.VITE_API_URL,

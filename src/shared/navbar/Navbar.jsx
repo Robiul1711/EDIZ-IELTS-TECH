@@ -1,13 +1,16 @@
 import { ImageAssets } from "@/lib/ImageProvider";
-import React, { useState, useEffect } from "react"; // 1. Import hooks
+import React, { useState, useEffect } from "react";
 import { useTheme } from "@/context/ThemeContext";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 import { Menu } from "lucide-react";
 import Sidebar from "./Sidebar";
+import UserDropdown from "./UserDropdown";
 
 const Navbar = () => {
   const { theme, toggleTheme } = useTheme();
-  const [isScrolled, setIsScrolled] = useState(false); // 2. State to track scroll
+  const { user, logout } = useAuth();
+  const [isScrolled, setIsScrolled] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // 3. Effect to detect scroll position
@@ -119,12 +122,16 @@ const Navbar = () => {
               >
                 Purchase
               </Link>
-              <Link
-                to="/auth"
-                className="px-8 py-3 dark:text-white hover:opacity-90 duration-300  dark:bg-Primary   bg-primary font-semibold  text-white hover:text-black  border rounded-full hover:bg-accent transition-colors"
-              >
-                Sign up
-              </Link>
+              {user ? (
+                <UserDropdown />
+              ) : (
+                <Link
+                  to="/auth"
+                  className="px-8 py-3 dark:text-white hover:opacity-90 duration-300 dark:bg-Primary bg-primary font-semibold text-white hover:text-black border rounded-full hover:bg-accent transition-colors"
+                >
+                  Sign up
+                </Link>
+              )}
             </div>
 
             {/* Mobile Menu Toggle */}
@@ -137,7 +144,12 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+      <Sidebar
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+        user={user}
+        logout={logout}
+      />
     </>
   );
 };

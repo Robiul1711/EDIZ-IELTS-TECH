@@ -1,16 +1,69 @@
 import NavigationButton from "@/components/common/NavigationButton";
+import { useApiMutation } from "@/hooks/apiMutation";
+import { useGoogleLogin } from "@react-oauth/google";
 import React from "react";
-import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { ImageAssets } from "@/lib/ImageProvider";
 
 const AuthStart = () => {
+  const navigate = useNavigate();
+  const { saveAuth } = useAuth();
+
+  // optional useForm usage you already had
+  const {
+    handleSubmit,
+  } = useForm();
+
+  const { mutate: callbackMutate } = useApiMutation({
+    url: "/callback",
+    method: "POST",
+    toast: false,
+    onSuccess: (response) => {
+      console.log("Callback done", response);
+      const tokenValue = response?.data?.token;
+      const userData = response?.data?.data;
+
+      if (tokenValue) {
+        saveAuth({ token: tokenValue, user: userData });
+      }
+      navigate("/");
+    },
+    onError: (err) => {
+      console.error("Callback failed", err);
+    },
+  });
+
+  const onSubmit = (data) => {
+    callbackMutate(data);
+  };
+
+  const googleLogin = useGoogleLogin({
+    onSuccess: (response) => {
+      const payload = {
+        provider: "google",
+        token: response?.access_token,
+      };
+
+      callbackMutate(payload);
+    },
+    onError: () => {
+      console.log("Google Login Failed");
+    },
+  });
+  console.log(callbackMutate);
   return (
     /* Main Card Container */
     <div className="w-full max-w-sm bg-white dark:bg-slate-900 rounded-[32px] overflow-hidden shadow-2xl border border-transparent dark:border-slate-800">
       {/* Header Section */}
       <div className="bg-[#604CDF] p-8 pb-10">
-      <div className="flex items-center justify-end">
-        <NavigationButton href="/" label="Back" />
-      </div>
+     <Link to="/">
+      <img src={ImageAssets.logo} alt="logo" className=" mx-auto mb-4" />
+    </Link>
+        <div className="flex items-center justify-end">
+          <NavigationButton href="/" label="Back" />
+        </div>
         <p className="text-white/90 text-sm mb-2 font-medium">
           No Payment Required
         </p>
@@ -27,7 +80,10 @@ const AuthStart = () => {
 
         <div className="space-y-4">
           {/* Google Button */}
-          <button className="group relative w-full flex items-center justify-center bg-gradient-to-r from-[#AC50EF] to-[#705CF6] py-3 rounded-full shadow-lg hover:shadow-purple-200  transition-transform active:scale-[0.98]">
+          <button
+            onClick={() => googleLogin()}
+            className="group relative w-full flex items-center justify-center bg-gradient-to-r from-[#AC50EF] to-[#705CF6] py-3 rounded-full shadow-lg hover:shadow-purple-200  transition-transform active:scale-[0.98]"
+          >
             <div className="absolute left-2 bg-white rounded-full p-1.5 shadow-sm">
               <svg
                 className="w-5 h-5"

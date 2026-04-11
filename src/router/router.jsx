@@ -41,6 +41,7 @@ import ReadingLayout from "@/layout/ReadingLayout";
 import IELTSAcademicReading from "@/pages/readingPage/IELTSAcademicReading";
 import ReadingPartOneMain from "@/pages/readingPage/partOne/ReadingPartOneMain";
 import ReadingPartTwoMain from "@/pages/readingPage/partTwo/ReadingPartTwoMain";
+import ReadingTestDetails from "@/pages/readingPage/ReadingTestDetails";
 import ClassroomLayout from "@/layout/ClassroomLayout";
 import Register from "@/pages/classroomDashboard/register/Register";
 import TeacherDashboard from "@/pages/classroomDashboard/teacherClassRoom/TeacherDashboard";
@@ -148,6 +149,10 @@ const router = createBrowserRouter([
       { path: "part1", element: <ReadingPartOneMain /> },
       { path: "part2", element: <ReadingPartTwoMain /> },
     ],
+  },
+  {
+    path: "/reading-test/:test_no/part/:part_no",
+    element: <ReadingTestDetails />,
   },
   // Admin routes
   {

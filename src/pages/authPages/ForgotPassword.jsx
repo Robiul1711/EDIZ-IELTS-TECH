@@ -1,26 +1,39 @@
+import { useApiMutation } from "@/hooks/apiMutation";
+import { ImageAssets } from "@/lib/ImageProvider";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
+  const { setEmail } = useAuth();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-
+  const { mutate, isPending } = useApiMutation({
+    url: "/forgot-password",
+    method: "POST",
+    secure: false,
+    onSuccess: (response) => {
+      console.log(response)
+      setEmail(response?.data?.email);
+      navigate("/auth/verify-otp");
+    },
+  });
   const onSubmit = (data) => {
-    console.log("Forgot Password Email:", data);
-    // 🔗 এখানে আপনার পাসওয়ার্ড রিসেট ওটিপি পাঠানোর API কল হবে
-    // সফল হলে ওটিপি ভেরিফিকেশন পেজে নিয়ে যাবে
-    navigate("/auth/verify-otp");
+    mutate(data);
   };
 
   return (
     <div className="w-full max-w-[90%] sm:max-w-sm md:max-w-md bg-white dark:bg-slate-900 rounded-3xl overflow-hidden shadow-xl dark:shadow-slate-800/50 mx-auto">
       {/* Header Section */}
       <div className="bg-gradient-to-b from-[#5D5FEF] to-[#705CF6] p-8 text-white text-center">
+    <Link to="/" className="">
+      <img src={ImageAssets.logo} alt="logo" className="mx-auto mb-4" />
+    </Link>
         <h2 className="text-2xl font-bold leading-tight">
           Forgot Password?
         </h2>

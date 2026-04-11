@@ -1,19 +1,38 @@
+import { useApiMutation } from "@/hooks/apiMutation";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 
 const LogInPage = () => {
   const navigate = useNavigate();
+  const { saveAuth } = useAuth();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
+  const { mutate, isPending } = useApiMutation({
+    url: "/login",
+    method: "POST",
+    secure: false,
+    successMessage: "Welcome back!",
+    onSuccess: (response) => {
+      console.log(response)
+      const tokenValue = response?.data?.token?.original?.access_token;
+      const userData = response?.data?.user;
+
+      if (tokenValue) {
+        saveAuth({ token: tokenValue, user: userData });
+      }
+
+      navigate("/student-dashboard");
+    },
+  });
+
   const onSubmit = (data) => {
-    navigate("/");
-    console.log("Login Data:", data);
-    // 🔗 API call will go here
+    mutate(data);
   };
 
   return (
@@ -102,7 +121,10 @@ const LogInPage = () => {
 
           {/* Forgot Password */}
           <div className="text-right mb-6">
-            <Link to="/auth/forgot-password" className="text-red-500 text-sm hover:underline">
+            <Link
+              to="/auth/forgot-password"
+              className="text-red-500 text-sm hover:underline"
+            >
               forgot password?
             </Link>
           </div>

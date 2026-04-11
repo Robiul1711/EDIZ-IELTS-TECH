@@ -31,8 +31,7 @@ const IELTSCategory = [
 
 const StudentPteCourse = () => {
   return (
-    <div className="py-6  space-y-6">
-      
+    <div className="space-y-6">
       {/* Full Test Banner */}
       <Link to="/ielts/full-test" className="group block w-full">
         <div className="p-6 xxs:p-8 md:p-10 rounded lg:rounded-2xl bg-white dark:bg-slate-900 hover:bg-gray-200 dark:hover:bg-slate-800 transition-all duration-300 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden shadow-sm hover:shadow-md border border-transparent dark:border-slate-800">

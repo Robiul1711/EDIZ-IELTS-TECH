@@ -4,18 +4,68 @@ import ExamDateModal from "../modals/ExamDateModal";
 import TargetScoreModal from "../modals/TargetScoreModal";
 import dayjs from "dayjs";
 import { Link } from "react-router-dom";
+import { useApiQuery } from "@/hooks/apiQuery";
+import { useApiMutation } from "@/hooks/apiMutation";
 
 const StudentDashboardInfo = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isScoreModalOpen, setIsScoreModalOpen] = useState(false);
-  const [examDate, setExamDate] = useState(new Date("2025-12-22"));
 
-  const [scores, setScores] = useState([
-    { label: "Listening", value: "0/9" },
-    { label: "Reading", value: "0/9" },
-    { label: "Speaking", value: "0/9" },
-    { label: "Writing", value: "0/9" },
-  ]);
+  // Target Score Queries
+  const { data: ieltsTargetScore } = useApiQuery({
+    queryKey: ["ielts_target_score"],
+    url: "/user/ielts_target_score",
+    secure: true,
+  });
+
+  const { mutate: mutateScores } = useApiMutation({
+    url: "/user/ielts_target_score",
+    method: "POST",
+    secure: true,
+    invalidateKeys: ["ielts_target_score"],
+  });
+
+  // Exam Date Queries
+  const { data: ieltsExamData } = useApiQuery({
+    queryKey: ["ielts_exam_date"],
+    url: "/user/ielts_exam_date",
+    secure: true,
+  });
+
+  const { mutate: mutateExamDate } = useApiMutation({
+    url: "/user/ielts_exam_date",
+    method: "POST",
+    secure: true,
+    invalidateKeys: ["ielts_exam_date"],
+  });
+
+  const onSubmitScores = (newScores) => {
+    const payload = {};
+    newScores.forEach((s) => {
+      payload[s.label.toLowerCase()] = parseFloat(s.value);
+    });
+    mutateScores(payload);
+  };
+
+  const onSubmitExamDate = (date) => {
+    mutateExamDate({
+      exam_date: dayjs(date).format("YYYY-MM-DD"),
+    });
+  };
+
+  const scores = React.useMemo(() => {
+    const data = ieltsTargetScore?.data || {};
+    return [
+      { label: "Listening", value: `${data.listening || 0}/9` },
+      { label: "Reading", value: `${data.reading || 0}/9` },
+      { label: "Speaking", value: `${data.speaking || 0}/9` },
+      { label: "Writing", value: `${data.writing || 0}/9` },
+    ];
+  }, [ieltsTargetScore]);
+
+  const examDate = React.useMemo(() => {
+    return ieltsExamData?.data?.exam_date ? new Date(ieltsExamData.data.exam_date) : new Date();
+  }, [ieltsExamData]);
 
   const daysRemaining = dayjs(examDate).diff(dayjs(), "day");
 
@@ -148,14 +198,14 @@ const StudentDashboardInfo = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         selectedDate={examDate}
-        onSelect={(date) => setExamDate(date)}
+        onSelect={(date) => onSubmitExamDate(date)}
       />
 
       <TargetScoreModal
         isOpen={isScoreModalOpen}
         onClose={() => setIsScoreModalOpen(false)}
         currentScores={scores}
-        onSave={(newScores) => setScores(newScores)}
+        onSave={(newScores) => onSubmitScores(newScores)}
       />
     </div>
   );

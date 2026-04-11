@@ -1,9 +1,14 @@
+import { useApiMutation } from "@/hooks/apiMutation";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import toast from "react-hot-toast";
 
 const ResetPassword = () => {
+  const { email } = useAuth();
   const navigate = useNavigate();
+  const resetToken = localStorage.getItem("resetToken");
   const {
     register,
     handleSubmit,
@@ -11,14 +16,29 @@ const ResetPassword = () => {
     formState: { errors },
   } = useForm();
 
-  // পাসওয়ার্ড ম্যাচিং চেক করার জন্য watch ব্যবহার করা হয়েছে
   const password = watch("password");
 
+  const { mutate, isPending } = useApiMutation({
+    url: "/reset-password",
+    method: "POST",
+    secure: false,
+    onSuccess: () => {
+      localStorage.removeItem("resetToken");
+      navigate("/auth/login");
+    },
+  });
+
   const onSubmit = (data) => {
-    console.log("Reset Password Data:", data);
-    // 🔗 API call logic for resetting password
-    // সফল হলে ওটিপি বা লগইন পেজে নেভিগেট করুন
-    navigate("/auth/login");
+    if (!email || !resetToken) {
+      toast.error("Required reset information is missing. Please try the forgot password process again.");
+      return;
+    }
+    mutate({
+      email: email,
+      set_token: resetToken,
+      password: data.password,
+      password_confirmation: data.confirmPassword,
+    });
   };
 
   return (

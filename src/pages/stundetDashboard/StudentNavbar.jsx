@@ -1,23 +1,11 @@
-import React, { useState, useRef, useEffect } from "react";
-import { User,  LogOut, Menu, KeyRound } from "lucide-react";
+import React from "react";
+import { Menu } from "lucide-react";
 import Logo from "@/assets/images/Navlogo.png";
 import { Link } from "react-router-dom";
 import DarkLightToggle from "@/components/common/DarkLightToggle";
+import UserDropdown from "@/shared/navbar/UserDropdown";
 
 const StudentNavbar = ({ onMenuClick }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
   return (
     <nav className="relative flex items-center justify-between pt-8 bg-transparent">
       <div className="flex items-center gap-4">
@@ -42,38 +30,7 @@ const StudentNavbar = ({ onMenuClick }) => {
         <DarkLightToggle />
         {/* Toggle Button */}
 
-        {/* Profile Avatar */}
-        <div className="relative" ref={dropdownRef}>
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="flex h-10 w-10 md:h-11 md:w-11 items-center justify-center rounded-full border-2 border-[#5E4FD7] bg-white"
-          >
-            <img
-              src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"
-              alt="User"
-              className="h-full w-full object-cover"
-            />
-          </button>
-
-          {isOpen && (
-            <div className="absolute right-0 mt-4 w-56 md:w-64 origin-top-right rounded-2xl bg-white py-2 shadow-2xl z-50 ring-1 ring-black/5">
-              <Link to="/student-dashboard/profile" className="flex w-full items-center gap-4 px-5 py-3 text-slate-600 hover:bg-slate-50 transition-colors">
-                <User size={18} strokeWidth={1.5} />{" "}
-                <span className="font-medium">Profile</span>
-              </Link>
-              <div className="mx-5 border-t border-slate-100"></div>
-              <Link to="" className="flex w-full items-center gap-4 px-5 py-3 text-slate-600 hover:bg-slate-50 transition-colors">
-                <KeyRound size={18} strokeWidth={1.5} />{" "}
-                <span className="font-medium">Forgot Password</span>
-              </Link>
-              <div className="mx-5 border-t border-slate-100"></div>
-              <button className="flex w-full items-center gap-4 px-5 py-3 text-red-500 hover:bg-red-50 transition-colors">
-                <LogOut size={18} strokeWidth={1.5} />{" "}
-                <span className="font-medium">Log out</span>
-              </button>
-            </div>
-          )}
-        </div>
+        <UserDropdown />
       </div>
     </nav>
   );

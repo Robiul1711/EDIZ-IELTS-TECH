@@ -91,8 +91,9 @@ const StudentIeltsReading = () => {
                           key={partIdx}
                           className="flex items-start gap-4 group/item cursor-pointer"
                         >
+                          {/* {console.log(part)} */}
                           <div className="mt-1">
-                            {test.status === "locked" ? (
+                            {part?.is_lock ? (
                               <div className="w-6 h-6 flex items-center justify-center bg-red-50 text-red-500 rounded-lg border border-red-100">
                                 <Lock size={14} />
                               </div>

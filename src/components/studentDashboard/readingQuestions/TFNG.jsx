@@ -7,15 +7,17 @@ const TFNG = ({ group, answers, onChange }) => {
   return (
     <div className="space-y-4">
       {/* Group Header */}
-      <div className="p-5 lg:p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
-        <div 
-          className="text-slate-800 dark:text-slate-200 font-bold text-base mb-2 leading-relaxed"
-          dangerouslySetInnerHTML={{ __html: group.question_details }}
+      {
+        group.question_details && (
+          <div className="p-5 lg:p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+            <div 
+              className="text-slate-800 dark:text-slate-200 font-bold text-base mb-2 leading-relaxed"
+              dangerouslySetInnerHTML={{ __html: group.question_details }}
         />
-        <div className="text-slate-500 dark:text-slate-400 text-xs font-medium">
-          Select <span className="text-indigo-600 dark:text-indigo-400 font-bold uppercase">{options[0]}</span>, <span className="text-indigo-600 dark:text-indigo-400 font-bold uppercase">{options[1]}</span>, or <span className="text-indigo-600 dark:text-indigo-400 font-bold uppercase">{options[2] || 'NOT GIVEN'}</span> for each statement.
-        </div>
+
       </div>
+        )
+      }
 
       {/* Questions List */}
       <div className="space-y-4">

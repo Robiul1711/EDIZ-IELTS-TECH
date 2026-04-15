@@ -42,6 +42,9 @@ import IELTSAcademicReading from "@/pages/readingPage/IELTSAcademicReading";
 import ReadingPartOneMain from "@/pages/readingPage/partOne/ReadingPartOneMain";
 import ReadingPartTwoMain from "@/pages/readingPage/partTwo/ReadingPartTwoMain";
 import ReadingTestDetails from "@/pages/readingPage/ReadingTestDetails";
+import StudentIeltsWritingTest from "@/pages/stundetDashboard/allIeltsCourse/StudentIeltsWritingTest";
+import StudentIeltsListeningTest from "@/pages/stundetDashboard/allIeltsCourse/StudentIeltsListeningTest";
+import StudentIeltsSpeakingTest from "@/pages/stundetDashboard/allIeltsCourse/StudentIeltsSpeakingTest";
 import ClassroomLayout from "@/layout/ClassroomLayout";
 import Register from "@/pages/classroomDashboard/register/Register";
 import TeacherDashboard from "@/pages/classroomDashboard/teacherClassRoom/TeacherDashboard";
@@ -153,6 +156,18 @@ const router = createBrowserRouter([
   {
     path: "/reading-test/:test_no/part/:part_no",
     element: <ReadingTestDetails />,
+  },
+  {
+    path: "/writing-test/:test_no",
+    element: <StudentIeltsWritingTest />,
+  },
+  {
+    path: "/listening-test/:test_no/part/:part_no",
+    element: <StudentIeltsListeningTest />,
+  },
+  {
+    path: "/speaking-test/:test_no/part/:part_no",
+    element: <StudentIeltsSpeakingTest />,
   },
   // Admin routes
   {

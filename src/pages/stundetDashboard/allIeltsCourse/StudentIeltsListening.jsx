@@ -6,44 +6,38 @@ import {
   Lock,
   Headphones,
 } from "lucide-react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useSearchParams } from "react-router-dom";
+import { useApiQuery } from "@/hooks/apiQuery";
 
 const StudentIeltsListening = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const type = searchParams.get("type") || "academic";
 
-  // Data structured to match the visual patterns of previous modules
-  const listeningData = [
-    {
-      version: 20,
-      status: "unlocked",
-      tests: [
-        { id: "l20-t1", label: "Test 1", completed: "4/40" },
-        { id: "l20-t2", label: "Test 2", completed: null },
-        { id: "l20-t3", label: "Test 3", completed: null },
-        { id: "l20-t4", label: "Test 4", completed: null },
-      ],
-    },
-    {
-      version: 19,
-      status: "locked", // Matches the locked UI pattern in image_a61104.png
-      tests: [
-        { id: "l19-t1", label: "Test 1", completed: null },
-        { id: "l19-t2", label: "Test 2", completed: null },
-        { id: "l19-t3", label: "Test 3", completed: null },
-        { id: "l19-t4", label: "Test 4", completed: null },
-      ],
-    },
-  ];
+  const { data: allIeltsListeningTests, isLoading } = useApiQuery({
+    queryKey: ["all-ielts-listening-tests", type],
+    url: "/ielts/listening/all-tests",
+    params: { type },
+    secure: true,
+  });
 
-  const sections = ["Section 1", "Section 2", "Section 3", "Section 4"];
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#604CDF]"></div>
+      </div>
+    );
+  }
+
+  const books = allIeltsListeningTests?.data || [];
 
   return (
-    <div className="w-full space-y-10 animate-in fade-in duration-500">
+    <div className="w-full space-y-6">
       {/* Top Navigation & Search */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <button
           onClick={() => navigate(-1)}
-          className="w-10 h-10 flex items-center justify-center bg-white dark:bg-slate-900 rounded-full shadow-sm text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all active:scale-90"
+          className="w-10 h-10 flex items-center justify-center bg-white dark:bg-slate-900 rounded-full shadow-sm text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
         >
           <ChevronLeft size={24} />
         </button>
@@ -52,7 +46,7 @@ const StudentIeltsListening = () => {
           <input
             type="text"
             placeholder="Search test title and press enter"
-            className="w-full pl-4 pr-10 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-sm dark:text-white focus:outline-none focus:ring-2 focus:ring-[#604CDF]/20 focus:border-[#604CDF] transition-all"
+            className="w-full pl-4 pr-10 py-2.5 bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 rounded-lg text-sm dark:text-white focus:outline-none focus:ring-2 focus:ring-[#604CDF]/20 focus:border-[#604CDF] transition-all"
           />
           <Search
             className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500"
@@ -61,103 +55,104 @@ const StudentIeltsListening = () => {
         </div>
       </div>
 
-      {listeningData.map((group) => (
-        <div key={group.version} className="space-y-6">
-          {/* Version Header */}
-          <div className="inline-flex items-center gap-4 bg-[#3E4555] text-white pr-10 py-2.5 rounded-2xl shadow-lg">
-            <div className="w-12 h-12 flex items-center justify-center bg-[#5E4FD7] rounded-xl ml-2 text-xl font-bold">
-              {group.version}
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h2 className="text-xl font-bold leading-tight">Listening</h2>
-                <Headphones size={18} className="text-white/40" />
-              </div>
-              <p className="text-[10px] text-slate-300 uppercase tracking-widest">
-                Academic
-              </p>
-            </div>
-          </div>
-
-          {/* Test Cards Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {group.tests.map((test) => (
-              <div
-                key={test.id}
-                className={`bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden border border-slate-50 dark:border-slate-800 transition-all duration-300 ${
-                  group.status === "unlocked"
-                    ? "shadow-sm hover:shadow-xl hover:-translate-y-1"
-                    : "opacity-75"
-                }`}
-              >
-                {/* Header Label */}
-                <div
-                  className={`${
-                    group.status === "unlocked"
-                      ? "bg-[#8B7EFF]"
-                      : "bg-[#8B7EFF]/80"
-                  } p-4`}
-                >
-                  <span className="bg-white/20 text-white text-[13px] font-semibold px-5 py-1.5 rounded-full backdrop-blur-md">
-                    {test.label}
-                  </span>
+      {books.map((book) => (
+        <React.Fragment key={book.book_no}>
+          {book.types.map((typeGroup, typeIdx) => (
+            <div key={`${book.book_no}-${typeIdx}`} className="space-y-8">
+              {/* Section Header */}
+              <div className="inline-flex items-center gap-4 bg-[#3E4555] text-white pr-8 py-2 rounded-2xl shadow-lg transition-transform hover:scale-[1.02]">
+                <div className="w-12 h-12 flex items-center justify-center bg-[#5E4FD7] rounded-xl ml-2 text-xl font-bold">
+                  {book.book_no}
                 </div>
+                <div>
+                   <div className="flex items-center gap-2">
+                    <h2 className="text-xl font-bold leading-tight">Listening</h2>
+                    <Headphones size={18} className="text-white/40" />
+                  </div>
+                  <p className="text-xs text-slate-300 uppercase tracking-widest font-semibold flex items-center gap-2">
+                    {typeGroup.type}
+                    <span className="w-1 h-1 bg-slate-400 rounded-full"></span>
+                    Cambridge Official
+                  </p>
+                </div>
+              </div>
 
-                {/* Section List */}
-                <div className="p-6 space-y-5">
-                  {sections.map((section, index) => (
-                    <div key={index}>
-                      {group.status === "locked" ? (
-                        <div className="flex items-start gap-3 group opacity-60">
-                          <div className="mt-0.5">
-                            <div className="w-5 h-5 flex items-center justify-center bg-red-50 dark:bg-red-900/20 text-red-400 dark:text-red-500 rounded-full">
-                              <Lock size={12} strokeWidth={3} />
-                            </div>
-                          </div>
-                          <div>
-                            <p className="text-[13px] font-bold text-slate-400 dark:text-slate-500">
-                              {section}
-                            </p>
-                            <p className="text-[11px] italic text-slate-400 dark:text-slate-500 mt-0.5">
-                              Locked
-                            </p>
-                          </div>
-                        </div>
-                      ) : (
-                        <Link
-                          to={`/listening/part${index + 1}`}
-                          className="flex items-start gap-3 group"
+              {/* Test Cards Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-8">
+                {typeGroup.tests.map((test, testIdx) => (
+                  <div
+                    key={`${book.book_no}-${testIdx}`}
+                    className="bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 dark:border-slate-800 group"
+                  >
+                    {/* Card Header */}
+                    <div className="bg-[#604CDF] p-5 relative overflow-hidden">
+                       <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full -mr-12 -mt-12 transition-transform group-hover:scale-150 duration-500" />
+                       <span className="bg-white/20 text-white text-sm font-bold px-5 py-2 rounded-full backdrop-blur-md relative z-10 border border-white/20">
+                        {test.test_name}
+                      </span>
+                    </div>
+
+                    {/* Card Content */}
+                    <div className="p-6 space-y-5">
+                      {test.parts.map((part, partIdx) => (
+                        <div
+                          key={partIdx}
+                          className="flex items-start gap-4 group/item cursor-pointer"
                         >
-                          <div className="mt-0.5">
-                            <PlayCircle
-                              className="text-[#604CDF] group-hover:scale-110 transition-transform"
-                              size={20}
-                              strokeWidth={2.5}
-                            />
-                          </div>
-                          <div>
-                            <p className="text-[13px] font-bold text-slate-700 dark:text-slate-200 group-hover:text-[#604CDF] transition-colors">
-                              {section}
-                            </p>
-                            {test.completed && index === 0 ? (
-                              <p className="text-[11px] italic text-red-400 mt-0.5 font-medium">
-                                Completed : {test.completed}
-                              </p>
+                          <div className="mt-1">
+                            {part?.is_lock ? (
+                              <div className="w-6 h-6 flex items-center justify-center bg-red-50 text-red-500 rounded-lg border border-red-100">
+                                <Lock size={14} />
+                              </div>
                             ) : (
-                              <p className="text-[11px] italic text-slate-400 dark:text-slate-500 mt-0.5">
-                                Not started
-                              </p>
+                              <PlayCircle
+                                className="text-[#604CDF] group-hover/item:scale-125 transition-all duration-300"
+                                size={22}
+                              />
                             )}
                           </div>
-                        </Link>
-                      )}
+                          <div className="flex-1">
+                            <Link
+                              to={`/listening-test/${test.test_no}/part/${part.part_no}?book=${book.book_no}&type=${type}`}
+                            >
+                              <p
+                                className={`text-[13px] font-bold leading-snug break-words ${
+                                  part?.is_lock
+                                    ? "text-slate-400 dark:text-slate-500"
+                                    : "text-slate-700 dark:text-slate-200 group-hover/item:text-[#604CDF] transition-colors"
+                                }`}
+                              >
+                                {part.title || `Part ${part.part_no}`}
+                              </p>
+
+                              {part.total_complete && (
+                                <div className="flex items-center gap-1.5 mt-1.5 group/complete">
+                                  <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                                  <p className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 capitalize">
+                                    Completed :{" "}
+                                    <span className="font-mono">
+                                      {part.total_complete}
+                                    </span>
+                                  </p>
+                                </div>
+                              )}
+                              {!part.total_complete && (
+                                <p className="text-[11px] font-medium text-slate-400 dark:text-slate-500 mt-1 flex items-center gap-1">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-slate-200 dark:bg-slate-700"></span>
+                                  Not started
+                                </p>
+                              )}
+                            </Link>
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </div>
+            </div>
+          ))}
+        </React.Fragment>
       ))}
     </div>
   );

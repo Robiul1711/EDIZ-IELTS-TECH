@@ -4,16 +4,21 @@ const MCQ = ({ group, answers, onChange }) => {
   return (
     <div className="space-y-4">
       {/* Group Header */}
+      {
+        group.question_details && (
+          
       <div className="p-5 lg:p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
         <div 
           className="text-slate-800 dark:text-slate-200 font-bold text-base mb-2 leading-relaxed"
           dangerouslySetInnerHTML={{ __html: group.question_details }}
         />
-        <div 
+        {/* <div 
           className="text-slate-500 dark:text-slate-400 text-xs font-medium prose-sm prose-slate dark:prose-invert"
           dangerouslySetInnerHTML={{ __html: group.instruction }}
-        />
+        /> */}
       </div>
+        )
+      }
 
       {/* Questions List */}
       <div className="space-y-4">

@@ -27,6 +27,7 @@ const UserDropdown = () => {
         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
         className="flex items-center gap-2 bg-gray-50/50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition-all duration-300 group p-1 pr-3"
       >
+        {/* {console.log(user)} */}
         <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full overflow-hidden border-2 border-primary/20 bg-primary/10 flex items-center justify-center shrink-0">
           {user?.avatar ? (
             <img

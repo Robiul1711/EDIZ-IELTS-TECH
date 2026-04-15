@@ -314,10 +314,10 @@ const ReadingTestDetails = () => {
           <button
             disabled={isSubmitting}
             onClick={handleSubmit}
-            className="flex-1 lg:flex-none group relative flex items-center justify-center lg:justify-start gap-3 px-6 lg:px-10 h-12 lg:h-14 bg-emerald-600 text-white font-black rounded-2xl hover:bg-emerald-700 transition-all active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none shadow-xl shadow-emerald-200 dark:shadow-none uppercase text-[10px] lg:text-xs tracking-[0.2em]"
+            className="flex-1 lg:flex-none group relative flex items-center justify-center lg:justify-start gap-3 px-6 lg:px-10 h-12 lg:h-14 bg-indigo-600 text-white font-black rounded-2xl hover:bg-indigo-700 transition-all active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none shadow-xl shadow-indigo-200 dark:shadow-none uppercase text-[10px] lg:text-xs tracking-[0.2em]"
           >
             <span>{isSubmitting ? "Sending..." : "Submit Test"}</span>
-            <div className="w-5 h-5 lg:w-6 lg:h-6 rounded-lg bg-emerald-500/50 flex items-center justify-center transition-transform group-hover:translate-x-1">
+            <div className="w-5 h-5 lg:w-6 lg:h-6 rounded-lg bg-indigo-500/50 flex items-center justify-center transition-transform group-hover:translate-x-1">
               <ChevronRight size={14} strokeWidth={3} />
             </div>
           </button>

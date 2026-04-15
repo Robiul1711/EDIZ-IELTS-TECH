@@ -121,9 +121,9 @@ const Banner = () => {
                   tests
                 </h2>
               </div>
-              <Link to="/student-dashboard" className="bg-white text-purple-600 px-8 py-3 sm:py-4 rounded-xl font-bold text-lg hover:bg-purple-50 hover:scale-105 transition-all duration-300 shadow-lg">
+              <p className="bg-white inline-block text-purple-600 px-8 py-3 sm:py-4 rounded-xl font-bold text-lg hover:bg-purple-50 hover:scale-105 transition-all duration-300 shadow-lg">
                 Get free mock test
-              </Link>
+              </p>
             </div>
           </div>
         </div>

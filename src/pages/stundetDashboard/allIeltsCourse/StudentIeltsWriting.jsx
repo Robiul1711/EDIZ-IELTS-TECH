@@ -1,55 +1,37 @@
 import React from "react";
 import { Search, ChevronLeft, PlayCircle, Lock } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { useApiQuery } from "@/hooks/apiQuery";
 
 const StudentIeltsWriting = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const type = searchParams.get("type") || "academic";
 
-  // Data updated with "status" to handle locking logic
-  const writingData = [
-    {
-      version: 20,
-      status: "unlocked",
-      tests: [
-        {
-          id: "v20-t1",
-          label: "Test 1",
-          tasks: ["Progress Diagram", "Combination Chart"],
-        },
-        { id: "v20-t2", label: "Test 2", tasks: ["Map", "Table"] },
-        { id: "v20-t3", label: "Test 3", tasks: ["Map", "Table"] },
-        { id: "v20-t4", label: "Test 4", tasks: ["Map", "Table"] },
-      ],
-    },
-    {
-      version: 19,
-      status: "locked", // This version will show lock icons
-      tests: [
-        { id: "v19-t1", label: "Test 1", tasks: ["Progress Diagram", "Map"] },
-        { id: "v19-t2", label: "Test 2", tasks: ["Line Graph", "Bar Chart"] },
-        { id: "v19-t3", label: "Test 3", tasks: ["Map", "Table"] },
-        { id: "v19-t4", label: "Test 4", tasks: ["Map", "Table"] },
-      ],
-    },
-    {
-      version: 18,
-      status: "locked",
-      tests: [
-        { id: "v18-t1", label: "Test 1", tasks: ["Progress Diagram", "Map"] },
-        { id: "v18-t2", label: "Test 2", tasks: ["Line Graph", "Bar Chart"] },
-        { id: "v18-t3", label: "Test 3", tasks: ["Map", "Table"] },
-        { id: "v18-t4", label: "Test 4", tasks: ["Map", "Table"] },
-      ],
-    },
-  ];
+  const { data: allIeltsWritingTests, isLoading } = useApiQuery({
+    queryKey: ["all-ielts-writing-tests", type],
+    url: "/ielts/writing/all-tests",
+    params: { type },
+    secure: true,
+  });
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#604CDF]"></div>
+      </div>
+    );
+  }
+
+  const books = allIeltsWritingTests?.data || [];
 
   return (
-    <div className="w-full space-y-10 animate-in fade-in duration-500">
-      {/* Header Actions */}
+    <div className="w-full space-y-6">
+      {/* Top Navigation & Search */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <button
           onClick={() => navigate(-1)}
-          className="w-10 h-10 flex items-center justify-center bg-white dark:bg-slate-900 rounded-full shadow-sm text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all active:scale-95"
+          className="w-10 h-10 flex items-center justify-center bg-white dark:bg-slate-900 rounded-full shadow-sm text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
         >
           <ChevronLeft size={24} />
         </button>
@@ -67,88 +49,101 @@ const StudentIeltsWriting = () => {
         </div>
       </div>
 
-      {writingData.map((group) => (
-        <div key={group.version} className="space-y-6">
-          {/* Version Header Indicator */}
-          <div className="inline-flex items-center gap-4 bg-[#3E4555] text-white pr-10 py-2.5 rounded-2xl shadow-md">
-            <div className="w-12 h-12 flex items-center justify-center bg-[#5E4FD7] rounded-xl ml-2 text-xl font-bold shadow-inner">
-              {group.version}
-            </div>
-            <div>
-              <h2 className="text-xl font-bold leading-tight tracking-tight">
-                Writing
-              </h2>
-              <p className="text-[10px] text-slate-300 uppercase tracking-[0.2em] font-medium">
-                Academic
-              </p>
-            </div>
-          </div>
-
-          {/* Grid for Test Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {group.tests.map((test) => (
-              <div
-                key={test.id}
-                className={`bg-white dark:bg-slate-900 rounded-[1.8rem] overflow-hidden border border-slate-50 dark:border-slate-800 transition-all duration-300 ${
-                  group.status === "unlocked"
-                    ? "shadow-sm hover:shadow-xl hover:-translate-y-1 cursor-pointer"
-                    : "shadow-none opacity-100"
-                }`}
-              >
-                {/* Header Label Area - Changes color if locked */}
-                <div
-                  className={`${
-                    group.status === "unlocked"
-                      ? "bg-[#8B7EFF]"
-                      : "bg-[#8B7EFF]/80"
-                  } p-4 transition-colors`}
-                >
-                  <span className="bg-white/20 text-white text-[13px] font-semibold px-5 py-1.5 rounded-full backdrop-blur-md inline-block">
-                    {test.label}
-                  </span>
+      {books?.map((book) => (
+        <React.Fragment key={book.book_no}>
+          {book?.types?.map((typeGroup, typeIdx) => (
+            <div key={`${book.book_no}-${typeIdx}`} className="space-y-8">
+              {/* Section Header */}
+              <div className="inline-flex items-center gap-4 bg-[#3E4555] text-white pr-8 py-2 rounded-2xl shadow-lg transition-transform hover:scale-[1.02]">
+                <div className="w-12 h-12 flex items-center justify-center bg-[#5E4FD7] rounded-xl ml-2 text-xl font-bold">
+                  {book?.book_no}
                 </div>
-
-                {/* Card Task List */}
-                <div className="p-5 min-h-[120px]">
-                  <div className="space-y-4">
-                    {test.tasks.map((task, index) => (
-                      <div key={index}>
-                        {group.status === "unlocked" ? (
-                          <Link
-                            to={`/writing/part${index + 1}`}
-                            className="flex items-center gap-3 group"
-                          >
-                            <PlayCircle
-                              className="text-[#604CDF] group-hover:scale-110 transition-transform duration-200"
-                              size={20}
-                              strokeWidth={2.5}
-                            />
-                            <span className="text-[14px] font-medium text-slate-600 dark:text-slate-300 group-hover:text-[#604CDF] transition-colors">
-                              {task}
-                            </span>
-                          </Link>
-                        ) : (
-                          <div className="flex items-center gap-3 group opacity-60">
-                            <div className="p-1 bg-red-50 dark:bg-red-900/20 rounded-full">
-                              <Lock
-                                className="text-red-400 dark:text-red-500"
-                                size={14}
-                                strokeWidth={2.5}
-                              />
-                            </div>
-                            <span className="text-[14px] font-medium text-slate-400 dark:text-slate-500 italic">
-                              {task} (Locked)
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
+                <div>
+                  <h2 className="text-xl font-bold leading-tight">Writing</h2>
+                  <p className="text-xs text-slate-300 uppercase tracking-widest font-semibold flex items-center gap-2">
+                    {typeGroup?.type}
+                    <span className="w-1 h-1 bg-slate-400 rounded-full"></span>
+                    Cambridge Official
+                  </p>
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
+
+              {/* Test Cards Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-8">
+                {typeGroup?.tests?.map((test, testIdx) => (
+                  <div
+                    key={`${book.book_no}-${testIdx}`}
+                    className="bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 dark:border-slate-800 group"
+                  >
+                    {/* Card Header */}
+                    <div className="bg-[#604CDF] p-5 relative overflow-hidden">
+                      <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full -mr-12 -mt-12 transition-transform group-hover:scale-150 duration-500" />
+                      <span className="bg-white/20 text-white text-sm font-bold px-5 py-2 rounded-full backdrop-blur-md relative z-10 border border-white/20">
+                        {test?.test_name}
+                      </span>
+                    </div>
+
+                    {/* Card Content */}
+                    <div className="p-6 space-y-5">
+                      {test?.parts?.map((task, taskIdx) => (
+                        <div
+                          key={taskIdx}
+                          className="flex items-start gap-4 group/item cursor-pointer"
+                        >
+                          <div className="mt-1">
+                            {task?.is_lock ? (
+                              <div className="w-6 h-6 flex items-center justify-center bg-red-50 text-red-500 rounded-lg border border-red-100">
+                                <Lock size={14} />
+                              </div>
+                            ) : (
+                              <PlayCircle
+                                className="text-[#604CDF] group-hover/item:scale-125 transition-all duration-300"
+                                size={22}
+                              />
+                            )}
+                          </div>
+                          <div className="flex-1">
+                            <Link
+                              to={`/writing-test/${test.test_no}?book_no=${book.book_no}&type=${type}`}
+                            >
+                              <p
+                                className={`text-[13px] font-bold leading-snug break-words ${
+                                  test?.status === "locked"
+                                    ? "text-slate-400 dark:text-slate-500"
+                                    : "text-slate-700 dark:text-slate-200 group-hover/item:text-[#604CDF] transition-colors"
+                                }`}
+                              >
+                                {task?.title || `Task ${task?.task_no}`}
+                              </p>
+
+                              {task?.total_complete && (
+                                <div className="flex items-center gap-1.5 mt-1.5 group/complete">
+                                  <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                                  <p className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 capitalize">
+                                    Completed :{" "}
+                                    <span className="font-mono">
+                                      {task?.total_complete}
+                                    </span>
+                                  </p>
+                                </div>
+                              )}
+                              {!task?.total_complete && (
+                                <p className="text-[11px] font-medium text-slate-400 dark:text-slate-500 mt-1 flex items-center gap-1">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-slate-200 dark:bg-slate-700"></span>
+                                  Not started
+                                </p>
+                              )}
+                            </Link>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </React.Fragment>
       ))}
     </div>
   );

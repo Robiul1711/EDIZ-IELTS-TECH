@@ -2,6 +2,8 @@ import NavigationButton from "@/components/common/NavigationButton";
 import React from "react";
 import { FaAnglesRight } from "react-icons/fa6";
 import { Link } from "react-router-dom";
+
+
 const IELTSAcademicReading = () => {
   return (
     <div className="min-h-screen  flex flex-col items-center justify-center p-4 md:p-8 transition-colors duration-300">

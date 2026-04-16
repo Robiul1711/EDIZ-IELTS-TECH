@@ -9,7 +9,6 @@ const IELTSAcademicReading = () => {
       <div className="flex items-center justify-start w-full  mb-4">
         <NavigationButton href="/ielts" label="Back" />
       </div>
-
       <div className="text-center max-w-3xl">
         <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
           Instructions to Test Takers

@@ -1,105 +1,37 @@
 import React from "react";
 import { Search, ChevronLeft, PlayCircle, Lock, Mic } from "lucide-react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useSearchParams } from "react-router-dom";
+import { useApiQuery } from "@/hooks/apiQuery";
 
 const StudentIeltsSpeaking = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const type = searchParams.get("type") || "academic";
 
-  // Data structure matching the patterns in image_a61104.png and image_a61c28.png
-  const speakingData = [
-    {
-      version: 20,
-      status: "active",
-      tests: [
-        {
-          id: "s20-t1",
-          label: "Test 1",
-          parts: [
-            "Part 1 - Introduction",
-            "Part 2 - Cue Card",
-            "Part 3 - Discussion",
-          ],
-        },
-        {
-          id: "s20-t2",
-          label: "Test 2",
-          parts: [
-            "Part 1 - Introduction",
-            "Part 2 - Cue Card",
-            "Part 3 - Discussion",
-          ],
-        },
-        {
-          id: "s20-t3",
-          label: "Test 3",
-          parts: [
-            "Part 1 - Introduction",
-            "Part 2 - Cue Card",
-            "Part 3 - Discussion",
-          ],
-        },
-        {
-          id: "s20-t4",
-          label: "Test 4",
-          parts: [
-            "Part 1 - Introduction",
-            "Part 2 - Cue Card",
-            "Part 3 - Discussion",
-          ],
-        },
-      ],
-    },
-    {
-      version: 19,
-      status: "locked",
-      tests: [
-        {
-          id: "s19-t1",
-          label: "Test 1",
-          parts: [
-            "Part 1 - Introduction",
-            "Part 2 - Cue Card",
-            "Part 3 - Discussion",
-          ],
-        },
-        {
-          id: "s19-t2",
-          label: "Test 2",
-          parts: [
-            "Part 1 - Introduction",
-            "Part 2 - Cue Card",
-            "Part 3 - Discussion",
-          ],
-        },
-        {
-          id: "s19-t3",
-          label: "Test 3",
-          parts: [
-            "Part 1 - Introduction",
-            "Part 2 - Cue Card",
-            "Part 3 - Discussion",
-          ],
-        },
-        {
-          id: "s19-t4",
-          label: "Test 4",
-          parts: [
-            "Part 1 - Introduction",
-            "Part 2 - Cue Card",
-            "Part 3 - Discussion",
-          ],
-        },
-      ],
-    },
-  ];
+  const { data: allIeltsSpeakingTests, isLoading } = useApiQuery({
+    queryKey: ["all-ielts-speaking-tests", type],
+    url: "/ielts/speaking/all-tests",
+    params: { type },
+    secure: true,
+  });
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#604CDF]"></div>
+      </div>
+    );
+  }
+
+  const books = allIeltsSpeakingTests?.data || [];
 
   return (
-    <div className="w-full space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      {/* Top Header Section [Matches image_a61104.png] */}
+    <div className="w-full space-y-6">
+      {/* Top Navigation & Search */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <button
           onClick={() => navigate(-1)}
-          className="w-10 h-10 flex items-center justify-center bg-white dark:bg-slate-900 rounded-full shadow-sm text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all active:scale-90"
+          className="w-10 h-10 flex items-center justify-center bg-white dark:bg-slate-900 rounded-full shadow-sm text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
         >
           <ChevronLeft size={24} />
         </button>
@@ -108,7 +40,7 @@ const StudentIeltsSpeaking = () => {
           <input
             type="text"
             placeholder="Search test title and press enter"
-            className="w-full pl-4 pr-10 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-sm dark:text-white focus:outline-none focus:ring-2 focus:ring-[#604CDF]/20 focus:border-[#604CDF] transition-all shadow-sm"
+            className="w-full pl-4 pr-10 py-2.5 bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 rounded-lg text-sm dark:text-white focus:outline-none focus:ring-2 focus:ring-[#604CDF]/20 focus:border-[#604CDF] transition-all"
           />
           <Search
             className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500"
@@ -117,94 +49,104 @@ const StudentIeltsSpeaking = () => {
         </div>
       </div>
 
-      {speakingData.map((group) => (
-        <div key={group.version} className="space-y-6">
-          {/* Version Header [Matches image_a61c28.png style] */}
-          <div className="inline-flex items-center gap-4 bg-[#3E4555] text-white pr-10 py-2.5 rounded-2xl shadow-lg">
-            <div className="w-12 h-12 flex items-center justify-center bg-[#5E4FD7] rounded-xl ml-2 text-xl font-bold shadow-inner">
-              {group.version}
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h2 className="text-xl font-bold leading-tight tracking-tight">
-                  Speaking
-                </h2>
-                <Mic size={18} className="text-white/50" />
-              </div>
-              <p className="text-[10px] text-slate-300 uppercase tracking-[0.2em] font-medium">
-                Academic
-              </p>
-            </div>
-          </div>
-
-          {/* Grid for Speaking Test Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {group.tests.map((test) => (
-              <div
-                key={test.id}
-                className={`bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden shadow-sm border border-slate-100 dark:border-slate-800 transition-all duration-300 
-                  ${
-                    group.status === "active"
-                      ? "hover:shadow-xl hover:-translate-y-1 cursor-pointer"
-                      : "opacity-80"
-                  }`}
-              >
-                {/* Colored Header Pill */}
-                <div className="bg-[#8B7EFF] p-4">
-                  <span className="bg-white/20 text-white text-[13px] font-semibold px-5 py-1.5 rounded-full backdrop-blur-md inline-block">
-                    {test.label}
-                  </span>
+      {books.map((book) => (
+        <React.Fragment key={book.book_no}>
+          {book.types.map((typeGroup, typeIdx) => (
+            <div key={`${book.book_no}-${typeIdx}`} className="space-y-8">
+              {/* Section Header */}
+              <div className="inline-flex items-center gap-4 bg-[#3E4555] text-white pr-8 py-2 rounded-2xl shadow-lg transition-transform hover:scale-[1.02]">
+                <div className="w-12 h-12 flex items-center justify-center bg-[#5E4FD7] rounded-xl ml-2 text-xl font-bold">
+                  {book.book_no}
                 </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-xl font-bold leading-tight">Speaking</h2>
+                    <Mic size={18} className="text-white/50" />
+                  </div>
+                  <p className="text-xs text-slate-300 uppercase tracking-widest font-semibold flex items-center gap-2">
+                    {typeGroup.type}
+                    <span className="w-1 h-1 bg-slate-400 rounded-full"></span>
+                    Cambridge Official
+                  </p>
+                </div>
+              </div>
 
-                {/* Parts List [Matches image_a671a8.png structure] */}
-                <div className="p-6 space-y-5">
-                  {test.parts.map((part, index) => (
-                    <div key={index}>
-                      {group.status === "locked" ? (
-                        <div className="flex items-start gap-3 group opacity-80">
-                          <div className="mt-0.5">
-                            <div className="w-5 h-5 flex items-center justify-center bg-red-50 dark:bg-red-900/20 text-red-400 dark:text-red-500 rounded-full">
-                              <Lock size={12} strokeWidth={3} />
-                            </div>
+              {/* Test Cards Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-8">
+                {typeGroup.tests.map((test, testIdx) => (
+                  <div
+                    key={`${book.book_no}-${testIdx}`}
+                    className="bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 dark:border-slate-800 group"
+                  >
+                    {/* Card Header */}
+                    <div className="bg-[#604CDF] p-5 relative overflow-hidden">
+                       <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full -mr-12 -mt-12 transition-transform group-hover:scale-150 duration-500" />
+                       <span className="bg-white/20 text-white text-sm font-bold px-5 py-2 rounded-full backdrop-blur-md relative z-10 border border-white/20">
+                        {test.test_name}
+                      </span>
+                    </div>
+
+                    {/* Card Content */}
+                    <div className="p-6 space-y-5">
+                      {test.parts.map((part, partIdx) => (
+                        <div
+                          key={partIdx}
+                          className="flex items-start gap-4 group/item cursor-pointer"
+                        >
+                          <div className="mt-1">
+                            {part?.is_lock ? (
+                              <div className="w-6 h-6 flex items-center justify-center bg-red-50 text-red-500 rounded-lg border border-red-100">
+                                <Lock size={14} />
+                              </div>
+                            ) : (
+                              <PlayCircle
+                                className="text-[#604CDF] group-hover/item:scale-125 transition-all duration-300"
+                                size={22}
+                              />
+                            )}
                           </div>
-                          <div>
-                            <p className="text-[13px] font-semibold text-slate-400 dark:text-slate-500 italic">
-                              {part}
-                            </p>
-                            <p className="text-[11px] italic text-slate-400 dark:text-slate-500 mt-1 font-medium">
-                              Locked
-                            </p>
+                          <div className="flex-1">
+                            <Link
+                              to={`/speaking-test/${test.test_no}/part/${part.part_no}?book=${book.book_no}&type=${type}`}
+                            >
+                              <p
+                                className={`text-[13px] font-bold leading-snug break-words ${
+                                  part?.is_lock
+                                    ? "text-slate-400 dark:text-slate-500"
+                                    : "text-slate-700 dark:text-slate-200 group-hover/item:text-[#604CDF] transition-colors"
+                                }`}
+                              >
+                                {part.title || `Part ${part.part_no}`}
+                              </p>
+
+                              {part.total_complete && (
+                                <div className="flex items-center gap-1.5 mt-1.5 group/complete">
+                                  <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                                  <p className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 capitalize">
+                                    Completed :{" "}
+                                    <span className="font-mono">
+                                      {part.total_complete}
+                                    </span>
+                                  </p>
+                                </div>
+                              )}
+                              {!part.total_complete && (
+                                <p className="text-[11px] font-medium text-slate-400 dark:text-slate-500 mt-1 flex items-center gap-1">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-slate-200 dark:bg-slate-700"></span>
+                                  Not started
+                                </p>
+                              )}
+                            </Link>
                           </div>
                         </div>
-                      ) : (
-                        <Link
-                          to={index < 2 ? `/speaking/part${index + 1}` : "#"}
-                          className={`flex items-start gap-3 group ${index >= 2 ? "cursor-not-allowed opacity-60" : ""}`}
-                        >
-                          <div className="mt-0.5">
-                            <PlayCircle
-                              className="text-[#604CDF] group-hover:scale-110 transition-transform duration-200"
-                              size={20}
-                              strokeWidth={2.5}
-                            />
-                          </div>
-                          <div>
-                            <p className="text-[13px] font-semibold text-slate-700 dark:text-slate-200 group-hover:text-[#604CDF] transition-colors leading-tight">
-                              {part}
-                            </p>
-                            <p className="text-[11px] italic text-slate-400 dark:text-slate-500 mt-1 font-medium">
-                              Not started
-                            </p>
-                          </div>
-                        </Link>
-                      )}
+                      ))}
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </div>
+            </div>
+          ))}
+        </React.Fragment>
       ))}
     </div>
   );

@@ -2,9 +2,6 @@ import axios from "axios";
 // import { useAuth } from "./useAuth";
 
 const useAxiosSecure = () => {
-  // Option: You can use auth context if available.
-  // const auth = useAuth();
-  // const access_token = auth?.user?.token;
 
   // fallback to localStorage token value
   const access_token = localStorage.getItem("token") || null;

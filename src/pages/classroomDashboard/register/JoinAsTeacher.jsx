@@ -32,7 +32,7 @@ const JoinAsTeacher = ({ onBack }) => {
 
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* Name */}
-        <div className="mb-4">
+        {/* <div className="mb-4">
           <label className="block text-sm text-gray-500 dark:text-slate-400 mb-1">
             Your name
           </label>
@@ -47,27 +47,7 @@ const JoinAsTeacher = ({ onBack }) => {
           {errors.name && (
             <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>
           )}
-        </div>
-
-        {/* Batch No */}
-        <div className="mb-4">
-          <label className="block text-sm text-gray-500 dark:text-slate-400 mb-1">
-            Batch no.
-          </label>
-          <input
-            type="text"
-            placeholder="Enter Batch no."
-            {...register("batchNo", { required: "Batch number is required" })}
-            className="w-full h-10 rounded-full border border-gray-200 dark:border-slate-700 px-4 text-sm text-black dark:text-white dark:bg-slate-800
-                       placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 
-                       focus:ring-purple-400"
-          />
-          {errors.batchNo && (
-            <p className="text-xs text-red-500 mt-1">
-              {errors.batchNo.message}
-            </p>
-          )}
-        </div>
+        </div> */}
 
         {/* Teacher ID */}
         <div className="mb-6">
@@ -90,6 +70,26 @@ const JoinAsTeacher = ({ onBack }) => {
             </p>
           )}
         </div>
+        {/* Batch No */}
+        <div className="mb-4">
+          <label className="block text-sm text-gray-500 dark:text-slate-400 mb-1">
+            Batch no.
+          </label>
+          <input
+            type="text"
+            placeholder="Enter Batch no."
+            {...register("batchNo", { required: "Batch number is required" })}
+            className="w-full h-10 rounded-full border border-gray-200 dark:border-slate-700 px-4 text-sm text-black dark:text-white dark:bg-slate-800
+                       placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 
+                       focus:ring-purple-400"
+          />
+          {errors.batchNo && (
+            <p className="text-xs text-red-500 mt-1">
+              {errors.batchNo.message}
+            </p>
+          )}
+        </div>
+
 
         {/* Submit */}
         <button

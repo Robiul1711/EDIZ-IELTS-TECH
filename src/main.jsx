@@ -12,6 +12,7 @@ import AuthProvider from "./providers/AuthProvider";
 
 const queryClient = new QueryClient();
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_CLIENT_ID; 
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
         <Toaster

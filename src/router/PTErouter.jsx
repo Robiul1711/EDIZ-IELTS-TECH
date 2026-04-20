@@ -33,7 +33,6 @@ import ListeningHighlightSummary from "@/pages/ptePage/listeningTest/ListeningHi
 import ListeningMissingWord from "@/pages/ptePage/listeningTest/ListeningMissingWord";
 import ListeningHighlightIncorrectWord from "@/pages/ptePage/listeningTest/ListeningHighlightIncorrectWord";
 import ListeningDictation from "@/pages/ptePage/listeningTest/ListeningDictation";
- 
 
 export const pteRoutes = {
     path: "/pte",

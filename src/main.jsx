@@ -10,6 +10,7 @@ import { Toaster } from "react-hot-toast";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import AuthProvider from "./providers/AuthProvider";
 
+
 const queryClient = new QueryClient();
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_CLIENT_ID; 
 

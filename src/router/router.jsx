@@ -133,6 +133,7 @@ const router = createBrowserRouter([
       { path: "part2", element: <WritingPartTwo /> },
     ],
   },
+  
   //speaking routes can be added here
   {
     path: "/speaking",

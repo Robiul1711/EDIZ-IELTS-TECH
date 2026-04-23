@@ -1,36 +1,35 @@
 import { useApiMutation } from "@/hooks/apiMutation";
-import React from "react";
+import React, { useRef } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 
-const LogInPage = () => {
+const SignUpPage = () => {
   const navigate = useNavigate();
-  const { saveAuth } = useAuth();
+  const { saveAuth, setEmail } = useAuth();
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm();
 
+  const password = useRef({});
+  password.current = watch("password", "");
+
   const { mutate, isPending } = useApiMutation({
-    url: "/login",
+    url: "/register",
     method: "POST",
     secure: false,
-    successMessage: "Welcome back!",
+    successMessage: "Registration successful! Please verify your email.",
     onSuccess: (response) => {
-      const tokenValue = response?.data?.token?.original?.access_token;
-      const userData = response?.data?.user;
-
-      if (tokenValue) {
-        saveAuth({ token: tokenValue, user: userData });
-      }
-
-      navigate("/student-dashboard");
+      console.log("Registration response:", response);
+      navigate("/auth/verify-otp", { state: { action: "email_verification" } });
     },
   });
 
   const onSubmit = (data) => {
+    setEmail(data.email);
     mutate(data);
   };
 
@@ -70,6 +69,26 @@ const LogInPage = () => {
 
         {/* Form */}
         <form onSubmit={handleSubmit(onSubmit)}>
+          {/* Name */}
+          <div className="mb-4">
+            <label className="block text-purple-600 dark:text-purple-400 text-sm font-medium mb-2">
+              Name
+            </label>
+            <input
+              type="text"
+              placeholder="John Doe"
+              className="w-full px-4 py-3 rounded-full border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+              {...register("name", {
+                required: "Name is required",
+              })}
+            />
+            {errors.name && (
+              <p className="text-red-500 text-xs mt-1">
+                {errors.name.message}
+              </p>
+            )}
+          </div>
+
           {/* Email */}
           <div className="mb-4">
             <label className="block text-purple-600 dark:text-purple-400 text-sm font-medium mb-2">
@@ -95,7 +114,7 @@ const LogInPage = () => {
           </div>
 
           {/* Password */}
-          <div className="mb-2">
+          <div className="mb-4">
             <label className="block text-purple-600 dark:text-purple-400 text-sm font-medium mb-2">
               Password
             </label>
@@ -118,14 +137,25 @@ const LogInPage = () => {
             )}
           </div>
 
-          {/* Forgot Password */}
-          <div className="text-right mb-6">
-            <Link
-              to="/auth/forgot-password"
-              className="text-red-500 text-sm hover:underline"
-            >
-              forgot password?
-            </Link>
+          {/* Confirm Password */}
+          <div className="mb-6">
+            <label className="block text-purple-600 dark:text-purple-400 text-sm font-medium mb-2">
+              Confirm Password
+            </label>
+            <input
+              type="password"
+              placeholder="•••••••"
+              className="w-full px-4 py-3 rounded-full border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+              {...register("password_confirmation", {
+                required: "Confirm Password is required",
+                validate: value => value === password.current || "The passwords do not match"
+              })}
+            />
+            {errors.password_confirmation && (
+              <p className="text-red-500 text-xs mt-1">
+                {errors.password_confirmation.message}
+              </p>
+            )}
           </div>
 
           {/* Submit Button */}
@@ -134,16 +164,13 @@ const LogInPage = () => {
             disabled={isPending}
             className="w-full bg-custom2 text-white font-bold py-3 px-4 rounded-full hover:shadow-custom transition duration-200 mb-4 disabled:opacity-70 disabled:cursor-not-allowed"
           >
-            {isPending ? "Logging in..." : "Log in"}
+            {isPending ? "Signing up..." : "Sign up"}
           </button>
 
           <div className="text-center text-sm text-gray-600 dark:text-gray-400">
-            Don't have an account?{" "}
-            <Link
-              to="/auth/signup"
-              className="text-purple-600 dark:text-purple-400 font-bold hover:underline"
-            >
-              Sign up
+            Already have an account?{" "}
+            <Link to="/auth/login" className="text-purple-600 dark:text-purple-400 font-bold hover:underline">
+              Log in
             </Link>
           </div>
         </form>
@@ -152,4 +179,4 @@ const LogInPage = () => {
   );
 };
 
-export default LogInPage;
+export default SignUpPage;

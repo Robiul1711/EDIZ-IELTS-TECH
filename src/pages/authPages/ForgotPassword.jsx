@@ -20,7 +20,7 @@ const ForgotPassword = () => {
     onSuccess: (response) => {
       console.log(response)
       setEmail(response?.data?.email);
-      navigate("/auth/verify-otp");
+      navigate("/auth/verify-otp", { state: { action: "forgot_password" } });
     },
   });
   const onSubmit = (data) => {

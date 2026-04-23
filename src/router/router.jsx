@@ -7,7 +7,6 @@ import AuthStart from "@/pages/authPages/AuthStart";
 import ForgotPassword from "@/pages/authPages/ForgotPassword";
 import LogInPage from "@/pages/authPages/LogInPage";
 import ResetPassword from "@/pages/authPages/ResetPassword";
-import SignInpage from "@/pages/authPages/SignInpage";
 import VerifyOtp from "@/pages/authPages/VerifyOtp";
 import Home from "@/pages/home/Home";
 import IELTSPage from "@/pages/ieltsPage/IELTSPage";
@@ -82,6 +81,7 @@ import HomeWorkDetails from "@/pages/classroomDashboard/teacherClassRoom/HomeWor
 import StudentHomeWork from "@/pages/classroomDashboard/studentClassRoom/StudentHomeWork";
 import ViewResultsStudents from "@/pages/classroomDashboard/studentClassRoom/ViewResultsStudents";
 import StartHomeWork from "@/pages/classroomDashboard/studentClassRoom/StartHomeWork";
+import SignUpPage from "@/pages/authPages/SignUpPage";
 
 const router = createBrowserRouter([
   // Auth routes
@@ -90,7 +90,7 @@ const router = createBrowserRouter([
     element: <AuthLayout />,
     children: [
       { index: true, element: <AuthStart /> },
-      { path: "signin", element: <SignInpage /> },
+      { path: "signup", element: <SignUpPage /> },
       { path: "login", element: <LogInPage /> },
       { path: "verify-otp", element: <VerifyOtp /> },
       { path: "forgot-password", element: <ForgotPassword /> },
@@ -169,12 +169,12 @@ const router = createBrowserRouter([
     path: "/speaking-test/:test_no/part/:part_no",
     element: <StudentIeltsSpeakingTest />,
   },
-  // Admin routes
-  {
-    path: "/dashboard",
-    element: <AdminLayout />,
-    children: [{ index: true, element: <Dashboard /> }],
-  },
+  // // Admin routes
+  // {
+  //   path: "/dashboard",
+  //   element: <AdminLayout />,
+  //   children: [{ index: true, element: <Dashboard /> }],
+  // },
   {
     path: "/student-dashboard",
     element: <StudentDashboardLayout />,

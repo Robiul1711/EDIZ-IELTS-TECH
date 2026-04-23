@@ -1,3 +1,4 @@
+import { useApiMutation } from "@/hooks/apiMutation";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
@@ -10,13 +11,18 @@ const JoinAsStudent = ({ onBack }) => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    console.log("Student Data:", data);
+const { mutate, isPending } = useApiMutation({
+    url: "/student-entry",
+    method: "POST",
+    secure: true,
+    onSuccess: (response) => {
 
-    // 👉 navigate after submit
-    navigate("/classroom/register-as-student", {
-      state: data, // optional: pass form data
-    });
+      navigate("/classroom/register-as-student");
+    },
+  });
+
+  const onSubmit = (data) => {
+    mutate(data);
   };
 
   return (
@@ -39,16 +45,16 @@ const JoinAsStudent = ({ onBack }) => {
           <input
             type="text"
             placeholder="Enter Student ID"
-            {...register("studentId", {
+            {...register("student_id", {
               required: "Student ID is required",
             })}
             className="w-full h-10 rounded-full border border-gray-200 dark:border-slate-700 px-4 text-sm text-black dark:text-white dark:bg-slate-800
                        placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 
                        focus:ring-purple-400"
           />
-          {errors.studentId && (
+          {errors.student_id && (
             <p className="text-xs text-red-500 mt-1">
-              {errors.studentId.message}
+              {errors.student_id.message}
             </p>
           )}
         </div>
@@ -60,14 +66,14 @@ const JoinAsStudent = ({ onBack }) => {
           <input
             type="text"
             placeholder="Enter Batch no."
-            {...register("batchNo", { required: "Batch number is required" })}
+            {...register("batch_id", { required: "Batch number is required" })}
             className="w-full h-10 rounded-full border border-gray-200 dark:border-slate-700 px-4 text-sm text-black dark:text-white dark:bg-slate-800
                        placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 
                        focus:ring-purple-400"
           />
-          {errors.batchNo && (
+          {errors.batch_id && (
             <p className="text-xs text-red-500 mt-1">
-              {errors.batchNo.message}
+              {errors.batch_id.message}
             </p>
           )}
         </div>

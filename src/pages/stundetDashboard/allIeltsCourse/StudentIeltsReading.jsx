@@ -70,7 +70,7 @@ const StudentIeltsReading = () => {
               </div>
 
               {/* Test Cards Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3  gap-6 md:gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2   gap-6 md:gap-8">
                 {typeGroup.tests.map((test, testIdx) => (
                   <div
                     key={`${book.book_no}-${testIdx}`}
@@ -79,17 +79,17 @@ const StudentIeltsReading = () => {
                     {/* Card Header */}
                     <div className="bg-[#604CDF] p-5 relative overflow-hidden">
                        <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full -mr-12 -mt-12 transition-transform group-hover:scale-150 duration-500" />
-                       <span className="bg-white/20 text-white text-sm font-bold px-5 py-2 rounded-full backdrop-blur-md relative z-10 border border-white/20">
+                       <span className="bg-white/20 text-white text-sm md:text-base font-bold px-5 py-2 rounded-full backdrop-blur-md relative z-10 border border-white/20">
                         {test.test_name}
                       </span>
                     </div>
 
                     {/* Card Content */}
-                    <div className="p-6 space-y-5">
+                    <div className="p-4 ">
                       {test.parts.map((part, partIdx) => (
                         <div
                           key={partIdx}
-                          className="flex items-start gap-4 group/item cursor-pointer"
+                          className="flex items-start gap-4 group/item cursor-pointer hover:bg-Primary/10 hover:text-Primary transition-colors p-2 rounded-xl"
                         >
                           {/* {console.log(part)} */}
                           <div className="mt-1">
@@ -105,11 +105,11 @@ const StudentIeltsReading = () => {
                             )}
                           </div>
                           <div className="flex-1">
-                            <Link
+                            <Link 
                               to={`/reading-test/${test.test_no}/part/${part.part_no}?book=${book.book_no}&type=${type}`}
                             >
                               <p
-                                className={`text-[13px] font-bold leading-snug break-words ${
+                                className={`text-sm md:text-base  font-bold leading-snug break-words ${
                                   test.status === "locked"
                                     ? "text-slate-400 dark:text-slate-500"
                                     : "text-slate-700 dark:text-slate-200 group-hover/item:text-[#604CDF] transition-colors"

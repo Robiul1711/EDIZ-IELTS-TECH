@@ -1,3 +1,4 @@
+import { useApiMutation } from "@/hooks/apiMutation";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -11,14 +12,20 @@ const JoinAsTeacher = ({ onBack }) => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    console.log("Teacher Form Data:", data);
+const { mutate, isPending } = useApiMutation({
+    url: "/teacher-entry",
+    method: "POST",
+    secure: true,
+    onSuccess: (response) => {
 
-    // 👉 navigate after submit
-    navigate("/classroom/register-as-teacher", {
-      state: data, // optional: pass data
-    });
+      navigate("/classroom/register-as-teacher");
+    },
+  });
+
+  const onSubmit = (data) => {
+    mutate(data);
   };
+
 
   return (
     <div className="bg-white dark:bg-slate-900 w-full max-w-[380px] mx-4 rounded-2xl shadow-xl px-6 xxs:px-8 py-7 dark:border dark:border-slate-800">
@@ -31,23 +38,6 @@ const JoinAsTeacher = ({ onBack }) => {
       </h2>
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        {/* Name */}
-        {/* <div className="mb-4">
-          <label className="block text-sm text-gray-500 dark:text-slate-400 mb-1">
-            Your name
-          </label>
-          <input
-            type="text"
-            placeholder="Enter your name"
-            {...register("name", { required: "Name is required" })}
-            className="w-full h-10 rounded-full border border-gray-200 dark:border-slate-700 px-4 text-sm text-black dark:text-white dark:bg-slate-800
-                       placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 
-                       focus:ring-purple-400"
-          />
-          {errors.name && (
-            <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>
-          )}
-        </div> */}
 
         {/* Teacher ID */}
         <div className="mb-6">
@@ -57,16 +47,16 @@ const JoinAsTeacher = ({ onBack }) => {
           <input
             type="text"
             placeholder="Enter Teacher ID"
-            {...register("teacherId", {
+            {...register("teacher_id", {
               required: "Teacher ID is required",
             })}
             className="w-full h-10 rounded-full border border-gray-200 dark:border-slate-700 px-4 text-sm text-black dark:text-white dark:bg-slate-800
                        placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 
                        focus:ring-purple-400"
           />
-          {errors.teacherId && (
+          {errors.teacher_id && (
             <p className="text-xs text-red-500 mt-1">
-              {errors.teacherId.message}
+              {errors.teacher_id.message}
             </p>
           )}
         </div>
@@ -78,14 +68,14 @@ const JoinAsTeacher = ({ onBack }) => {
           <input
             type="text"
             placeholder="Enter Batch no."
-            {...register("batchNo", { required: "Batch number is required" })}
+            {...register("batch_id", { required: "Batch number is required" })}
             className="w-full h-10 rounded-full border border-gray-200 dark:border-slate-700 px-4 text-sm text-black dark:text-white dark:bg-slate-800
                        placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 
                        focus:ring-purple-400"
           />
-          {errors.batchNo && (
+          {errors.batch_id && (
             <p className="text-xs text-red-500 mt-1">
-              {errors.batchNo.message}
+              {errors.batch_id.message}
             </p>
           )}
         </div>

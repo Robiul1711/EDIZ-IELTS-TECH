@@ -67,7 +67,7 @@ const UserDropdown = () => {
           </div>
           <div className="p-2">
             <Link
-              to={`/${user.role || "student"}-dashboard`}
+              to={`/student-dashboard`}
               className="flex items-center gap-3 w-full px-3 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-primary/10 hover:text-primary rounded-xl transition-all duration-200 group"
               onClick={() => setIsDropdownOpen(false)}
             >

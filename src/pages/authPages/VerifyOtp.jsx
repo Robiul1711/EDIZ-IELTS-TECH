@@ -1,13 +1,17 @@
 import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import OTPInput from "otp-input-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useApiMutation } from "@/hooks/apiMutation";
 import { useAuth } from "@/hooks/useAuth";
 
 const VerifyOtp = () => {
   const navigate = useNavigate();
-  const { email } = useAuth();
+  const location = useLocation();
+  const { email, saveAuth } = useAuth();
+  
+  const actionType = location.state?.action || "email_verification";
+
   const {
     control,
     handleSubmit,
@@ -23,11 +27,20 @@ const VerifyOtp = () => {
     method: "POST",
     secure: false,
     onSuccess: (response) => {
-      const setToken = response?.data?.set_token;
-      if (setToken) {
-        localStorage.setItem("resetToken", setToken);
+      if (actionType === "forgot_password") {
+        const setToken = response?.data?.set_token;
+        if (setToken) {
+          localStorage.setItem("resetToken", setToken);
+        }
+        navigate("/auth/reset-password");
+      } else {
+        const tokenValue = response?.data?.token?.original?.access_token;
+        const userData = response?.data?.user;
+        if (tokenValue) {
+          saveAuth({ token: tokenValue, user: userData });
+        }
+        navigate("/student-dashboard");
       }
-      navigate("/auth/reset-password");
     },
   });
 
@@ -35,7 +48,7 @@ const VerifyOtp = () => {
     mutate({
       email: email,
       otp: data.otp,
-      action: "forgot_password",
+      action: actionType,
     });
   };
 
@@ -43,7 +56,7 @@ const VerifyOtp = () => {
     <div className="bg-white dark:bg-slate-900 rounded-3xl p-8 shadow-lg w-full max-w-sm">
       {/* Title */}
       <h1 className="text-3xl font-bold text-center text-gray-800 dark:text-white mb-4">
-        Password Reset
+        {actionType === "forgot_password" ? "Password Reset" : "Verify Email"}
       </h1>
 
       {/* Message */}

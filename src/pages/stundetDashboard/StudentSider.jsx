@@ -9,15 +9,15 @@ import ScoreImage from "@/assets/images/score.png";
 
 const StudentSider = ({ isOpen, onClose }) => {
   const menuItems = [
-    { name: "Dashboard", icon: DashboardImage, path: "/student-dashboard" },
-    { name: "IELTS", icon: IeltsImage, path: "/student-dashboard/ielts" },
-    { name: "PTE", icon: PTEImage, path: "/student-dashboard/pte" },
+    { name: "Dashboard", icon: DashboardImage, path: "/dashboard" },
+    { name: "IELTS", icon: IeltsImage, path: "/dashboard/ielts" },
+    { name: "PTE", icon: PTEImage, path: "/dashboard/pte" },
     {
       name: "CLASSROOM",
       icon: ClassRoomImage,
-      path: "/student-dashboard/classroom",
+      path: "/classroom",
     },
-    { name: "Score", icon: ScoreImage, path: "/student-dashboard/score" },
+    { name: "Score", icon: ScoreImage, path: "/dashboard/score" },
   ];
 
   return (
@@ -61,7 +61,7 @@ const StudentSider = ({ isOpen, onClose }) => {
             <NavLink
               key={item.path}
               to={item.path}
-              end={item.path === "/student-dashboard"}
+              end={item.path === "/dashboard"}
               className={({ isActive }) =>
                 `flex items-center gap-4 rounded-[1.2rem] px-3 sm:px-5 py-2.5 sm:py-4 transition-all duration-300 border-2 ${
                   isActive

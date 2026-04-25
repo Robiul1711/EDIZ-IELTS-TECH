@@ -116,13 +116,13 @@ const StudentScoreDashboard = () => {
   const getReviewPath = (category, id) => {
     switch (category.toLowerCase()) {
       case "reading":
-        return `/student-dashboard/reading-review/${id}`;
+        return `/dashboard/reading-review/${id}`;
       case "writing":
-        return `/student-dashboard/writing-review/${id}`;
+        return `/dashboard/writing-review/${id}`;
       case "speaking":
-        return `/student-dashboard/speaking-review/${id}`;
+        return `/dashboard/speaking-review/${id}`;
       case "listening":
-        return `/student-dashboard/listening-review/${id}`;
+        return `/dashboard/listening-review/${id}`;
       default:
         return "#";
     }

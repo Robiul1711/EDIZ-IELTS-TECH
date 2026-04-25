@@ -67,7 +67,7 @@ const UserDropdown = () => {
           </div>
           <div className="p-2">
             <Link
-              to={`/student-dashboard`}
+              to={`/dashboard`}
               className="flex items-center gap-3 w-full px-3 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-primary/10 hover:text-primary rounded-xl transition-all duration-200 group"
               onClick={() => setIsDropdownOpen(false)}
             >
@@ -75,7 +75,7 @@ const UserDropdown = () => {
               <span>Dashboard</span>
             </Link>
             <Link
-              to={`/student-dashboard/profile`}
+              to={`/dashboard/profile`}
               className="flex items-center gap-3 w-full px-3 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-primary/10 hover:text-primary rounded-xl transition-all duration-200 group"
               onClick={() => setIsDropdownOpen(false)}
             >

@@ -9,7 +9,7 @@ const VerifyOtp = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { email, saveAuth } = useAuth();
-  
+
   const actionType = location.state?.action || "email_verification";
 
   const {
@@ -39,7 +39,7 @@ const VerifyOtp = () => {
         if (tokenValue) {
           saveAuth({ token: tokenValue, user: userData });
         }
-        navigate("/student-dashboard");
+        navigate("/dashboard");
       }
     },
   });

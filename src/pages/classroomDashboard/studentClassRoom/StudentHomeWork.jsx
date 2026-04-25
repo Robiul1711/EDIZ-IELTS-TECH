@@ -11,6 +11,7 @@ import {
   X,
 } from "lucide-react";
 import HomeWorkResultModal from "../../../components/modals/HomeWorkResultModal";
+import { useApiQuery } from "@/hooks/apiQuery";
 
 const HomeworkCard = ({ data, onViewResult }) => {
   return (
@@ -25,9 +26,9 @@ const HomeworkCard = ({ data, onViewResult }) => {
             {data.category}
           </span>
           <span
-            className={`px-3 py-1 rounded-full ${data.submitted === "Ongoing" ? "bg-indigo-600" : "bg-green-500"} text-white text-xs font-semibold`}
+            className={`px-3 py-1 rounded-full ${data.status === "active" ? "bg-indigo-600" : "bg-green-500"} text-white text-xs font-semibold`}
           >
-            {data.submitted}
+            {data.status}
           </span>
         </div>
       </div>
@@ -39,15 +40,15 @@ const HomeworkCard = ({ data, onViewResult }) => {
             size={14}
             className="text-indigo-600 dark:text-indigo-400"
           />
-          <span>{data.book}</span>
+          <span>{data.book_no}</span>
         </div>
         <div className="flex items-center gap-1.5">
           <Monitor size={14} className="text-green-500" />
-          <span>{data.test}</span>
+          <span>{data.test_no}</span>
         </div>
         <div className="flex items-center gap-1.5">
           <PieChart size={14} className="text-slate-500 dark:text-slate-400" />
-          <span>{data.part}</span>
+          <span>{data.part_no}</span>
         </div>
       </div>
 
@@ -60,14 +61,14 @@ const HomeworkCard = ({ data, onViewResult }) => {
         <span className="text-slate-300 dark:text-slate-600">|</span>
         <span>
           Score:{" "}
-          <b className="text-slate-700 dark:text-slate-200">{data.score}</b>
+          <b className="text-slate-700 dark:text-slate-200">{data.score || "Pending"}</b>
         </span>
       </div>
 
       {/* Due Date */}
       <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-sm">
         <span>
-          Due: <b className="text-slate-700 dark:text-slate-200">{data.due}</b>
+          Due: <b className="text-slate-700 dark:text-slate-200">{data.due_date}</b>
         </span>
       </div>
 
@@ -99,6 +100,18 @@ const HomeworkCard = ({ data, onViewResult }) => {
 };
 
 const StudentHomeWork = () => {
+    const { data: studentDashboardData } = useApiQuery({
+      queryKey: ["classroom_dashboard_student"],
+      url: "/student/dashboard",
+      secure: true,
+    });
+
+        const { data: assignedHomeworks, isLoading: assignedHomeworksLoading } = useApiQuery({
+      queryKey: ["assignedHomeworks"],
+      url: "/student/homework",
+      secure: true,
+    });
+    console.log(assignedHomeworks?.data?.ongoing)
   const activeHomework = [
     {
       id: 1,
@@ -199,7 +212,7 @@ const StudentHomeWork = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
         {/* Ongoing Exams */}
         <StatCard
-          value="3"
+          value={studentDashboardData?.data?.pending_homework}
           label="Pending Homework"
           bg="bg-[#4f7f3a]"
           icon={<ClipboardCheck size={22} />}
@@ -207,7 +220,7 @@ const StudentHomeWork = () => {
 
         {/* Total Exam Taken */}
         <StatCard
-          value="2"
+          value={studentDashboardData?.data?.submitted_homework}
           label="Submitted"
           bg="bg-[#3e7a86]"
           icon={<FileText size={22} />}
@@ -220,7 +233,7 @@ const StudentHomeWork = () => {
             Active homework
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {activeHomework.map((hw, idx) => (
+            {assignedHomeworks?.data?.ongoing?.map((hw, idx) => (
               <HomeworkCard
                 key={idx}
                 data={hw}
@@ -236,7 +249,7 @@ const StudentHomeWork = () => {
             Submitted
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {homeworkHistory.map((hw, idx) => (
+            {assignedHomeworks?.data?.submitted?.map((hw, idx) => (
               <HomeworkCard
                 key={idx}
                 data={hw}

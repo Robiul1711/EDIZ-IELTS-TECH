@@ -1,10 +1,10 @@
-import React from 'react';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Pagination, Autoplay } from 'swiper/modules';
+import React from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Pagination, Autoplay } from "swiper/modules";
 
 // Import Swiper styles
-import 'swiper/css';
-import 'swiper/css/pagination';
+import "swiper/css";
+import "swiper/css/pagination";
 
 import Banner from "@/assets/images/banner3.png";
 
@@ -13,28 +13,29 @@ const StudentDashboardSlide = () => {
   const slideContent = [
     {
       subtitle: "Get ready in advance",
-      title: "Get yourself prepared ahead of time by taking 2026 free mock test",
+      title:
+        "Get yourself prepared ahead of time by taking 2026 free mock test",
       buttonText: "Get free mock test",
-      link: "/ielts"
+      link: "/ielts",
     },
     {
       subtitle: "Master your skills",
       title: "Unlock premium resources to boost your IELTS score today",
       buttonText: "View Resources",
-      link: "/student-dashboard"
+      link: "/dashboard",
     },
     {
       subtitle: "Track your progress",
       title: "Analyze your performance with our advanced 2026 dashboard",
       buttonText: "Check Progress",
-      link: "/student-dashboard"
-    }
+      link: "/dashboard",
+    },
   ];
 
   return (
     <div className="w-full overflow-hidden rounded-3xl relative">
       {/* Container with the shared background image */}
-      <div 
+      <div
         className="relative  w-full  bg-cover bg-center flex items-center"
         style={{ backgroundImage: `url(${Banner})` }}
       >
@@ -43,10 +44,11 @@ const StudentDashboardSlide = () => {
           spaceBetween={0}
           slidesPerView={1}
           autoplay={{ delay: 5000, disableOnInteraction: false }}
-          pagination={{ 
+          pagination={{
             clickable: true,
-            bulletClass: 'swiper-pagination-bullet !bg-white !opacity-50',
-            bulletActiveClass: '!opacity-100 !w-8 !rounded-full transition-all duration-300'
+            bulletClass: "swiper-pagination-bullet !bg-white !opacity-50",
+            bulletActiveClass:
+              "!opacity-100 !w-8 !rounded-full transition-all duration-300",
           }}
           className="max-w-[1200px] w-full h-full"
         >
@@ -58,11 +60,11 @@ const StudentDashboardSlide = () => {
                   <p className="text-white text-sm md:text-base font-medium opacity-90">
                     {item.subtitle}
                   </p>
-                  
+
                   <h2 className="text-white text-2xl md:text-4xl font-bold leading-tight">
                     {item.title}
                   </h2>
-                  
+
                   <p
                     // onClick={() => navigate(item.link)}
                     className="mt-4 inline-block rounded-xl bg-white px-6 py-3 text-sm font-bold text-[#635BFF] transition-transform hover:scale-105 active:scale-95 shadow-lg"

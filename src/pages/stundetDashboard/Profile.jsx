@@ -1,21 +1,109 @@
-import React, { useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import { useApiMutation } from "@/hooks/apiMutation";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import {
   FaCamera,
   FaUser,
   FaPhone,
   FaEnvelope,
-  FaCalendarAlt,
   FaLock,
+  FaEye,
+  FaEyeSlash,
 } from "react-icons/fa";
 
 const Profile = () => {
+  const { user, getProfile } = useAuth();
   const [profileImage, setProfileImage] = useState(null);
+  const [avatarFile, setAvatarFile] = useState(null);
+  
+  // Password visibility states
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  // Profile Form
+  const {
+    register: registerProfile,
+    handleSubmit: handleSubmitProfile,
+    reset: resetProfile,
+    formState: { errors: profileErrors },
+  } = useForm({
+    defaultValues: {
+      name: "",
+      phone: "",
+    },
+  });
+
+  // Password Form
+  const {
+    register: registerPassword,
+    handleSubmit: handleSubmitPassword,
+    reset: resetPassword,
+    watch,
+    formState: { errors: passwordErrors },
+  } = useForm({
+    defaultValues: {
+      current_password: "",
+      new_password: "",
+      new_password_confirmation: "",
+    },
+  });
+
+  useEffect(() => {
+    if (user) {
+      resetProfile({
+        name: user.name || "",
+        phone: user.phone || "",
+      });
+      setProfileImage(user.avatar);
+    }
+  }, [user, resetProfile]);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      setAvatarFile(file);
       setProfileImage(URL.createObjectURL(file));
     }
+  };
+
+  const { mutate: updateProfile, isPending: isUpdatingProfile } = useApiMutation({
+    url: "/profile/update",
+    method: "POST",
+    secure: true,
+    successMessage: "Profile updated successfully!",
+    onSuccess: () => {
+      getProfile();
+    },
+  });
+
+  const { mutate: changePassword, isPending: isChangingPassword } = useApiMutation({
+    url: "/password/change",
+    method: "POST",
+    secure: true,
+    successMessage: "Password changed successfully!",
+    onSuccess: () => {
+      resetPassword();
+    },
+  });
+
+  const onUpdateProfile = (data) => {
+    const formData = new FormData();
+    formData.append("name", data.name);
+    formData.append("phone", data.phone);
+    if (avatarFile) {
+      formData.append("avatar", avatarFile);
+    }
+    updateProfile(formData);
+  };
+
+  const onChangePassword = (data) => {
+    const formData = new FormData();
+    formData.append("current_password", data.current_password);
+    formData.append("new_password", data.new_password);
+    formData.append("new_password_confirmation", data.new_password_confirmation);
+    changePassword(formData);
   };
 
   return (
@@ -53,7 +141,7 @@ const Profile = () => {
             </div>
 
             {/* Fields Section */}
-            <div className="flex-1 w-full space-y-6">
+            <form onSubmit={handleSubmitProfile(onUpdateProfile)} className="flex-1 w-full space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-semibold text-zinc-500 dark:text-zinc-400 mb-2 ml-1">
@@ -63,10 +151,15 @@ const Profile = () => {
                     <FaUser className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-[#5B4BC4] transition-colors" />
                     <input
                       type="text"
-                      defaultValue="John Doe"
-                      className="w-full pl-12 pr-4 py-3 bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#5B4BC4]/20 focus:border-[#5B4BC4] transition-all"
+                      {...registerProfile("name", { required: "Name is required" })}
+                      className={`w-full pl-12 pr-4 py-3 bg-white dark:bg-zinc-900 border ${
+                        profileErrors.name ? "border-red-500" : "border-zinc-200 dark:border-zinc-800"
+                      } rounded-2xl text-zinc-800 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-[#5B4BC4]/20 focus:border-[#5B4BC4] transition-all`}
                     />
                   </div>
+                  {profileErrors.name && (
+                    <span className="text-xs text-red-500 mt-1 ml-1">{profileErrors.name.message}</span>
+                  )}
                 </div>
 
                 <div>
@@ -77,7 +170,7 @@ const Profile = () => {
                     <FaEnvelope className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" />
                     <input
                       type="email"
-                      value="john.doe@university.edu"
+                      value={user?.email || ""}
                       disabled
                       className="w-full pl-12 pr-4 py-3 bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-800 rounded-2xl text-zinc-500 dark:text-zinc-500 cursor-not-allowed"
                     />
@@ -92,21 +185,26 @@ const Profile = () => {
                     <FaPhone className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-[#5B4BC4] transition-colors" />
                     <input
                       type="tel"
-                      defaultValue="+1 (555) 000-0000"
-                      className="w-full pl-12 pr-4 py-3 bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#5B4BC4]/20 focus:border-[#5B4BC4] transition-all"
+                      {...registerProfile("phone", { required: "Phone number is required" })}
+                      className={`w-full pl-12 pr-4 py-3 bg-white dark:bg-zinc-900 border ${
+                        profileErrors.phone ? "border-red-500" : "border-zinc-200 dark:border-zinc-800"
+                      } rounded-2xl text-zinc-800 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-[#5B4BC4]/20 focus:border-[#5B4BC4] transition-all`}
                     />
                   </div>
+                  {profileErrors.phone && (
+                    <span className="text-xs text-red-500 mt-1 ml-1">{profileErrors.phone.message}</span>
+                  )}
                 </div>
 
                 <div>
                   <label className="block text-sm font-semibold text-zinc-500 dark:text-zinc-400 mb-2 ml-1">
-                    Joining Date
+                    Role
                   </label>
                   <div className="relative">
-                    <FaCalendarAlt className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" />
+                    <FaUser className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-[#5B4BC4] transition-colors" />
                     <input
                       type="text"
-                      value="January 10, 2024"
+                      value={user?.role || "Student"}
                       disabled
                       className="w-full pl-12 pr-4 py-3 bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-800 rounded-2xl text-zinc-500 dark:text-zinc-500 cursor-not-allowed"
                     />
@@ -114,10 +212,14 @@ const Profile = () => {
                 </div>
               </div>
 
-              <button className="h-12 px-8 bg-[#5B4BC4] hover:bg-[#4a3ce0] text-white font-bold rounded-2xl shadow-lg shadow-indigo-500/20 active:scale-95 transition-all w-full md:w-auto">
-                Update Profile
+              <button
+                type="submit"
+                disabled={isUpdatingProfile}
+                className="h-12 px-8 bg-[#5B4BC4] hover:bg-[#4a3ce0] text-white font-bold rounded-2xl shadow-lg shadow-indigo-500/20 active:scale-95 transition-all w-full md:w-auto disabled:opacity-70 disabled:cursor-not-allowed"
+              >
+                {isUpdatingProfile ? "Updating..." : "Update Profile"}
               </button>
-            </div>
+            </form>
           </div>
         </div>
       </div>
@@ -132,42 +234,105 @@ const Profile = () => {
             <h2 className="text-xl font-bold">Security & Password</h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div>
-              <label className="block text-sm font-semibold text-zinc-500 dark:text-zinc-400 mb-2 ml-1">
-                Current Password
-              </label>
-              <input
-                type="password"
-                placeholder="********"
-                className="w-full px-4 py-3 bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#5B4BC4]/20 focus:border-[#5B4BC4] transition-all"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-zinc-500 dark:text-zinc-400 mb-2 ml-1">
-                New Password
-              </label>
-              <input
-                type="password"
-                placeholder="********"
-                className="w-full px-4 py-3 bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#5B4BC4]/20 focus:border-[#5B4BC4] transition-all"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-zinc-500 dark:text-zinc-400 mb-2 ml-1">
-                Confirm New Password
-              </label>
-              <input
-                type="password"
-                placeholder="********"
-                className="w-full px-4 py-3 bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#5B4BC4]/20 focus:border-[#5B4BC4] transition-all"
-              />
-            </div>
-          </div>
+          <form onSubmit={handleSubmitPassword(onChangePassword)} className="space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div>
+                <label className="block text-sm font-semibold text-zinc-500 dark:text-zinc-400 mb-2 ml-1">
+                  Current Password
+                </label>
+                <div className="relative">
+                  <input
+                    type={showCurrentPassword ? "text" : "password"}
+                    {...registerPassword("current_password", { required: "Current password is required" })}
+                    placeholder="********"
+                    className={`w-full px-4 py-3 bg-zinc-50 dark:bg-zinc-900/50 border ${
+                      passwordErrors.current_password ? "border-red-500" : "border-zinc-200 dark:border-zinc-800"
+                    } rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#5B4BC4]/20 focus:border-[#5B4BC4] transition-all`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"
+                  >
+                    {showCurrentPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+                  </button>
+                </div>
+                {passwordErrors.current_password && (
+                  <span className="text-xs text-red-500 mt-1 ml-1">{passwordErrors.current_password.message}</span>
+                )}
+              </div>
 
-          <button className="h-12 px-8 bg-zinc-800 dark:bg-zinc-100 text-white dark:text-zinc-900 font-bold rounded-2xl shadow-lg active:scale-95 transition-all w-full md:w-auto">
-            Change Password
-          </button>
+              <div>
+                <label className="block text-sm font-semibold text-zinc-500 dark:text-zinc-400 mb-2 ml-1">
+                  New Password
+                </label>
+                <div className="relative">
+                  <input
+                    type={showNewPassword ? "text" : "password"}
+                    {...registerPassword("new_password", { 
+                      required: "New password is required",
+                      minLength: { value: 6, message: "Password must be at least 6 characters" }
+                    })}
+                    placeholder="********"
+                    className={`w-full px-4 py-3 bg-zinc-50 dark:bg-zinc-900/50 border ${
+                      passwordErrors.new_password ? "border-red-500" : "border-zinc-200 dark:border-zinc-800"
+                    } rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#5B4BC4]/20 focus:border-[#5B4BC4] transition-all`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowNewPassword(!showNewPassword)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"
+                  >
+                    {showNewPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+                  </button>
+                </div>
+                {passwordErrors.new_password && (
+                  <span className="text-xs text-red-500 mt-1 ml-1">{passwordErrors.new_password.message}</span>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-zinc-500 dark:text-zinc-400 mb-2 ml-1">
+                  Confirm New Password
+                </label>
+                <div className="relative">
+                  <input
+                    type={showConfirmPassword ? "text" : "password"}
+                    {...registerPassword("new_password_confirmation", { 
+                      required: "Please confirm your password",
+                      validate: (val) => {
+                        if (watch('new_password') !== val) {
+                          return "Your passwords do not match";
+                        }
+                      },
+                    })}
+                    placeholder="********"
+                    className={`w-full px-4 py-3 bg-zinc-50 dark:bg-zinc-900/50 border ${
+                      passwordErrors.new_password_confirmation ? "border-red-500" : "border-zinc-200 dark:border-zinc-800"
+                    } rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#5B4BC4]/20 focus:border-[#5B4BC4] transition-all`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"
+                  >
+                    {showConfirmPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+                  </button>
+                </div>
+                {passwordErrors.new_password_confirmation && (
+                  <span className="text-xs text-red-500 mt-1 ml-1">{passwordErrors.new_password_confirmation.message}</span>
+                )}
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={isChangingPassword}
+              className="h-12 px-8 bg-zinc-800 dark:bg-zinc-100 text-white dark:text-zinc-900 font-bold rounded-2xl shadow-lg active:scale-95 transition-all w-full md:w-auto disabled:opacity-70 disabled:cursor-not-allowed"
+            >
+              {isChangingPassword ? "Changing..." : "Change Password"}
+            </button>
+          </form>
         </div>
       </div>
     </div>
@@ -175,3 +340,5 @@ const Profile = () => {
 };
 
 export default Profile;
+
+

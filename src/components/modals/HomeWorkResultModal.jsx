@@ -2,6 +2,7 @@ import React from "react";
 import { X, BookOpen, Monitor, PieChart } from "lucide-react";
 
 const HomeWorkResultModal = ({ isOpen, onClose, data }) => {
+  console.log(data);
   if (!isOpen || !data) return null;
 
   return (
@@ -27,26 +28,26 @@ const HomeWorkResultModal = ({ isOpen, onClose, data }) => {
               </h2>
               <div className="flex gap-2">
                 <span className="px-4 py-1 rounded-full border border-indigo-200 dark:border-indigo-800 text-indigo-500 dark:text-indigo-400 text-sm">
-                  {data.category}
+                Ongoing
                 </span>
-                <span className="px-4 py-1 rounded-full bg-[#94A3B8] text-white text-sm">
+                {/* <span className="px-4 py-1 rounded-full bg-[#94A3B8] text-white text-sm">
                   {data.submitted}
-                </span>
+                </span> */}
               </div>
             </div>
 
             <div className="flex items-center gap-6 text-slate-500 dark:text-slate-400 text-sm">
               <div className="flex items-center gap-2">
                 <BookOpen size={20} className="text-[#6366F1]" />
-                <span className="">{data.book}</span>
+                <span className="">{data.book_no}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Monitor size={20} className="text-[#22C55E]" />
-                <span className="">{data.test}</span>
+                <span className="">{data.test_no}</span>
               </div>
               <div className="flex items-center gap-2">
                 <PieChart size={20} className="text-slate-400" />
-                <span className="">{data.part}</span>
+                <span className="">{data.part_no}</span>
               </div>
             </div>
           </div>
@@ -63,14 +64,14 @@ const HomeWorkResultModal = ({ isOpen, onClose, data }) => {
             <div className="flex items-center gap-2">
               <span>Score:</span>
               <span className="font-semibold text-slate-700 dark:text-slate-200">
-                {data.score}
+                {data.score || "Pending"}
               </span>
             </div>
             <div className="w-[1px] h-5 bg-slate-200 dark:bg-slate-700" />
             <div className="flex items-center gap-2">
               <span>Due:</span>
               <span className="font-semibold text-slate-700 dark:text-slate-200">
-                {data.due}
+                {data.due_date}
               </span>
             </div>
           </div>

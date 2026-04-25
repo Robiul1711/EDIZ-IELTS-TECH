@@ -27,7 +27,7 @@ export const useApiMutation = ({
     mutationFn: async (data) => {
       const config = {
         method: method.toUpperCase(),
-        url: url,
+        url: typeof url === "function" ? url(data) : url,
         // ✅ Fix: Axios DELETE expects data inside a 'data' key, others use 'data' directly
         ...(method.toUpperCase() === "DELETE"
           ? { data: data }

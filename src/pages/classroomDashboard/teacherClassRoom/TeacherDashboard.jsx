@@ -1,3 +1,4 @@
+import { useApiQuery } from "@/hooks/apiQuery";
 import {
   ClipboardCheck,
   FileText,
@@ -8,6 +9,13 @@ import {
 } from "lucide-react";
 
 const TeacherDashboard = () => {
+    const { data: teacherDashboardData } = useApiQuery({
+    queryKey: ["instructor_dashboard"],
+    url: "/instructor/dashboard",
+    secure: true,
+  });
+  console.log(teacherDashboardData?.data);
+
   return (
     <div className="">
       {/* Header */}
@@ -22,7 +30,7 @@ const TeacherDashboard = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
         {/* Ongoing Exams */}
         <StatCard
-          value="1"
+          value={teacherDashboardData?.data?.ongoing_exam}
           label="Ongoing exams"
           bg="bg-[#4f7f3a]"
           icon={<ClipboardCheck size={22} />}
@@ -30,23 +38,23 @@ const TeacherDashboard = () => {
 
         {/* Total Exam Taken */}
         <StatCard
-          value="2"
+          value={teacherDashboardData?.data?.total_exam_taken}
           label="Total exam taken"
           bg="bg-[#3e7a86]"
           icon={<FileText size={22} />}
         />
 
         {/* Active Students */}
-        <StatCard
+        {/* <StatCard
           value="10"
           label="Active students"
           bg="bg-[#6355e7]"
           icon={<Users size={22} />}
-        />
+        /> */}
 
         {/* Total Students */}
         <StatCard
-          value="200"
+          value={teacherDashboardData?.data?.total_student}
           label="Total students"
           bg="bg-[#222]"
           icon={<UserCheck size={22} />}

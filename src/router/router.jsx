@@ -82,6 +82,7 @@ import StudentHomeWork from "@/pages/classroomDashboard/studentClassRoom/Student
 import ViewResultsStudents from "@/pages/classroomDashboard/studentClassRoom/ViewResultsStudents";
 import StartHomeWork from "@/pages/classroomDashboard/studentClassRoom/StartHomeWork";
 import SignUpPage from "@/pages/authPages/SignUpPage";
+import ExamDashboard from "@/pages/classroomDashboard/studentClassRoom/ExamTime";
 
 const router = createBrowserRouter([
   // Auth routes
@@ -133,7 +134,7 @@ const router = createBrowserRouter([
       { path: "part2", element: <WritingPartTwo /> },
     ],
   },
-  
+
   //speaking routes can be added here
   {
     path: "/speaking",
@@ -177,7 +178,7 @@ const router = createBrowserRouter([
   //   children: [{ index: true, element: <Dashboard /> }],
   // },
   {
-    path: "/student-dashboard",
+    path: "/dashboard",
     element: <StudentDashboardLayout />,
     children: [
       { index: true, element: <StudentDashboard /> },
@@ -225,7 +226,7 @@ const router = createBrowserRouter([
     path: "/classroom/register-as-student",
     element: <StudentClassroomLayout />,
     children: [
-      { index: true, element: <ExamTime /> },
+      { index: true, element: <ExamDashboard /> },
       { path: "report", element: <Report /> },
       { path: "exam-history", element: <ExamHistory /> },
       { path: "student-home-work", element: <StudentHomeWork /> },

@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Plus, BookOpen, Monitor, PieChart, Calendar } from "lucide-react";
+import { Plus, BookOpen, Monitor, PieChart, Calendar, Trash2 } from "lucide-react";
 import AssignHomeworkModal from "./AssignHomeworkModal";
 import HomeWorkResultModal from "../../../components/modals/HomeWorkResultModal";
+import { useApiQuery } from "@/hooks/apiQuery";
+import { useApiMutation } from "@/hooks/apiMutation";
+import { useQueryClient } from "@tanstack/react-query";
 
-const HomeworkCard = ({ data, onView }) => {
+const HomeworkCard = ({ data, onView, onDelete }) => {
   return (
     <div className="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-gray-100 dark:border-slate-700 shadow-sm flex flex-col gap-4 transition-all hover:shadow-md">
       {/* Title and Badges */}
@@ -14,10 +17,7 @@ const HomeworkCard = ({ data, onView }) => {
         </h3>
         <div className="flex flex-wrap gap-2">
           <span className="px-3 py-1 rounded-full border border-indigo-200 dark:border-indigo-900/50 text-indigo-600 dark:text-indigo-400 text-xs font-semibold">
-            {data.category}
-          </span>
-          <span className="px-3 py-1 rounded-full bg-red-500/10 text-red-500 text-xs font-semibold">
-            submitted: {data.submitted}/{data.total}
+           Ongoing
           </span>
         </div>
       </div>
@@ -29,15 +29,15 @@ const HomeworkCard = ({ data, onView }) => {
             size={14}
             className="text-indigo-600 dark:text-indigo-400"
           />
-          <span>{data.book}</span>
+          <span>{data.book_no}</span>
         </div>
         <div className="flex items-center gap-1.5">
           <Monitor size={14} className="text-green-500" />
-          <span>{data.test}</span>
+          <span>{data.test_no}</span>
         </div>
         <div className="flex items-center gap-1.5">
           <PieChart size={14} className="text-slate-500 dark:text-slate-400" />
-          <span>{data.part}</span>
+          <span>{data.part_no}</span>
         </div>
       </div>
 
@@ -50,85 +50,71 @@ const HomeworkCard = ({ data, onView }) => {
         <span className="text-slate-300 dark:text-slate-600">|</span>
         <span>
           Score:{" "}
-          <b className="text-slate-700 dark:text-slate-200">{data.score}</b>
+          <b className="text-slate-700 dark:text-slate-200">{data.score || "N/A"}</b>
         </span>
       </div>
 
       {/* Due Date */}
       <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-sm">
         <span>
-          Due: <b className="text-slate-700 dark:text-slate-200">{data.due}</b>
+          Due: <b className="text-slate-700 dark:text-slate-200">{data.due_date}</b>
         </span>
       </div>
 
-      {/* Action Button */}
-      <button
-        onClick={() => onView(data)}
-        className="w-full py-2.5 rounded-lg bg-[#334156] hover:bg-[#2a3547] text-white font-semibold transition-colors mt-auto flex items-center justify-center"
-      >
-        View
-      </button>
+      {/* Action Buttons */}
+      <div className="flex gap-3 mt-auto">
+        <button
+          onClick={() => onView(data)}
+          className="flex-1 py-2.5 rounded-lg bg-[#334156] hover:bg-[#2a3547] text-white font-semibold transition-colors flex items-center justify-center"
+        >
+          View
+        </button>
+        <button
+          onClick={() => onDelete(data.id)}
+          className="px-4 py-2.5 rounded-lg bg-red-50 hover:bg-red-100 text-red-500 font-semibold transition-colors flex items-center justify-center dark:bg-red-500/10 dark:hover:bg-red-500/20"
+        >
+          <Trash2 size={18} />
+        </button>
+      </div>
     </div>
   );
 };
 
 const HomeWork = () => {
+   const queryClient = useQueryClient();
+   const { data: teachersHomeworksData, isLoading: teachersHomeworksLoading} = useApiQuery({
+    queryKey: ["teachersHomeworks"],
+    url: "/instructor/homework",
+    secure: true,
+  });
+  
+  const { mutate: deleteHomework } = useApiMutation({
+    url: (id) => `/instructor/homework/${id}`,
+    method: "DELETE",
+    secure: true,
+    successMessage: "Homework deleted successfully.",
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["teachersHomeworks"] });
+    }
+  });
+
   const [isModalOpen, setIsModalOpen] = useState(false); // Assign Modal state
   const [isResultModalOpen, setIsResultModalOpen] = useState(false); // View Modal state
   const [selectedHw, setSelectedHw] = useState(null);
 
-  const [activeHomework, setActiveHomework] = useState([
-    {
-      id: 1,
-      title: "IELTS Writing Task - 1",
-      category: "Academic",
-      submitted: 9,
-      total: 24,
-      book: "Book 20",
-      test: "Test 1",
-      part: "Part 2",
-      time: "40 min",
-      score: "7",
-      due: "12 Jan 2026",
-    },
-    {
-      id: 2,
-      title: "IELTS Writing Task - 2",
-      category: "General Training",
-      submitted: 15,
-      total: 30,
-      book: "Book 19",
-      test: "Test 2",
-      part: "Part 1",
-      time: "60 min",
-      score: "8",
-      due: "15 Jan 2026",
-    },
-  ]);
-
-  const [homeworkHistory, setHomeworkHistory] = useState([
-    {
-      id: 4,
-      title: "IELTS Reading Mock",
-      category: "Academic",
-      submitted: 24,
-      total: 24,
-      book: "Book 20",
-      test: "Test 1",
-      part: "Part 2",
-      time: "40 min",
-      score: "7",
-      due: "12 Jan 2026",
-    },
-  ]);
-
   const handleAssign = (newHw) => {
-    setActiveHomework((prev) => [newHw, ...prev]);
+    // Left for compatibility
   };
 
   const handleView = (hw) => {
     setSelectedHw(hw);
     setIsResultModalOpen(true);
+  };
+
+  const handleDelete = (id) => {
+    if (window.confirm("Are you sure you want to delete this homework?")) {
+      deleteHomework(id);
+    }
   };
 
   return (
@@ -156,24 +142,40 @@ const HomeWork = () => {
           <div className="inline-block px-4 py-1 rounded-full border border-green-500/20 text-green-600 dark:text-green-400 text-sm font-semibold">
             Active homework
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {activeHomework.map((hw, idx) => (
-              <HomeworkCard key={hw.id} data={hw} onView={handleView} />
-            ))}
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+            {teachersHomeworksLoading ? (
+              Array.from({ length: 6 }).map((_, idx) => (
+                <div key={idx} className="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-gray-100 dark:border-slate-700 shadow-sm flex flex-col gap-4 animate-pulse">
+                  <div className="space-y-3">
+                    <div className="h-6 bg-slate-200 dark:bg-slate-700 rounded w-3/4"></div>
+                    <div className="h-5 bg-slate-200 dark:bg-slate-700 rounded-full w-20"></div>
+                  </div>
+                  <div className="flex gap-4">
+                    <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-1/4"></div>
+                    <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-1/4"></div>
+                    <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-1/4"></div>
+                  </div>
+                  <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-1/2"></div>
+                  <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-1/3"></div>
+                  <div className="flex gap-3 mt-auto">
+                    <div className="h-10 bg-slate-200 dark:bg-slate-700 rounded-lg flex-1"></div>
+                    <div className="h-10 bg-slate-200 dark:bg-slate-700 rounded-lg w-14"></div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              teachersHomeworksData?.data?.ongoing?.map((hw) => (
+                <HomeworkCard 
+                  key={hw.id} 
+                  data={hw} 
+                  onView={handleView} 
+                  onDelete={handleDelete} 
+                />
+              ))
+            )}
           </div>
         </section>
 
-        {/* Homework History Section */}
-        <section className="space-y-6">
-          <div className="inline-block px-4 py-1 rounded-full border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 text-sm font-semibold">
-            Homework history
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {homeworkHistory.map((hw, idx) => (
-              <HomeworkCard key={hw.id} data={hw} onView={handleView} />
-            ))}
-          </div>
-        </section>
       </div>
       {/* Assign Homework Modal */}
       <AssignHomeworkModal

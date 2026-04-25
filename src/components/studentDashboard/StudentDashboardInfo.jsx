@@ -64,7 +64,9 @@ const StudentDashboardInfo = () => {
   }, [ieltsTargetScore]);
 
   const examDate = React.useMemo(() => {
-    return ieltsExamData?.data?.exam_date ? new Date(ieltsExamData.data.exam_date) : new Date();
+    return ieltsExamData?.data?.exam_date
+      ? new Date(ieltsExamData.data.exam_date)
+      : new Date();
   }, [ieltsExamData]);
 
   const daysRemaining = dayjs(examDate).diff(dayjs(), "day");
@@ -155,13 +157,13 @@ const StudentDashboardInfo = () => {
             title: "IELTS Full Mock Test",
             color: "#635BFF",
             shadow: "shadow-indigo-100",
-            link: "/student-dashboard/ielts",
+            link: "/dashboard/ielts",
           },
           {
             title: "PTE Full Mock Test",
             color: "#00A3FF",
             shadow: "shadow-blue-100",
-            link: "/student-dashboard/pte",
+            link: "/dashboard/pte",
           },
         ].map((test, i) => (
           <div

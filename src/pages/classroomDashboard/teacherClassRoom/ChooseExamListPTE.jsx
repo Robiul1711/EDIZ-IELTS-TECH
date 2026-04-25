@@ -7,7 +7,7 @@ const IELTSCategory = [
     id: 1,
     name: "Reading",
     image: ImageAssets.R,
-    link: "/student-dashboard/ielts/reading",
+    link: "/dashboard/ielts/reading",
     bg: "#B6A4FF", // Matches the light purple
     color: "#6144D8",
   },
@@ -15,7 +15,7 @@ const IELTSCategory = [
     id: 2,
     name: "Listening",
     image: ImageAssets.L,
-    link: "/student-dashboard/ielts/listening",
+    link: "/dashboard/ielts/listening",
     bg: "#FFCB74", // Matches the soft orange
     color: "#D88E2B",
   },
@@ -23,7 +23,7 @@ const IELTSCategory = [
     id: 3,
     name: "Speaking & Writing",
     image: [ImageAssets.S, ImageAssets.W], // Array for combined icons
-    link: "/student-dashboard/ielts/speaking-writing",
+    link: "/dashboard/ielts/speaking-writing",
     bg: "#D7F26F", // Matches the lime green
     color: "#6D8A00",
   },
@@ -32,7 +32,6 @@ const IELTSCategory = [
 const ChooseExamListPTE = () => {
   return (
     <div className="py-6  space-y-6">
-      
       {/* Full Test Banner */}
       <Link to="/ielts/full-test" className="group block w-full">
         <div className="p-8 md:p-10 rounded-3xl bg-[#E2E2E2] hover:bg-[#DADADA] transition-all duration-300 flex items-center justify-between relative overflow-hidden shadow-sm">
@@ -78,14 +77,14 @@ const ChooseExamListPTE = () => {
                 {Array.isArray(category.image) ? (
                   /* Combined Icons for Speaking & Writing */
                   <div className="flex items-center gap-1">
-                    <img 
-                      src={category.image[1]} 
-                      className="w-16 h-16 md:w-20 md:h-20 object-contain drop-shadow-md" 
+                    <img
+                      src={category.image[1]}
+                      className="w-16 h-16 md:w-20 md:h-20 object-contain drop-shadow-md"
                       alt="Writing"
                     />
-                    <img 
-                      src={category.image[0]} 
-                      className="w-16 h-16 md:w-20 md:h-20 object-contain drop-shadow-md -ml-4" 
+                    <img
+                      src={category.image[0]}
+                      className="w-16 h-16 md:w-20 md:h-20 object-contain drop-shadow-md -ml-4"
                       alt="Speaking"
                     />
                   </div>

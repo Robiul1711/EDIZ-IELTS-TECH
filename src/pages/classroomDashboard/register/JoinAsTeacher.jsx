@@ -2,10 +2,13 @@ import { useApiMutation } from "@/hooks/apiMutation";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { FaEyeSlash, FaEye } from "react-icons/fa";
+
 
 const JoinAsTeacher = ({ onBack }) => {
   const navigate = useNavigate();
-
+  const [showPassword, setShowPassword] = useState(false);
   const {
     register,
     handleSubmit,
@@ -63,21 +66,34 @@ const { mutate, isPending } = useApiMutation({
         {/* Batch No */}
         <div className="mb-4">
           <label className="block text-sm text-gray-500 dark:text-slate-400 mb-1">
-            Batch no.
+            Password
           </label>
+          <div className="relative">
           <input
-            type="text"
-            placeholder="Enter Batch no."
-            {...register("batch_id", { required: "Batch number is required" })}
+            type={showPassword ? "text" : "password"}
+            placeholder="Enter your password"
+            {...register("password", { required: "Password is required" })}
             className="w-full h-10 rounded-full border border-gray-200 dark:border-slate-700 px-4 text-sm text-black dark:text-white dark:bg-slate-800
                        placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 
                        focus:ring-purple-400"
           />
-          {errors.batch_id && (
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 focus:outline-none"
+                    >
+                      {showPassword ? (
+                        <FaEyeSlash size={20} />
+                      ) : (
+                        <FaEye size={20} />
+                      )}
+                    </button>
+          {errors.password && (
             <p className="text-xs text-red-500 mt-1">
-              {errors.batch_id.message}
+              {errors.password.message}
             </p>
           )}
+        </div>
         </div>
 
 

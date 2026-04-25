@@ -92,28 +92,28 @@ const TestSection = () => {
       color: "bg-gradient-to-b from-purple-500 to-purple-700",
       placeholder: ImageAssets.reading, // Replace with Reading Avatar
       count: "65000+",
-      link: "/student-dashboard/ielts/reading",
+      link: "/dashboard/ielts/reading",
     },
     {
       title: "WRITING",
       color: "bg-gradient-to-b from-orange-400 to-orange-600",
       placeholder: ImageAssets.writing, // Replace with Writing Avatar
       count: "65000+",
-      link: "/student-dashboard/ielts/writing",
+      link: "/dashboard/ielts/writing",
     },
     {
       title: "LISTENING",
       color: "bg-gradient-to-b from-yellow-500 to-yellow-600",
       placeholder: ImageAssets.listening, // Replace with Listening Avatar
       count: "65000+",
-      link: "/student-dashboard/ielts/listening",
+      link: "/dashboard/ielts/listening",
     },
     {
       title: "SPEAKING",
       color: "bg-gradient-to-b from-rose-500 to-rose-700",
       placeholder: ImageAssets.speaking, // Replace with Speaking Avatar
       count: "65000+",
-      link: "/student-dashboard/ielts/speaking",
+      link: "/dashboard/ielts/speaking",
     },
   ];
   const PTE = [
@@ -129,14 +129,14 @@ const TestSection = () => {
       color: "bg-gradient-to-b from-purple-500 to-purple-700",
       placeholder: ImageAssets.ptespeak, // Replace with Reading Avatar
       count: "65000+",
-      link: "/student-dashboard/ielts/speaking",
+      link: "/dashboard/ielts/speaking",
     },
     {
       title: "LISTENING",
       color: "bg-gradient-to-b from-yellow-500 to-yellow-600",
       placeholder: ImageAssets.ptelisten, // Replace with Listening Avatar
       count: "65000+",
-      link: "/student-dashboard/ielts/listening",
+      link: "/dashboard/ielts/listening",
     },
   ];
 

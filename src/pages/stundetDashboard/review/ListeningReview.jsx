@@ -29,7 +29,7 @@ const ListeningReview = () => {
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-4">
           <Link
-            to="/student-dashboard/score"
+            to="/dashboard/score"
             className="p-2 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
           >
             <ChevronLeft className="w-5 h-5 text-slate-600 dark:text-slate-400" />

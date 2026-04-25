@@ -28,7 +28,6 @@ const ReadingTestDetails = () => {
     url: "/ielts/reading/tests/submit",
     method: "POST",
     secure: true,
-
   });
 
   const [activePart, setActivePart] = useState(0);
@@ -190,7 +189,7 @@ const ReadingTestDetails = () => {
     <div className="flex flex-col h-screen bg-white dark:bg-slate-950 overflow-hidden">
       <TestHeader
         durationInSeconds={currentPassage.duration_seconds || 1200}
-        onExit="/student-dashboard/ielts/reading"
+        onExit="/dashboard/ielts/reading"
       />
 
       <main className="flex-1 flex overflow-hidden flex-col md:flex-row">
@@ -206,9 +205,9 @@ const ReadingTestDetails = () => {
               </h1>
             </header>
 
-            <div 
+            <div
               className="prose prose-slate dark:prose-invert max-w-none dark:text-slate-300 text-slate-700 leading-relaxed text-base lg:text-lg passage-content"
-              style={{ fontSize: '1rem', lineHeight: '1.7' }}
+              style={{ fontSize: "1rem", lineHeight: "1.7" }}
               dangerouslySetInnerHTML={{ __html: currentPassage.passage }}
             />
           </div>
@@ -219,15 +218,19 @@ const ReadingTestDetails = () => {
           <div className="max-w-3xl mx-auto space-y-6 pb-24">
             {/* Part/Instructions Header */}
             <div className="p-5 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm mb-6">
-              <div 
-                dangerouslySetInnerHTML={{ __html: currentPassage.part_details }} 
-                className="text-slate-800 dark:text-slate-200 font-bold text-lg" 
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: currentPassage.part_details,
+                }}
+                className="text-slate-800 dark:text-slate-200 font-bold text-lg"
               />
             </div>
 
             {/* Questions Container */}
             <div className="space-y-6">
-              {currentPassage.questions?.map((group, idx) => renderQuestionGroup(group, idx))}
+              {currentPassage.questions?.map((group, idx) =>
+                renderQuestionGroup(group, idx),
+              )}
             </div>
           </div>
         </section>
@@ -237,23 +240,25 @@ const ReadingTestDetails = () => {
       <footer className="min-h-[5rem] lg:h-24 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 flex flex-col lg:flex-row items-center px-4 lg:px-6 gap-4 z-50 shadow-[0_-4px_24px_rgba(0,0,0,0.06)] py-4 lg:py-0">
         <div className="flex w-full lg:w-auto justify-between lg:justify-start items-center gap-3">
           <div className="flex gap-2 items-center">
-            <button 
-              onClick={() => setActivePart(prev => Math.max(0, prev - 1))}
+            <button
+              onClick={() => setActivePart((prev) => Math.max(0, prev - 1))}
               disabled={activePart === 0}
               className={`w-10 h-10 lg:w-12 lg:h-12 flex items-center justify-center rounded-xl transition-all active:scale-95 ${
-                activePart === 0 
-                  ? "bg-slate-50 dark:bg-slate-800/50 text-slate-300 dark:text-slate-600 cursor-not-allowed" 
+                activePart === 0
+                  ? "bg-slate-50 dark:bg-slate-800/50 text-slate-300 dark:text-slate-600 cursor-not-allowed"
                   : "bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/50"
               }`}
             >
               <ChevronLeft size={20} strokeWidth={2.5} />
             </button>
-            <button 
-              onClick={() => setActivePart(prev => Math.min(passages.length - 1, prev + 1))}
+            <button
+              onClick={() =>
+                setActivePart((prev) => Math.min(passages.length - 1, prev + 1))
+              }
               disabled={activePart === passages.length - 1}
               className={`w-10 h-10 lg:w-12 lg:h-12 flex items-center justify-center rounded-xl transition-all active:scale-95 ${
-                activePart === passages.length - 1 
-                  ? "bg-slate-50 dark:bg-slate-800/50 text-slate-300 dark:text-slate-600 cursor-not-allowed" 
+                activePart === passages.length - 1
+                  ? "bg-slate-50 dark:bg-slate-800/50 text-slate-300 dark:text-slate-600 cursor-not-allowed"
                   : "bg-indigo-600 dark:bg-indigo-500 text-white shadow-lg shadow-indigo-200 dark:shadow-none hover:bg-indigo-700 dark:hover:bg-indigo-400"
               }`}
             >
@@ -264,7 +269,10 @@ const ReadingTestDetails = () => {
 
         <div className="flex-1 w-full lg:w-auto flex gap-3 lg:gap-4 overflow-x-auto py-1 no-scrollbar scroll-smooth px-1">
           {passages.map((p, pIdx) => {
-            const pQuestions = p.questions?.flatMap((g) => g.questions?.map((q) => q.serial_number)) || [];
+            const pQuestions =
+              p.questions?.flatMap((g) =>
+                g.questions?.map((q) => q.serial_number),
+              ) || [];
             const isActive = activePart === pIdx;
 
             return (
@@ -279,7 +287,9 @@ const ReadingTestDetails = () => {
                 <button
                   onClick={() => setActivePart(pIdx)}
                   className={`whitespace-nowrap font-black text-[10px] lg:text-xs uppercase tracking-[0.15em] transition-colors ${
-                    isActive ? "text-indigo-600 dark:text-indigo-400" : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
+                    isActive
+                      ? "text-indigo-600 dark:text-indigo-400"
+                      : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
                   }`}
                 >
                   Part {pIdx + 1}
@@ -288,7 +298,8 @@ const ReadingTestDetails = () => {
                 {isActive && (
                   <div className="flex gap-1.5 ml-1 lg:ml-2 border-l border-indigo-100 dark:border-indigo-800/50 pl-2 lg:pl-3">
                     {pQuestions.map((sn) => {
-                      const isAnswered = answers[sn] && answers[sn].toString().trim() !== "";
+                      const isAnswered =
+                        answers[sn] && answers[sn].toString().trim() !== "";
                       return (
                         <button
                           key={sn}

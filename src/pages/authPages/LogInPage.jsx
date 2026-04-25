@@ -26,7 +26,7 @@ const LogInPage = () => {
         saveAuth({ token: tokenValue, user: userData });
       }
 
-      navigate("/student-dashboard");
+      navigate("/dashboard");
     },
   });
 

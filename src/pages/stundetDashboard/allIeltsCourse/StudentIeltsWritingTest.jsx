@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 
 const StudentIeltsWritingTest = () => {
-  const { test_no, part_no } = useParams();
+  const { test_no } = useParams();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const bookNo = searchParams.get("book_no") || searchParams.get("book");
@@ -38,15 +38,8 @@ const StudentIeltsWritingTest = () => {
     secure: true,
   });
 
-  const [activePart, setActivePart] = useState(part_no ? parseInt(part_no) - 1 : 0);
+  const [activePart, setActivePart] = useState(0);
   const [answers, setAnswers] = useState({ 1: "", 2: "" });
-
-  useEffect(() => {
-    if (part_no) {
-      setActivePart(parseInt(part_no) - 1);
-    }
-  }, [part_no]);
-
   const [startTime] = useState(Date.now());
   const [leftWidth, setLeftWidth] = useState(50); // percentage
 

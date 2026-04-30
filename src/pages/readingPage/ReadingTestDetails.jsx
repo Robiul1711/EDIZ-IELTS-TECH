@@ -11,7 +11,7 @@ import TFNG from "@/components/studentDashboard/readingQuestions/TFNG";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const ReadingTestDetails = () => {
-  const { test_no, part_no } = useParams();
+  const { test_no } = useParams();
   const [searchParams] = useSearchParams();
   const bookNo = searchParams.get("book_no") || searchParams.get("book");
   const type = searchParams.get("type") || "academic";
@@ -29,19 +29,15 @@ const ReadingTestDetails = () => {
     secure: true,
   });
 
-  const [activePart, setActivePart] = useState(part_no ? parseInt(part_no) - 1 : 0);
+  const [activePart, setActivePart] = useState(0);
   const [answers, setAnswers] = useState({});
   const [startTime] = useState(Date.now());
   const questionRefs = useRef({});
 
   // Reset active part if URL change or data change
   useEffect(() => {
-    if (part_no) {
-      setActivePart(parseInt(part_no) - 1);
-    } else {
-      setActivePart(0);
-    }
-  }, [test_no, bookNo, part_no]);
+    setActivePart(0);
+  }, [test_no, bookNo]);
 
   const handleAnswerChange = (serialNumber, value) => {
     setAnswers((prev) => ({ ...prev, [serialNumber]: value }));

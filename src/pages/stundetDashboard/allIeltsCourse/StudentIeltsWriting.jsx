@@ -194,7 +194,7 @@ const StudentIeltsWriting = () => {
                                   </div>
                               ) : (
                                 <Link
-                                  to={`/writing-test/${test.test_no}/part/${task.task_no}?book=${book.book_no}&type=${type}`}
+                                  to={`/writing-test/${test.test_no}?book=${book.book_no}&type=${type}`}
                                   className="text-white font-bold text-[10px] px-4 py-1.5 rounded-lg bg-indigo-500 hover:bg-indigo-600 transition-all duration-300"
                                 >
                                   Start Task

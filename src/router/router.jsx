@@ -166,7 +166,7 @@ const router = createBrowserRouter([
     element: <ReadingTestDetails />,
   },
   {
-    path: "/writing-test/:test_no/part/:part_no",
+    path: "/writing-test/:test_no",
     element: <StudentIeltsWritingTest />,
   },
   {

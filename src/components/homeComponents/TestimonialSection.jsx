@@ -159,7 +159,7 @@ const TestimonialSection = () => {
             className="testimonial-swiper !pb-16  md:!px-0 "
           >
             {testimonials.map((testimonial) => (
-              <SwiperSlide key={testimonial.id} className="h-auto">
+              <SwiperSlide key={testimonial.id} className="h-auto py-3">
                 <TestimonialCard data={testimonial} />
               </SwiperSlide>
             ))}

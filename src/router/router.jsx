@@ -83,6 +83,12 @@ import ViewResultsStudents from "@/pages/classroomDashboard/studentClassRoom/Vie
 import StartHomeWork from "@/pages/classroomDashboard/studentClassRoom/StartHomeWork";
 import SignUpPage from "@/pages/authPages/SignUpPage";
 import ExamDashboard from "@/pages/classroomDashboard/studentClassRoom/ExamTime";
+import StartExam from "@/pages/classroomDashboard/studentClassRoom/StartExam";
+import NotFound from "@/pages/notFound/NotFound";
+import PrivateRoute from "@/routes/PrivateRoute";
+import ReadingResultDetail from "@/pages/stundetDashboard/allIeltsCourse/ReadingResultDetail";
+import ListeningResultDetail from "@/pages/stundetDashboard/allIeltsCourse/ListeningResultDetail";
+
 
 const router = createBrowserRouter([
   // Auth routes
@@ -117,7 +123,7 @@ const router = createBrowserRouter([
     path: "/listening",
     element: <ListeningLayout />,
     children: [
-      { index: true, element: <IELTSAcademicListening /> },
+      { index: true, element: <StudentIeltsListening /> },
       { path: "part1", element: <ListeningPartOne /> },
       { path: "part2", element: <ListeningPartTwo /> },
       { path: "part3", element: <ListeningPartThree /> },
@@ -129,7 +135,7 @@ const router = createBrowserRouter([
     path: "/writing",
     element: <WritingLayout />,
     children: [
-      { index: true, element: <IELTSAcademicWriting /> },
+      { index: true, element: <StudentIeltsWriting /> },
       { path: "part1", element: <WritingPartOne /> },
       { path: "part2", element: <WritingPartTwo /> },
     ],
@@ -140,7 +146,7 @@ const router = createBrowserRouter([
     path: "/speaking",
     element: <SpeakingLayout />,
     children: [
-      { index: true, element: <IELTSAcademicSpeaking /> },
+      { index: true, element: <StudentIeltsSpeaking /> },
       { path: "part1", element: <SpeakingPartOneMain /> },
       { path: "part2", element: <SpeakingPartTwoMain /> },
     ],
@@ -150,7 +156,7 @@ const router = createBrowserRouter([
     path: "/reading",
     element: <ReadingLayout />,
     children: [
-      { index: true, element: <IELTSAcademicReading /> },
+      { index: true, element: <StudentIeltsReading /> },
       { path: "part1", element: <ReadingPartOneMain /> },
       { path: "part2", element: <ReadingPartTwoMain /> },
     ],
@@ -160,7 +166,7 @@ const router = createBrowserRouter([
     element: <ReadingTestDetails />,
   },
   {
-    path: "/writing-test/:test_no",
+    path: "/writing-test/:test_no/part/:part_no",
     element: <StudentIeltsWritingTest />,
   },
   {
@@ -179,7 +185,11 @@ const router = createBrowserRouter([
   // },
   {
     path: "/dashboard",
-    element: <StudentDashboardLayout />,
+    element: (
+      <PrivateRoute>
+        <StudentDashboardLayout />
+      </PrivateRoute>
+    ),
     children: [
       { index: true, element: <StudentDashboard /> },
       { path: "ielts", element: <StudentIELTS /> },
@@ -191,6 +201,10 @@ const router = createBrowserRouter([
       { path: "classroom", element: <StudentClassRoom /> },
       { path: "score", element: <StudentScoreDashboard /> },
       { path: "profile", element: <Profile /> },
+      { path: "reading-result/:test_no", element: <ReadingResultDetail /> },
+      { path: "listening-result/:test_no", element: <ListeningResultDetail /> },
+      { path: "writing-result/:test_no", element: <ReadingResultDetail /> }, // Placeholder
+      { path: "speaking-result/:test_no", element: <ReadingResultDetail /> }, // Placeholder
       { path: "reading-review/:id", element: <ReadingReview /> },
       { path: "writing-review/:id", element: <WritingReview /> },
       { path: "speaking-review/:id", element: <SpeakingReview /> },
@@ -205,7 +219,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/classroom/register-as-teacher",
-    element: <ClassroomLayout />,
+    element: (
+      <PrivateRoute>
+        <ClassroomLayout />
+      </PrivateRoute>
+    ),
     children: [
       { index: true, element: <TeacherDashboard /> },
       { path: "exams", element: <Exams /> },
@@ -224,7 +242,11 @@ const router = createBrowserRouter([
   // StudentDashboard routes
   {
     path: "/classroom/register-as-student",
-    element: <StudentClassroomLayout />,
+    element: (
+      <PrivateRoute>
+        <StudentClassroomLayout />
+      </PrivateRoute>
+    ),
     children: [
       { index: true, element: <ExamDashboard /> },
       { path: "report", element: <Report /> },
@@ -232,6 +254,7 @@ const router = createBrowserRouter([
       { path: "student-home-work", element: <StudentHomeWork /> },
       { path: "view-results/:id", element: <ViewResultsStudents /> },
       { path: "start-homework/:id", element: <StartHomeWork /> },
+      { path: "start-exam/:id", element: <StartExam /> },
     ],
   },
 
@@ -239,6 +262,10 @@ const router = createBrowserRouter([
   pteExaminationSpeakingWrittingRoutes,
   pteExaminationReadingRoutes,
   pteExaminationListeningRoutes,
+  {
+    path: "*",
+    element: <NotFound />,
+  },
 ]);
 
 // PTE related routes can be added here

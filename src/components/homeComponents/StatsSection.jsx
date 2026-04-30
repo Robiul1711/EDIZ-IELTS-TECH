@@ -38,7 +38,7 @@ const StatsSection = () => {
         gsap.from(numberElement, {
           scrollTrigger: {
             trigger: card,
-            start: "top 80%",
+            start: "top 90%",
             onEnter: () => {
               animateNumber(numberElement, targetNumber);
             },
@@ -74,18 +74,18 @@ const StatsSection = () => {
   };
 
   return (
-    <section  className="bg-[#EFEDFF] dark:bg-gray-900 py-20 px-4">
+    <section  className="bg-[#EFEDFF] dark:bg-transparent md:py-20 py-8 px-4">
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
           {stats.map((item, index) => (
             <div
               key={index}
               ref={(el) => (cardsRef.current[index] = el)}
-              className="bg-[#7261EF] rounded-2xl p-8 md:p-10 shadow-lg 
+              className="bg-[#7261EF] rounded-2xl sm:p-8 p-4 md:p-10 shadow-lg 
                          hover:shadow-xl transition-all duration-300 
                          transform hover:-translate-y-1"
             >
-              <h3 className="text-white text-5xl md:text-6xl font-bold mb-3 tracking-tight">
+              <h3 className="text-white sm:text-5xl text-4xl md:text-6xl font-bold mb-3 tracking-tight">
                 {formatNumber(item.number)}
               </h3>
               <p className="text-white/90 text-sm md:text-base font-medium">

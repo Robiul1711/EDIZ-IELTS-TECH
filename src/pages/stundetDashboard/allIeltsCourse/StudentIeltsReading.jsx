@@ -2,27 +2,53 @@ import React from "react";
 import { Search, ChevronLeft, PlayCircle, Lock } from "lucide-react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useApiQuery } from "@/hooks/apiQuery";
+import { useAuth } from "@/hooks/useAuth";
+
+import { useApiMutation } from "@/hooks/apiMutation";
 
 const StudentIeltsReading = () => {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const type = searchParams.get("type") || "academic";
 
-  const { data: allIeltsReadingTests, isLoading } = useApiQuery({
+  const { data: allIeltsReadingTests, isLoading, refetch } = useApiQuery({
     queryKey: ["all-ielts-reading-tests", type],
     url: "/ielts/reading/all-tests",
     params: { type },
     secure: true,
   });
+
+  const { mutate: resetTest } = useApiMutation({
+    url: "/ielts/reading/reset",
+    method: "DELETE",
+    secure:true,
+    onSuccess: () => {    
+      refetch();
+    },
+
+  });
+
+  const handleReset = (book_no, test_no) => {
+    if (window.confirm("Are you sure you want to re-attempt? This will clear your previous progress.")) {
+      const formData = new FormData();
+      formData.append("book_no", book_no);
+      formData.append("test_no", test_no);
+      formData.append("type", type);
+      resetTest(formData);
+    }
+  };
+
   if (isLoading) {
+// ... existing isLoading code ...
     return (
-      <div className="flex items-center justify-center h-64">
+      <div className="flex items-center justify-center h-[calc(100vh-15rem)]">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#604CDF]"></div>
       </div>
     );
   }
 
-  // Flatten the nested structure for easier mapping if needed, 
+  // Flatten the nested structure for easier mapping if needed,
   // but we can map directly from the response.
   const books = allIeltsReadingTests?.data || [];
 
@@ -31,12 +57,12 @@ const StudentIeltsReading = () => {
       {/* Top Navigation & Search */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => navigate(user ? "/dashboard/ielts" : "/ielts")}
           className="w-10 h-10 flex items-center justify-center bg-white dark:bg-slate-900 rounded-full shadow-sm text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
         >
           <ChevronLeft size={24} />
         </button>
-
+        {/* 
         <div className="relative w-full md:w-80">
           <input
             type="text"
@@ -47,7 +73,7 @@ const StudentIeltsReading = () => {
             className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500"
             size={18}
           />
-        </div>
+        </div> */}
       </div>
 
       {books.map((book) => (
@@ -77,68 +103,138 @@ const StudentIeltsReading = () => {
                     className="bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 dark:border-slate-800 group"
                   >
                     {/* Card Header */}
-                    <div className="bg-[#604CDF] p-5 relative overflow-hidden">
-                       <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full -mr-12 -mt-12 transition-transform group-hover:scale-150 duration-500" />
-                       <span className="bg-white/20 text-white text-sm md:text-base font-bold px-5 py-2 rounded-full backdrop-blur-md relative z-10 border border-white/20">
-                        {test.test_name}
-                      </span>
+                    <div className="bg-[#604CDF] p-5 relative overflow-hidden flex items-center justify-between">
+                      <div className="relative z-10">
+                        <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full -mr-12 -mt-12 transition-transform group-hover:scale-150 duration-500" />
+                        <span className="bg-white/20 text-white text-sm md:text-base font-bold px-5 py-2 rounded-full backdrop-blur-md border border-white/20">
+                          {test.test_name}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-2 relative z-10">
+                        {test?.is_submit ? (
+                          <>
+                            <Link
+                              to={`/dashboard/reading-result/${test.test_no}?book=${book.book_no}&type=${type}`}
+                              className="text-white font-bold text-xs px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 hover:shadow-lg hover:shadow-emerald-200 transition-all duration-300 cursor-pointer"
+                            >
+                              View Results
+                            </Link>
+                            <button
+                              onClick={() => handleReset(book.book_no, test.test_no)}
+                              className="text-white font-bold text-xs px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 hover:shadow-lg hover:shadow-amber-200 transition-all duration-300 cursor-pointer"
+                            >
+                              Re-Attempt
+                            </button>
+                          </>
+                        ) : (
+                          <Link
+                            to={`/reading-test/${test.test_no}/part/1?book=${book.book_no}&type=${type}`}
+                            className="text-white font-bold text-xs px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-200 dark:hover:shadow-none hover:scale-105 cursor-pointer transition-all duration-300 border border-white/50"
+                          >
+                            Start All Test
+                          </Link>
+                        )}
+                      </div>
                     </div>
 
                     {/* Card Content */}
-                    <div className="p-4 ">
-                      {test.parts.map((part, partIdx) => (
-                        <div
-                          key={partIdx}
-                          className="flex items-start gap-4 group/item cursor-pointer hover:bg-Primary/10 hover:text-Primary transition-colors p-2 rounded-xl"
-                        >
-                          {/* {console.log(part)} */}
-                          <div className="mt-1">
-                            {part?.is_lock ? (
-                              <div className="w-6 h-6 flex items-center justify-center bg-red-50 text-red-500 rounded-lg border border-red-100">
-                                <Lock size={14} />
-                              </div>
-                            ) : (
-                              <PlayCircle
-                                className="text-[#604CDF] group-hover/item:scale-125 transition-all duration-300"
-                                size={22}
-                              />
-                            )}
-                          </div>
-                          <div className="flex-1">
-                            <Link 
-                              to={`/reading-test/${test.test_no}/part/${part.part_no}?book=${book.book_no}&type=${type}`}
+                    <div className="p-4 relative">
+                      {/* {console.log(test)} */}
+                      <div
+                        className={`${!user ? "blur-[1px] select-none" : ""}`}
+                      >
+                        {test.parts.map((part, partIdx) => (
+                          <div className="w-full flex items-start justify-between">
+                            <div
+                              key={partIdx}
+                              className="flex items-start gap-4 s p-2 rounded-xl"
                             >
-                              <p
-                                className={`text-sm md:text-base  font-bold leading-snug break-words ${
-                                  test.status === "locked"
-                                    ? "text-slate-400 dark:text-slate-500"
-                                    : "text-slate-700 dark:text-slate-200 group-hover/item:text-[#604CDF] transition-colors"
-                                }`}
-                              >
-                                {part.title || `Part ${part.part_no}`}
-                              </p>
-
-                              {part.total_complete && (
-                                <div className="flex items-center gap-1.5 mt-1.5 group/complete">
-                                  <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
-                                  <p className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 capitalize">
-                                    Completed :{" "}
-                                    <span className="font-mono">
-                                      {part.total_complete}
-                                    </span>
+                              <div className="mt-1">
+                                {part?.is_lock ? (
+                                  <div className="w-6 h-6 flex items-center justify-center bg-red-50 text-red-500 rounded-lg border border-red-100">
+                                    <Lock size={14} />
+                                  </div>
+                                ) : (
+                                  <PlayCircle
+                                    className="text-[#604CDF] group-hover/item:scale-125 transition-all duration-300"
+                                    size={22}
+                                  />
+                                )}
+                              </div>
+                              <div className="flex-1">
+                                <div>
+                                  <p
+                                    className={`text-sm md:text-base font-bold leading-snug break-words ${
+                                      test.status === "locked"
+                                        ? "text-slate-400 dark:text-slate-500"
+                                        : "text-slate-700 dark:text-slate-200 group-hover/item:text-[#604CDF] transition-colors"
+                                    }`}
+                                  >
+                                    {part.title || `Part ${part.part_no}`}
                                   </p>
+
+                                  {part.total_complete && (
+                                    <div className="flex items-center gap-1.5 mt-1.5 group/complete">
+                                      <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                                      <p className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 capitalize">
+                                        Completed :{" "}
+                                        <span className="font-mono">
+                                          {part.total_complete}
+                                        </span>
+                                      </p>
+                                    </div>
+                                  )}
+                                  {!part.total_complete && (
+                                    <p className="text-[11px] font-medium text-slate-400 dark:text-slate-500 mt-1 flex items-center gap-1">
+                                      <span className="w-1.5 h-1.5 rounded-full bg-slate-200 dark:bg-slate-700"></span>
+                                      Not started
+                                    </p>
+                                  )}
                                 </div>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              {test?.is_submit ? (
+                                <div className="text-white font-bold text-[10px] px-3 py-1.5 rounded-lg bg-slate-700/80 backdrop-blur-sm shadow-sm cursor-help">
+                                  Already Submitted
+                                </div>
+                              ) : (
+                                <Link
+                                  to={`/reading-test/${test.test_no}/part/${part.part_no}?book=${book.book_no}&type=${type}`}
+                                  className="text-white font-bold text-[10px] px-4 py-1.5 rounded-lg bg-indigo-500 hover:bg-indigo-600 transition-all duration-300"
+                                >
+                                  Start Part
+                                </Link>
                               )}
-                              {!part.total_complete && (
-                                <p className="text-[11px] font-medium text-slate-400 dark:text-slate-500 mt-1 flex items-center gap-1">
-                                  <span className="w-1.5 h-1.5 rounded-full bg-slate-200 dark:bg-slate-700"></span>
-                                  Not started
-                                </p>
-                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {!user && (
+                        <div className="absolute inset-0 flex flex-col items-center justify-center z-20 ">
+                          <div className="bg-white/70 dark:bg-slate-800/80 rounded-3xl p-5 flex flex-col items-center gap-3 ">
+                            <div className="w-10 h-10 bg-[#604CDF]/10 rounded-full flex items-center justify-center text-[#604CDF]">
+                              <Lock size={20} />
+                            </div>
+                            <div className="text-center">
+                              <p className="text-sm font-bold text-slate-800 dark:text-white">
+                                Start Your Test
+                              </p>
+                              <p className="text-[10px] text-slate-500 uppercase tracking-widest font-semibold mt-0.5">
+                                Authentication Required
+                              </p>
+                            </div>
+                            <Link
+                              to="/auth/login"
+                              className="mt-1 px-6 py-2 bg-[#604CDF] text-white text-xs font-bold rounded-full hover:bg-[#5E4FD7] transition-all shadow-lg shadow-[#604CDF]/30"
+                            >
+                              Sign In to Start
                             </Link>
                           </div>
                         </div>
-                      ))}
+                      )}
                     </div>
                   </div>
                 ))}

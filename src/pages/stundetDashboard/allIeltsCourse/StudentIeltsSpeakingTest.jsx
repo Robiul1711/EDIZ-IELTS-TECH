@@ -6,18 +6,12 @@ import TestHeader from "@/components/common/TestHeader";
 import { toast } from "react-hot-toast";
 import {
   Mic,
-  MicOff,
-  Play,
-  Pause,
   RotateCcw,
   Send,
   Volume2,
   Clock,
-  Waves,
   StopCircle,
-  FileText,
   CheckCircle2,
-  AlertCircle,
 } from "lucide-react";
 
 const StudentIeltsSpeakingTest = () => {

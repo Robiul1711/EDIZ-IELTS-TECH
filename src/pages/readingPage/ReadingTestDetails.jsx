@@ -7,13 +7,12 @@ import FillGap from "@/components/studentDashboard/readingQuestions/FillGap";
 import MCQ from "@/components/studentDashboard/readingQuestions/MCQ";
 import Matching from "@/components/studentDashboard/readingQuestions/Matching";
 import TFNG from "@/components/studentDashboard/readingQuestions/TFNG";
-import { toast } from "react-hot-toast";
+
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const ReadingTestDetails = () => {
-  const { test_no } = useParams();
+  const { test_no, part_no } = useParams();
   const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
   const bookNo = searchParams.get("book_no") || searchParams.get("book");
   const type = searchParams.get("type") || "academic";
 
@@ -30,15 +29,19 @@ const ReadingTestDetails = () => {
     secure: true,
   });
 
-  const [activePart, setActivePart] = useState(0);
+  const [activePart, setActivePart] = useState(part_no ? parseInt(part_no) - 1 : 0);
   const [answers, setAnswers] = useState({});
   const [startTime] = useState(Date.now());
   const questionRefs = useRef({});
 
   // Reset active part if URL change or data change
   useEffect(() => {
-    setActivePart(0);
-  }, [test_no, bookNo]);
+    if (part_no) {
+      setActivePart(parseInt(part_no) - 1);
+    } else {
+      setActivePart(0);
+    }
+  }, [test_no, bookNo, part_no]);
 
   const handleAnswerChange = (serialNumber, value) => {
     setAnswers((prev) => ({ ...prev, [serialNumber]: value }));
@@ -81,7 +84,7 @@ const ReadingTestDetails = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-slate-50 dark:bg-slate-950">
+      <div className="flex items-center justify-center h-[calc(100vh-5rem)]">
         <div className="relative">
           <div className="w-16 h-16 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
           <div className="mt-4 text-slate-500 font-medium animate-pulse">
@@ -278,7 +281,7 @@ const ReadingTestDetails = () => {
             return (
               <div
                 key={pIdx}
-                className={`flex-shrink-0 flex items-center gap-2 lg:gap-3 px-4 lg:px-6 py-2 rounded-2xl border transition-all duration-500 ${
+                className={`flex-shrink-0 flex items-center gap-2 lg:gap-3 transition-all py-1 md:py-2 px-4 rounded-md ${
                   isActive
                     ? "bg-white dark:bg-indigo-950/20 border-indigo-200 dark:border-indigo-800/60 shadow-[0_4px_12px_rgba(99,102,241,0.08)] ring-1 ring-indigo-500/10"
                     : "bg-slate-50/50 dark:bg-slate-900/50 border-slate-100 dark:border-slate-800"
@@ -286,7 +289,7 @@ const ReadingTestDetails = () => {
               >
                 <button
                   onClick={() => setActivePart(pIdx)}
-                  className={`whitespace-nowrap font-black text-[10px] lg:text-xs uppercase tracking-[0.15em] transition-colors ${
+                  className={`px-4 lg:px-6 py-2 rounded-full border transition-all duration-500 whitespace-nowrap font-black text-[10px] lg:text-xs uppercase tracking-[0.15em] ${
                     isActive
                       ? "text-indigo-600 dark:text-indigo-400"
                       : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"

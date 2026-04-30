@@ -1,110 +1,120 @@
-import { Calendar, Clock } from "lucide-react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { useApiQuery } from "@/hooks/apiQuery";
+import { Plus, Calendar, Clock } from "lucide-react";
+import TakeExamModal from "./TakeExamModal";
 
-const Exams = () => {
+const ExamRow = ({ index, data, active }) => {
   return (
-    <div className="">
-      {/* Page Title */}
-      <h1 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
-        Exams
-      </h1>
-
-      {/* Take Exam Button */}
-      <div className="mb-10">
-        <Link to="/classroom/register-as-teacher/select-exam"
-          className="w-full h-14 inline-flex items-center justify-center rounded-xl text-white text-sm font-medium
-                     bg-gradient-to-r from-[#9b3ae8] to-[#8b6cff]
-                     shadow-lg shadow-purple-400/40
-                     hover:opacity-95 transition"
-        >
-          Take exam
-        </Link>
-      </div>
-
-      {/* Active Section */}
-      <div className="mb-10">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-          Active
-        </h2>
-
-        <ExamRow
-          index="#1"
-          title="IELTS speaking test"
-          date="22th November 2025, 4:20 PM"
-          duration="2 hr"
-          timer="(59:00)"
-          active
-        />
-      </div>
-
-      {/* Previous Exam */}
-      <div>
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-          Previous exam
-        </h2>
-
-        <ExamRow
-          index="#1"
-          title="IELTS speaking test"
-          date="22th November 2025, 4:20 PM"
-          duration="1 hr"
-          showResult
-        />
-      </div>
-    </div>
-  );
-};
-
-export default Exams;
-
-/* ---------------- Exam Row ---------------- */
-
-const ExamRow = ({
-  index,
-  title,
-  date,
-  duration,
-  timer,
-  active,
-  showResult,
-}) => {
-  return (
-    <div
-      className="bg-white dark:bg-gray-800 dark:text-white border border-gray-200 rounded-lg px-6 py-4
-                 flex flex-wrap items-center justify-between gap-4"
-    >
+    <div className="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl px-6 py-4 flex flex-wrap items-center gap-4 hover:shadow-sm transition-all mb-3 last:mb-0">
       {/* Index */}
-      <span className="text-sm text-gray-400 w-8 dark:text-gray-500">{index}</span>
+      <span className="text-sm text-slate-400 dark:text-slate-500 w-8 font-medium">#{index}</span>
 
       {/* Title */}
-      <span className="text-sm font-medium text-gray-800 flex-1 min-w-[200px] dark:text-white">
-        {title}
+      <span className="text-sm font-semibold text-slate-800 dark:text-white flex-1 min-w-[200px]">
+        {data.title}
       </span>
 
       {/* Date */}
-      <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-        <Calendar size={16} />
-        {date}
+      <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 min-w-[220px]">
+        <Calendar size={16} className="text-slate-400" />
+        {data.created_at}
       </div>
 
       {/* Duration */}
-      <div className="flex items-center gap-2 text-sm">
-        <Clock size={16} className="text-gray-500" />
-        <span className="text-gray-700 dark:text-gray-400">{duration}</span>
-        {active && (
-          <span className="text-red-500 ml-1 dark:text-red-400">{timer}</span>
-        )}
+      <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 w-24">
+        <Clock size={16} className="text-slate-400" />
+        {data.time} mins
       </div>
 
-      {/* Result Button */}
-      {showResult && (
-        <button
-          className="ml-auto h-10 px-6 rounded-xl text-white text-sm font-medium dark:text-black
-                     bg-[#0f172a] dark:text-white dark:bg-gray-700 shadow-md hover:bg-[#020617] dark:hover:bg-gray-600 transition"
-        >
+      {/* Action Button */}
+      {active ? (
+        <button className="h-11 px-8 rounded-2xl bg-indigo-600 text-white text-sm font-bold shadow-lg shadow-indigo-500/30 hover:bg-indigo-700 transition-all">
+          Start Exam
+        </button>
+      ) : (
+        <button className="h-11 px-8 rounded-2xl bg-[#0f172a] text-white text-sm font-bold shadow-lg shadow-slate-900/30 hover:bg-slate-900 transition-all">
           Student Results
         </button>
       )}
     </div>
   );
 };
+
+const Exams = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { data: teacherExamData, isLoading } = useApiQuery({
+    queryKey: ["instructor_exam"],
+    url: "/instructor/exam",
+    secure: true,
+  });
+
+  return (
+    <div className="min-h-screen">
+      {/* Top Banner: Take Exam */}
+      <div className="max-w-xs mb-8">
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="w-full p-4 md:p-5 rounded-2xl bg-white dark:bg-slate-900 shadow-sm border border-gray-100 dark:border-slate-800 flex items-center gap-4 hover:shadow-md transition-all group"
+        >
+          <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-indigo-600 text-white flex items-center justify-center group-hover:bg-indigo-700 transition-colors">
+            <Plus size={24} strokeWidth={3} />
+          </div>
+          <div className="text-left">
+            <h2 className="font-bold text-slate-800 dark:text-white text-base md:text-lg">
+              Take Exam
+            </h2>
+          </div>
+        </button>
+      </div>
+
+      {/* Ongoing Exams Section */}
+      <section className="mb-10">
+        <h2 className="text-lg font-bold text-slate-800 dark:text-white mb-5 ml-1">
+          Active Exam
+        </h2>
+        <div>
+          {isLoading ? (
+            Array.from({ length: 2 }).map((_, idx) => (
+              <div key={idx} className="h-16 bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 animate-pulse mb-3" />
+            ))
+          ) : (
+            teacherExamData?.data?.ongoing?.map((exam, idx) => (
+              <ExamRow key={exam.id} index={idx + 1} data={exam} active />
+            ))
+          )}
+          {!isLoading && teacherExamData?.data?.ongoing?.length === 0 && (
+            <p className="text-slate-400 text-sm italic ml-1">No active exams.</p>
+          )}
+        </div>
+      </section>
+
+      {/* Completed Exams Section */}
+      <section>
+        <h2 className="text-lg font-bold text-slate-800 dark:text-white mb-5 ml-1">
+          Previous exam
+        </h2>
+        <div>
+          {isLoading ? (
+            Array.from({ length: 2 }).map((_, idx) => (
+              <div key={idx} className="h-16 bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 animate-pulse mb-3" />
+            ))
+          ) : (
+            teacherExamData?.data?.completed?.map((exam, idx) => (
+              <ExamRow key={exam.id} index={idx + 1} data={exam} />
+            ))
+          )}
+          {!isLoading && teacherExamData?.data?.completed?.length === 0 && (
+            <p className="text-slate-400 text-sm italic ml-1">No previous exams.</p>
+          )}
+        </div>
+      </section>
+
+      <TakeExamModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
+    </div>
+  );
+};
+
+export default Exams;

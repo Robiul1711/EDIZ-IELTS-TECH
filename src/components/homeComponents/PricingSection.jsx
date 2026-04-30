@@ -163,7 +163,7 @@ const PricingSection = () => {
   return (
     <section id="pricing"
       ref={containerRef}
-      className="bg-[#F3F0FF]/80 dark:bg-[#1A1A1A]/80  section-padding-x my-20 "
+      className="  section-padding-x my-20 "
     >
       <div className="section-padding-y ">
         {/* Header */}
@@ -178,15 +178,15 @@ const PricingSection = () => {
 
           {/* Toggle Switch */}
           <div className="mt-8 flex justify-center">
-            <div className="bg-white dark:bg-gray-800 p-1 rounded-xl inline-flex shadow-sm ">
+            <div className="bg-white dark:bg-gray-800 p-1 gap-3 rounded-xl inline-flex shadow-sm ">
               {["IELTS", "PTE"].map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
                   className={`px-8 py-2.5 rounded-lg text-sm font-semibold transition-all duration-300 ${
                     activeTab === tab
-                      ? "bg-white dark:bg-gray-800 text-[#7B5BF2] shadow-md border  border-gray-100 transform scale-105"
-                      : "text-gray-500 hover:text-[#7B5BF2]"
+                      ? "bg-white dark:bg-gray-800 text-[#7B5BF2] shadow-md border  border-gray-100"
+                      : "text-gray-500 hover:text-[#7B5BF2] border  border-transparent"
                   }`}
                 >
                   {tab}
@@ -218,7 +218,7 @@ const PricingSection = () => {
                 </div>
               ) : (
                 /* Normal Card */
-                <div className="bg-white rounded-[32px] p-8 shadow-lg border border-gray-100 dark:bg-gray-800 h-full transform transition-transform duration-300 hover:-translate-y-1">
+                <div className="bg-white rounded-[32px] p-8 shadow-lg border border-gray-100 dark:border-gray-700  dark:shadow-gray-900 dark:bg-gray-900 h-full transform transition-transform duration-300 hover:-translate-y-1">
                   <PricingContent plan={plan} isPopular={false} />
                 </div>
               )}

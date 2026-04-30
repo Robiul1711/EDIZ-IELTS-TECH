@@ -2,22 +2,54 @@ import React from "react";
 import { Search, ChevronLeft, PlayCircle, Lock, Mic } from "lucide-react";
 import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { useApiQuery } from "@/hooks/apiQuery";
+import { useAuth } from "@/hooks/useAuth";
+
+import { useApiMutation } from "@/hooks/apiMutation";
 
 const StudentIeltsSpeaking = () => {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const type = searchParams.get("type") || "academic";
 
-  const { data: allIeltsSpeakingTests, isLoading } = useApiQuery({
+  const {
+    data: allIeltsSpeakingTests,
+    isLoading,
+    refetch,
+  } = useApiQuery({
     queryKey: ["all-ielts-speaking-tests", type],
     url: "/ielts/speaking/all-tests",
     params: { type },
     secure: true,
   });
 
+  const { mutate: resetTest } = useApiMutation({
+    url: "/ielts/speaking/reset",
+    method: "DELETE",
+    secure: true,
+    onSuccess: () => {
+      refetch();
+    },
+  });
+
+  const handleReset = (book_no, test_no) => {
+    if (
+      window.confirm(
+        "Are you sure you want to re-attempt? This will clear your previous progress.",
+      )
+    ) {
+      const formData = new FormData();
+      formData.append("book_no", book_no);
+      formData.append("test_no", test_no);
+      formData.append("type", type);
+      resetTest(formData);
+    }
+  };
+
   if (isLoading) {
+    // ... existing isLoading code ...
     return (
-      <div className="flex items-center justify-center h-64">
+           <div className="flex items-center justify-center h-[calc(100vh-15rem)]">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#604CDF]"></div>
       </div>
     );
@@ -30,23 +62,11 @@ const StudentIeltsSpeaking = () => {
       {/* Top Navigation & Search */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => navigate(user ? "/dashboard/ielts" : "/ielts")}
           className="w-10 h-10 flex items-center justify-center bg-white dark:bg-slate-900 rounded-full shadow-sm text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
         >
           <ChevronLeft size={24} />
         </button>
-
-        <div className="relative w-full md:w-80">
-          <input
-            type="text"
-            placeholder="Search test title and press enter"
-            className="w-full pl-4 pr-10 py-2.5 bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 rounded-lg text-sm dark:text-white focus:outline-none focus:ring-2 focus:ring-[#604CDF]/20 focus:border-[#604CDF] transition-all"
-          />
-          <Search
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500"
-            size={18}
-          />
-        </div>
       </div>
 
       {books.map((book) => (
@@ -60,7 +80,9 @@ const StudentIeltsSpeaking = () => {
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <h2 className="text-xl font-bold leading-tight">Speaking</h2>
+                    <h2 className="text-xl font-bold leading-tight">
+                      Speaking
+                    </h2>
                     <Mic size={18} className="text-white/50" />
                   </div>
                   <p className="text-xs text-slate-300 uppercase tracking-widest font-semibold flex items-center gap-2">
@@ -72,74 +94,145 @@ const StudentIeltsSpeaking = () => {
               </div>
 
               {/* Test Cards Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2   gap-6 md:gap-8">
                 {typeGroup.tests.map((test, testIdx) => (
                   <div
                     key={`${book.book_no}-${testIdx}`}
                     className="bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 dark:border-slate-800 group"
                   >
                     {/* Card Header */}
-                    <div className="bg-[#604CDF] p-5 relative overflow-hidden">
-                       <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full -mr-12 -mt-12 transition-transform group-hover:scale-150 duration-500" />
-                       <span className="bg-white/20 text-white text-sm font-bold px-5 py-2 rounded-full backdrop-blur-md relative z-10 border border-white/20">
-                        {test.test_name}
-                      </span>
+                    <div className="bg-[#604CDF] p-5 relative overflow-hidden flex items-center justify-between">
+                      <div className="relative z-10">
+                        <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full -mr-12 -mt-12 transition-transform group-hover:scale-150 duration-500" />
+                        <span className="bg-white/20 text-white text-sm md:text-base font-bold px-5 py-2 rounded-full backdrop-blur-md border border-white/20">
+                          {test.test_name}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-2 relative z-10">
+                        {test?.is_submit ? (
+                          <>
+                            <Link
+                              to={`/dashboard/speaking-result/${test.test_no}?book=${book.book_no}&type=${type}`}
+                              className="text-white font-bold text-xs px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 hover:shadow-lg hover:shadow-emerald-200 transition-all duration-300 cursor-pointer"
+                            >
+                              View Results
+                            </Link>
+                            <button
+                              onClick={() => handleReset(book.book_no, test.test_no)}
+                              className="text-white font-bold text-xs px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 hover:shadow-lg hover:shadow-amber-200 transition-all duration-300 cursor-pointer"
+                            >
+                              Re-Attempt
+                            </button>
+                          </>
+                        ) : (
+                          <Link
+                            to={`/speaking-test/${test.test_no}/part/1?book=${book.book_no}&type=${type}`}
+                            className="text-white font-bold text-xs px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-200 dark:hover:shadow-none hover:scale-105 cursor-pointer transition-all duration-300"
+                          >
+                            Start Test
+                          </Link>
+                        )}
+                      </div>
                     </div>
 
                     {/* Card Content */}
-                    <div className="p-6 space-y-5">
-                      {test.parts.map((part, partIdx) => (
-                        <div
-                          key={partIdx}
-                          className="flex items-start gap-4 group/item cursor-pointer"
-                        >
-                          <div className="mt-1">
-                            {part?.is_lock ? (
-                              <div className="w-6 h-6 flex items-center justify-center bg-red-50 text-red-500 rounded-lg border border-red-100">
-                                <Lock size={14} />
+                    <div className="p-4 relative">
+                      <div
+                        className={`${!user ? "blur-[1px] select-none" : ""}`}
+                      >
+                        {test.parts.map((part, partIdx) => (
+                          <div
+                            key={partIdx}
+                            className="w-full flex items-start justify-between"
+                          >
+                            <div className="flex items-start gap-4  p-2 rounded-xl flex-1">
+                              <div className="mt-1">
+                                {part?.is_lock ? (
+                                  <div className="w-6 h-6 flex items-center justify-center bg-red-50 text-red-500 rounded-lg border border-red-100">
+                                    <Lock size={14} />
+                                  </div>
+                                ) : (
+                                  <PlayCircle
+                                    className="text-[#604CDF] group-hover/item:scale-125 transition-all duration-300"
+                                    size={22}
+                                  />
+                                )}
                               </div>
-                            ) : (
-                              <PlayCircle
-                                className="text-[#604CDF] group-hover/item:scale-125 transition-all duration-300"
-                                size={22}
-                              />
-                            )}
-                          </div>
-                          <div className="flex-1">
-                            <Link
-                              to={`/speaking-test/${test.test_no}/part/${part.part_no}?book=${book.book_no}&type=${type}`}
-                            >
-                              <p
-                                className={`text-[13px] font-bold leading-snug break-words ${
-                                  part?.is_lock
-                                    ? "text-slate-400 dark:text-slate-500"
-                                    : "text-slate-700 dark:text-slate-200 group-hover/item:text-[#604CDF] transition-colors"
-                                }`}
-                              >
-                                {part.title || `Part ${part.part_no}`}
-                              </p>
-
-                              {part.total_complete && (
-                                <div className="flex items-center gap-1.5 mt-1.5 group/complete">
-                                  <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
-                                  <p className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 capitalize">
-                                    Completed :{" "}
-                                    <span className="font-mono">
-                                      {part.total_complete}
-                                    </span>
+                              <div className="flex-1">
+                                <div>
+                                  <p
+                                    className={`text-sm md:text-base font-bold leading-snug break-words ${
+                                      part?.is_lock
+                                        ? "text-slate-400 dark:text-slate-500"
+                                        : "text-slate-700 dark:text-slate-200 group-hover/item:text-[#604CDF] transition-colors"
+                                    }`}
+                                  >
+                                    {part.title || `Part ${part.part_no}`}
                                   </p>
+
+                                  {part.total_complete && (
+                                    <div className="flex items-center gap-1.5 mt-1.5 group/complete">
+                                      <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                                      <p className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 capitalize">
+                                        Completed :{" "}
+                                        <span className="font-mono">
+                                          {part.total_complete}
+                                        </span>
+                                      </p>
+                                    </div>
+                                  )}
+                                  {!part.total_complete && (
+                                    <p className="text-[11px] font-medium text-slate-400 dark:text-slate-500 mt-1 flex items-center gap-1">
+                                      <span className="w-1.5 h-1.5 rounded-full bg-slate-200 dark:bg-slate-700"></span>
+                                      Not started
+                                    </p>
+                                  )}
                                 </div>
-                              )}
-                              {!part.total_complete && (
-                                <p className="text-[11px] font-medium text-slate-400 dark:text-slate-500 mt-1 flex items-center gap-1">
-                                  <span className="w-1.5 h-1.5 rounded-full bg-slate-200 dark:bg-slate-700"></span>
-                                  Not started
-                                </p>
-                              )}
+                              </div>
+                            </div>
+
+                             <div className="flex items-center gap-2 ml-4 self-center">
+                               {test.is_submit ? (
+                                <div className="text-white font-bold text-[10px] px-3 py-1.5 rounded-lg bg-slate-700/80 backdrop-blur-sm shadow-sm cursor-help">
+                                     Already Submitted
+                                   </div>
+                               ) : (
+                                 <Link
+                                   to={`/speaking-test/${test.test_no}/part/${part.part_no}?book=${book.book_no}&type=${type}`}
+                                   className="text-white font-bold text-[10px] px-4 py-1.5 rounded-lg bg-indigo-500 hover:bg-indigo-600 transition-all duration-300"
+                                 >
+                                   Start Part
+                                 </Link>
+                               )}
+                             </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {!user && (
+                        <div className="absolute inset-0 flex flex-col items-center justify-center z-20 bg-gradient-to-b from-transparent via-white/50 to-white dark:via-slate-900/50 dark:to-slate-900 rounded-b-[2rem]">
+                          <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-100 dark:border-slate-700 flex flex-col items-center gap-3 transform hover:scale-105 transition-transform duration-300">
+                            <div className="w-12 h-12 bg-[#604CDF]/10 rounded-full flex items-center justify-center text-[#604CDF]">
+                              <Lock size={24} />
+                            </div>
+                            <div className="text-center">
+                              <p className="text-base font-bold text-slate-800 dark:text-white leading-tight">
+                                Start Practice
+                              </p>
+                              <p className="text-[10px] text-slate-500 uppercase tracking-[0.2em] font-bold mt-1">
+                                Authentication Required
+                              </p>
+                            </div>
+                            <Link
+                              to="/auth/login"
+                              className="mt-2 px-8 py-2.5 bg-[#604CDF] text-white text-xs font-bold rounded-full hover:bg-[#5E4FD7] transition-all shadow-lg shadow-[#604CDF]/40 uppercase tracking-wider"
+                            >
+                              Sign In to Start
                             </Link>
                           </div>
                         </div>
-                      ))}
+                      )}
                     </div>
                   </div>
                 ))}

@@ -17,7 +17,10 @@ const { mutate, isPending } = useApiMutation({
     method: "POST",
     secure: true,
     onSuccess: (response) => {
-
+      if (response.success) {
+        localStorage.setItem("token", response.data.token.access_token);
+        localStorage.setItem("user", JSON.stringify(response.data.user));
+      }
       navigate("/classroom/register-as-student");
     },
   });

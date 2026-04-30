@@ -30,7 +30,7 @@ const TeacherDashboard = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
         {/* Ongoing Exams */}
         <StatCard
-          value={teacherDashboardData?.data?.ongoing_exam}
+          value={teacherDashboardData?.data?.ongoing_exam || 0}
           label="Ongoing exams"
           bg="bg-[#4f7f3a]"
           icon={<ClipboardCheck size={22} />}
@@ -38,7 +38,7 @@ const TeacherDashboard = () => {
 
         {/* Total Exam Taken */}
         <StatCard
-          value={teacherDashboardData?.data?.total_exam_taken}
+          value={teacherDashboardData?.data?.total_exam_taken || 0}
           label="Total exam taken"
           bg="bg-[#3e7a86]"
           icon={<FileText size={22} />}
@@ -54,7 +54,7 @@ const TeacherDashboard = () => {
 
         {/* Total Students */}
         <StatCard
-          value={teacherDashboardData?.data?.total_student}
+          value={teacherDashboardData?.data?.total_student || 0}
           label="Total students"
           bg="bg-[#222]"
           icon={<UserCheck size={22} />}

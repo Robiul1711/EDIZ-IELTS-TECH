@@ -46,6 +46,16 @@ const ExamRow = ({ index, data, active }) => {
   );
 };
 
+const ExamSkeleton = () => (
+  <div className="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-slate-800 rounded-xl px-6 py-5 flex flex-wrap items-center gap-4 animate-pulse mb-3">
+    <div className="h-4 bg-slate-50 dark:bg-slate-800 rounded w-8"></div>
+    <div className="h-4 bg-slate-50 dark:bg-slate-800 rounded flex-1 min-w-[200px]"></div>
+    <div className="h-4 bg-slate-50 dark:bg-slate-800 rounded w-[220px]"></div>
+    <div className="h-4 bg-slate-50 dark:bg-slate-800 rounded w-24"></div>
+    <div className="h-11 bg-slate-50 dark:bg-slate-800 rounded-2xl w-32 ml-auto"></div>
+  </div>
+);
+
 const ExamDashboard = () => {
   const { data: studentExamData, isLoading } = useApiQuery({
     queryKey: ["student_exam"],
@@ -60,9 +70,7 @@ const ExamDashboard = () => {
         <h2 className="text-xl font-bold text-[#1A1A1A] dark:text-white mb-5 ml-1">Active Exam</h2>
         <div>
           {isLoading ? (
-            Array.from({ length: 2 }).map((_, idx) => (
-              <div key={idx} className="h-16 bg-white dark:bg-[#1A1A1A] rounded-xl border border-gray-100 animate-pulse mb-3" />
-            ))
+            Array(2).fill(0).map((_, idx) => <ExamSkeleton key={idx} />)
           ) : (
             studentExamData?.data?.ongoing?.map((exam, idx) => (
               <ExamRow key={exam.id} index={idx + 1} data={exam} active />
@@ -79,9 +87,7 @@ const ExamDashboard = () => {
         <h2 className="text-xl font-bold text-[#1A1A1A] dark:text-white mb-5 ml-1">Previous Exam</h2>
         <div>
           {isLoading ? (
-            Array.from({ length: 2 }).map((_, idx) => (
-              <div key={idx} className="h-16 bg-white dark:bg-[#1A1A1A] rounded-xl border border-gray-100 animate-pulse mb-3" />
-            ))
+            Array(3).fill(0).map((_, idx) => <ExamSkeleton key={idx} />)
           ) : (
             studentExamData?.data?.submitted?.map((exam, idx) => (
               <ExamRow key={exam.id} index={idx + 1} data={exam} />

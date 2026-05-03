@@ -87,15 +87,15 @@ const StudentScoreDashboard = () => {
     <div className="w-full space-y-8 animate-in fade-in duration-500">
       {/* Top Level Toggle (IELTS/PTE) */}
       <div className="flex justify-center">
-        <div className="flex bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-2xl p-1.5 shadow-sm border border-slate-100 dark:border-slate-800">
+        <div className="flex bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-full p-1.5 shadow-sm border border-slate-100 dark:border-slate-800">
           {["IELTS", "PTE"].map((type) => (
             <button
               key={type}
               onClick={() => setExamType(type)}
-              className={`px-10 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${
+              className={`px-10 py-2.5 rounded-full text-sm font-bold transition-all duration-300 ${
                 examType === type
-                  ? "bg-white dark:bg-slate-800 shadow-md text-[#604CDF] dark:text-white border border-slate-50 dark:border-slate-700"
-                  : "text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300"
+                  ? "bg-white dark:bg-slate-800 shadow-md text-[#604CDF] dark:text-white border border-slate-50 dark:border-slate-200"
+                  : "text-slate-400 border border-transparent dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300"
               }`}
             >
               {type}

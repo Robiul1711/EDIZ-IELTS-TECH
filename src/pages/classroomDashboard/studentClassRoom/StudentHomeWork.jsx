@@ -100,96 +100,19 @@ const HomeworkCard = ({ data, onViewResult }) => {
 };
 
 const StudentHomeWork = () => {
-    const { data: studentDashboardData } = useApiQuery({
+  const { data: studentDashboardData, isLoading: studentDashboardLoading } =
+    useApiQuery({
       queryKey: ["classroom_dashboard_student"],
       url: "/student/dashboard",
       secure: true,
     });
 
-        const { data: assignedHomeworks, isLoading: assignedHomeworksLoading } = useApiQuery({
+  const { data: assignedHomeworks, isLoading: assignedHomeworksLoading } =
+    useApiQuery({
       queryKey: ["assignedHomeworks"],
       url: "/student/homework",
       secure: true,
     });
-    console.log(assignedHomeworks?.data?.ongoing)
-  const activeHomework = [
-    {
-      id: 1,
-      title: "IELTS Writing Task - 1",
-      category: "Cambridge A",
-      submitted: "Ongoing",
-      book: "Book 20",
-      test: "Test 1",
-      part: "Part 2",
-      time: "40 min",
-      score: "7",
-      due: "12 Jan 2026",
-    },
-    {
-      id: 2,
-      title: "IELTS Writing Task - 1",
-      category: "Cambridge A",
-      submitted: "Ongoing",
-      book: "Book 20",
-      test: "Test 1",
-      part: "Part 2",
-      time: "40 min",
-      score: "7",
-      due: "12 Jan 2026",
-    },
-    {
-      id: 3,
-      title: "IELTS Writing Task - 1",
-      category: "Cambridge A",
-      submitted: "Ongoing",
-      book: "Book 20",
-      test: "Test 1",
-      part: "Part 2",
-      time: "40 min",
-      score: "7",
-      due: "12 Jan 2026",
-    },
-  ];
-
-  const homeworkHistory = [
-    {
-      id: 4,
-      title: "IELTS Writing Task - 1",
-      category: "Cambridge A",
-      submitted: "Comleted",
-      book: "Book 20",
-      test: "Test 1",
-      part: "Part 2",
-      time: "40 min",
-      score: "7",
-      due: "12 Jan 2026",
-    },
-    {
-      id: 5,
-      title: "IELTS Writing Task - 1",
-      category: "Cambridge A",
-      submitted: "Comleted",
-      book: "Book 20",
-      test: "Test 1",
-      part: "Part 2",
-      time: "40 min",
-      score: "7",
-      due: "12 Jan 2026",
-    },
-    {
-      id: 6,
-      title: "IELTS Writing Task - 1",
-      category: "Cambridge A",
-      submitted: "Comleted",
-      book: "Book 20",
-      test: "Test 1",
-      part: "Part 2",
-      time: "40 min",
-      score: "7",
-      due: "12 Jan 2026",
-    },
-  ];
-
   const [selectedHomework, setSelectedHomework] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -209,23 +132,34 @@ const StudentHomeWork = () => {
           View your assigned homework, track deadlines, and submit your work
         </p>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
-        {/* Ongoing Exams */}
-        <StatCard
-          value={studentDashboardData?.data?.pending_homework}
-          label="Pending Homework"
-          bg="bg-[#4f7f3a]"
-          icon={<ClipboardCheck size={22} />}
-        />
 
-        {/* Total Exam Taken */}
-        <StatCard
-          value={studentDashboardData?.data?.submitted_homework}
-          label="Submitted"
-          bg="bg-[#3e7a86]"
-          icon={<FileText size={22} />}
-        />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+        {studentDashboardLoading ? (
+          <>
+            <StatSkeleton />
+            <StatSkeleton />
+          </>
+        ) : (
+          <>
+            {/* Ongoing Exams */}
+            <StatCard
+              value={studentDashboardData?.data?.pending_homework}
+              label="Pending Homework"
+              bg="bg-[#4f7f3a]"
+              icon={<ClipboardCheck size={22} />}
+            />
+
+            {/* Total Exam Taken */}
+            <StatCard
+              value={studentDashboardData?.data?.submitted_homework}
+              label="Submitted"
+              bg="bg-[#3e7a86]"
+              icon={<FileText size={22} />}
+            />
+          </>
+        )}
       </div>
+
       <div className="bg-white dark:bg-slate-900/50 rounded-3xl border border-gray-100 dark:border-slate-800 p-6  space-y-12 shadow-sm">
         {/* Active Homework Section */}
         <section className="space-y-6">
@@ -233,13 +167,23 @@ const StudentHomeWork = () => {
             Active homework
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {assignedHomeworks?.data?.ongoing?.map((hw, idx) => (
-              <HomeworkCard
-                key={idx}
-                data={hw}
-                onViewResult={handleViewResult}
-              />
-            ))}
+            {assignedHomeworksLoading ? (
+              Array(3)
+                .fill(0)
+                .map((_, i) => <HomeworkSkeleton key={i} />)
+            ) : assignedHomeworks?.data?.ongoing?.length > 0 ? (
+              assignedHomeworks?.data?.ongoing?.map((hw, idx) => (
+                <HomeworkCard
+                  key={idx}
+                  data={hw}
+                  onViewResult={handleViewResult}
+                />
+              ))
+            ) : (
+              <div className="col-span-full py-12 text-center text-slate-400 dark:text-slate-500 font-medium">
+                No active homework found
+              </div>
+            )}
           </div>
         </section>
 
@@ -249,13 +193,23 @@ const StudentHomeWork = () => {
             Submitted
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {assignedHomeworks?.data?.submitted?.map((hw, idx) => (
-              <HomeworkCard
-                key={idx}
-                data={hw}
-                onViewResult={handleViewResult}
-              />
-            ))}
+            {assignedHomeworksLoading ? (
+              Array(3)
+                .fill(0)
+                .map((_, i) => <HomeworkSkeleton key={i} />)
+            ) : assignedHomeworks?.data?.submitted?.length > 0 ? (
+              assignedHomeworks?.data?.submitted?.map((hw, idx) => (
+                <HomeworkCard
+                  key={idx}
+                  data={hw}
+                  onViewResult={handleViewResult}
+                />
+              ))
+            ) : (
+              <div className="col-span-full py-12 text-center text-slate-400 dark:text-slate-500 font-medium">
+                No submitted homework found
+              </div>
+            )}
           </div>
         </section>
 
@@ -268,6 +222,28 @@ const StudentHomeWork = () => {
     </div>
   );
 };
+
+const StatSkeleton = () => (
+  <div className="bg-slate-100 dark:bg-slate-800 animate-pulse rounded-xl p-5 h-28 border border-slate-100 dark:border-slate-700"></div>
+);
+
+const HomeworkSkeleton = () => (
+  <div className="bg-white dark:bg-slate-800/50 animate-pulse rounded-2xl p-5 border border-gray-100 dark:border-slate-700 flex flex-col gap-5 h-64">
+    <div className="space-y-3">
+      <div className="h-6 bg-slate-100 dark:bg-slate-700 rounded-lg w-3/4"></div>
+      <div className="flex gap-2">
+        <div className="h-5 bg-slate-100 dark:bg-slate-700 rounded-full w-20"></div>
+        <div className="h-5 bg-slate-100 dark:bg-slate-700 rounded-full w-16"></div>
+      </div>
+    </div>
+    <div className="flex gap-4">
+      <div className="h-4 bg-slate-100 dark:bg-slate-700 rounded w-12"></div>
+      <div className="h-4 bg-slate-100 dark:bg-slate-700 rounded w-12"></div>
+      <div className="h-4 bg-slate-100 dark:bg-slate-700 rounded w-12"></div>
+    </div>
+    <div className="mt-auto h-11 bg-slate-100 dark:bg-slate-700 rounded-xl w-full"></div>
+  </div>
+);
 
 const StatCard = ({ value, label, bg, icon }) => {
   return (

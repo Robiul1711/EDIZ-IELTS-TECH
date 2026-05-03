@@ -109,7 +109,7 @@ const StudentIeltsWriting = () => {
                           <>
                             <Link
                               to={`/dashboard/writing-result/${test.test_no}?book=${book.book_no}&type=${type}`}
-                              className="text-white font-bold text-xs px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 hover:shadow-lg hover:shadow-emerald-200 transition-all duration-300 cursor-pointer"
+                              className="text-white font-bold text-xs px-4 py-2 rounded-full bg-emerald-500 hover:bg-emerald-600 hover:shadow-lg hover:shadow-emerald-200 transition-all duration-300 cursor-pointer"
                             >
                               View Results
                             </Link>
@@ -117,7 +117,7 @@ const StudentIeltsWriting = () => {
                               onClick={() =>
                                 handleReset(book.book_no, test.test_no)
                               }
-                              className="text-white font-bold text-xs px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 hover:shadow-lg hover:shadow-amber-200 transition-all duration-300 cursor-pointer"
+                              className="text-white font-bold text-xs px-4 py-2 rounded-full bg-amber-500 hover:bg-amber-600 hover:shadow-lg hover:shadow-amber-200 transition-all duration-300 cursor-pointer"
                             >
                               Re-Attempt
                             </button>
@@ -127,8 +127,7 @@ const StudentIeltsWriting = () => {
                             {user && (
                               <Link
                                 to={`/writing-test/${test.test_no}?book=${book.book_no}&type=${type}`}
-                                className="text-white font-bold text-xs px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-200 dark:hover:shadow-none hover:scale-105 cursor-pointer transition-all duration-300"
-                              >
+                                className="px-3 py-1 text-xs md:px-4 md:py-1.5 rounded-full text-white font-semibold bg-white/10 backdrop-blur-md border border-white/30 shadow-lg hover:bg-white/20 transition-all duration-300">
                                 Start All Test
                               </Link>
                             )}
@@ -201,7 +200,7 @@ const StudentIeltsWriting = () => {
                               ) : (
                                 <Link
                                   to={`/writing-test/${test.test_no}?book=${book.book_no}&type=${type}&part=${task.part_no || task.task_no || taskIdx + 1}`}
-                                  className="text-white font-bold text-[10px] px-4 py-1.5 rounded-lg bg-indigo-500 hover:bg-indigo-600 transition-all duration-300"
+                                  className="text-white font-bold text-[10px] px-4 py-1.5 rounded-full bg-indigo-500 hover:bg-indigo-600 transition-all duration-300"
                                 >
                                   Start Task
                                 </Link>

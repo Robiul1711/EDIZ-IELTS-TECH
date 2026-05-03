@@ -40,7 +40,7 @@ const StudentIeltsReading = () => {
   };
 
   if (isLoading) {
-// ... existing isLoading code ...
+    // ... existing isLoading code ...
     return (
       <div className="flex items-center justify-center h-[calc(100vh-15rem)]">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#604CDF]"></div>
@@ -128,12 +128,17 @@ const StudentIeltsReading = () => {
                             </button>
                           </>
                         ) : (
-                          <Link
-                            to={`/reading-test/${test.test_no}/part/1?book=${book.book_no}&type=${type}`}
-                            className="text-white font-bold text-xs px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-200 dark:hover:shadow-none hover:scale-105 cursor-pointer transition-all duration-300 border border-white/50"
-                          >
+                          <>
+                          {
+                            user && (
+                              <Link
+                                to={`/reading-test/${test.test_no}/part/1?book=${book.book_no}&type=${type}`}
+                                className="text-white font-bold text-xs px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-200 dark:hover:shadow-none hover:scale-105 cursor-pointer transition-all duration-300 border border-white/50"
+                              >
                             Start All Test
                           </Link>
+                            )}
+                          </>
                         )}
                       </div>
                     </div>
@@ -227,7 +232,7 @@ const StudentIeltsReading = () => {
                               </p>
                             </div>
                             <Link
-                              to="/auth/login"
+                              to="/auth"
                               className="mt-1 px-6 py-2 bg-[#604CDF] text-white text-xs font-bold rounded-full hover:bg-[#5E4FD7] transition-all shadow-lg shadow-[#604CDF]/30"
                             >
                               Sign In to Start

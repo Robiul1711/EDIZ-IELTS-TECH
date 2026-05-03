@@ -22,8 +22,8 @@ const StudentIeltsSpeakingTest = () => {
   const type = searchParams.get("type") || "academic";
 
   const { data: fetchResult, isLoading } = useApiQuery({
-    queryKey: ["speaking-test-details", test_no, part_no, bookNo, type],
-    url: `/ielts/speaking/tests/${part_no}`,
+    queryKey: ["speaking-test-details", test_no, bookNo, type],
+    url: `/ielts/speaking/tests/1`, // Fetching part 1 to get the whole test data if the API allows
     params: { book_no: bookNo, test_no: test_no, type },
     secure: true,
   });
@@ -38,6 +38,7 @@ const StudentIeltsSpeakingTest = () => {
     secure: true,
   });
 
+  const [activePart, setActivePart] = useState(0);
   const [startTime] = useState(Date.now());
   const [isRecording, setIsRecording] = useState(false);
   const [recordingDuration, setRecordingDuration] = useState(0);
@@ -48,8 +49,17 @@ const StudentIeltsSpeakingTest = () => {
   const chunksRef = useRef([]);
   const timerRef = useRef(null);
 
-  const testPart = fetchResult?.data?.[0] || {};
-  const questions = testPart?.questions || [];
+  const testParts = fetchResult?.data || [];
+  const testPart = testParts[activePart] || {};
+  // The questions are nested: array of objects, each containing a 'questions' array
+  const questions = testPart?.questions?.flatMap(group => group.questions) || [];
+
+  // Sync activePart with URL param on mount
+  useEffect(() => {
+    if (part_no) {
+      setActivePart(parseInt(part_no) - 1);
+    }
+  }, [part_no]);
 
   // Recording Logic
   const startRecording = async () => {
@@ -92,6 +102,32 @@ const StudentIeltsSpeakingTest = () => {
     }
   };
 
+  const speakText = (text) => {
+    window.speechSynthesis.cancel();
+    const cleanText = text.replace(/<[^>]*>/g, "");
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    
+    // Voices might not be loaded yet, handle it
+    const getVoices = () => {
+      const voices = window.speechSynthesis.getVoices();
+      const englishVoice =
+        voices.find((v) => v.lang.startsWith("en-GB")) ||
+        voices.find((v) => v.lang.startsWith("en-US")) ||
+        voices.find((v) => v.lang.startsWith("en")) ||
+        voices[0];
+      
+      if (englishVoice) utterance.voice = englishVoice;
+      utterance.rate = 0.9;
+      window.speechSynthesis.speak(utterance);
+    };
+
+    if (window.speechSynthesis.getVoices().length > 0) {
+      getVoices();
+    } else {
+      window.speechSynthesis.onvoiceschanged = getVoices;
+    }
+  };
+
   const formatDuration = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -108,10 +144,10 @@ const StudentIeltsSpeakingTest = () => {
     const formData = new FormData();
     formData.append("book_no", bookNo);
     formData.append("test_no", test_no);
-    formData.append("part_no", part_no);
+    formData.append("part_no", testPart?.part_no || activePart + 1);
     formData.append("type", type);
     formData.append("time_spent", timeSpent);
-    formData.append("audio", audioBlob, `speaking_part${part_no}.mp3`);
+    formData.append("audio", audioBlob, `speaking_part${activePart + 1}.mp3`);
 
     submitTest(formData);
   };
@@ -143,35 +179,30 @@ const StudentIeltsSpeakingTest = () => {
             <header className="space-y-4">
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 text-[10px] font-black tracking-[0.2em] uppercase">
                 <Volume2 size={12} />
-                Part {part_no} Speaking
+                Part {testPart?.part_no || activePart + 1} Speaking
               </div>
               <h1 className="text-3xl font-black text-slate-900 dark:text-white leading-tight">
                 {testPart?.title || "Speaking Test Part"}
               </h1>
             </header>
 
-            {/* Cue Card for Part 2 */}
-            {part_no === "2" && testPart?.cue_card && (
-              <div className="p-8 bg-indigo-600 text-white rounded-[3rem] shadow-2xl space-y-4 relative overflow-hidden group">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl group-hover:bg-white/20 transition-all duration-700" />
-                <h3 className="text-xs font-black uppercase tracking-widest text-indigo-200 border-b border-white/10 pb-3">
-                  Cue Card
-                </h3>
-                <div
-                  className="prose prose-invert max-w-none text-white leading-relaxed"
-                  dangerouslySetInnerHTML={{ __html: testPart.cue_card }}
-                />
-              </div>
-            )}
-
             {/* Questions List */}
             <div className="space-y-8">
               {questions.map((q, idx) => (
                 <div
                   key={idx}
-                  className="bg-slate-50 dark:bg-slate-800/50 p-8 rounded-[2rem] border border-slate-100 dark:border-slate-800 transition-all hover:shadow-md group"
+                  className="bg-slate-50 dark:bg-slate-800/50 p-8 rounded-[2rem] border border-slate-100 dark:border-slate-800 transition-all hover:shadow-md group relative"
                 >
+                  <button
+                    onClick={() => speakText(q.text)}
+                    className="absolute top-6 right-6 p-3 bg-white dark:bg-slate-900 rounded-2xl text-indigo-600 dark:text-indigo-400 shadow-sm border border-slate-100 dark:border-slate-700 hover:scale-110 active:scale-95 transition-all opacity-0 group-hover:opacity-100"
+                    title="Listen to question"
+                    >
+                    <Volume2 size={16} />
+                  </button>
+
                   <div className="flex items-start gap-5">
+                    
                     <div className="w-10 h-10 bg-white dark:bg-slate-900 rounded-2xl flex items-center justify-center text-xs font-bold text-indigo-600 shadow-sm border border-slate-100 dark:border-slate-800 transition-transform group-hover:scale-110">
                       {q.serial_number || idx + 1}
                     </div>
@@ -275,20 +306,41 @@ const StudentIeltsSpeakingTest = () => {
         </div>
       </main>
 
-      {/* Footer Submission */}
-      <footer className="h-24 bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 flex items-center px-6 lg:px-12 z-50">
-        <div className="flex-1" />
+      {/* Footer Submission & Navigation */}
+      <footer className="h-24 bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 flex items-center px-6 lg:px-12 z-50 gap-6">
+        {/* Tab System */}
+        <div className="flex-1 flex gap-2 overflow-x-auto no-scrollbar py-2">
+          {testParts.map((p, idx) => (
+            <button
+              key={idx}
+              onClick={() => {
+                setActivePart(idx);
+                // Clear current recording state when switching? 
+                // Maybe keep it if we want to support multi-part submission
+                // But for now let's just switch view
+              }}
+              className={`flex-shrink-0 px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-[0.15em] transition-all border ${
+                activePart === idx
+                  ? "bg-indigo-600 text-white border-indigo-600 shadow-lg shadow-indigo-200 dark:shadow-none"
+                  : "bg-white dark:bg-slate-900 text-slate-400 border-slate-100 dark:border-slate-800 hover:text-slate-600 dark:hover:text-slate-300"
+              }`}
+            >
+              Part {p.part_no || idx + 1}
+            </button>
+          ))}
+        </div>
+
         <button
           onClick={handleSubmit}
           disabled={!audioBlob || isSubmitting || isSubmitted}
-          className="group relative flex items-center gap-4 px-12 h-14 bg-indigo-600 text-white font-black rounded-2xl hover:bg-indigo-700 transition-all active:scale-[0.98] disabled:opacity-50 shadow-xl shadow-indigo-100 dark:shadow-none uppercase text-xs tracking-[0.2em]"
+          className="group relative flex items-center gap-4 px-10 h-14 bg-indigo-600 text-white font-black rounded-2xl hover:bg-indigo-700 transition-all active:scale-[0.98] disabled:opacity-50 shadow-xl shadow-indigo-100 dark:shadow-none uppercase text-[10px] tracking-[0.2em]"
         >
           <span>
             {isSubmitting
-              ? "Uploading Audio..."
+              ? "Uploading..."
               : isSubmitted
-                ? "Submitted Successfully"
-                : "Submit Speaking Test"}
+                ? "Submitted"
+                : `Submit Part ${testPart?.part_no || activePart + 1}`}
           </span>
           <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center transition-transform group-hover:translate-x-1">
             <Send size={18} strokeWidth={2.5} />

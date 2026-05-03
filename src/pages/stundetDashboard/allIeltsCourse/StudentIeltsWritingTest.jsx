@@ -16,6 +16,7 @@ import {
 const StudentIeltsWritingTest = () => {
   const { test_no } = useParams();
   const [searchParams] = useSearchParams();
+  const part_no = searchParams.get("part");
   const navigate = useNavigate();
   const bookNo = searchParams.get("book_no") || searchParams.get("book");
   const type = searchParams.get("type") || "academic";
@@ -39,6 +40,14 @@ const StudentIeltsWritingTest = () => {
   });
 
   const [activePart, setActivePart] = useState(0);
+
+  // Sync activePart with URL param
+  useEffect(() => {
+    if (part_no) {
+      setActivePart(parseInt(part_no) - 1);
+    }
+  }, [part_no]);
+
   const [answers, setAnswers] = useState({ 1: "", 2: "" });
   const [startTime] = useState(Date.now());
   const [leftWidth, setLeftWidth] = useState(50); // percentage
@@ -255,12 +264,6 @@ const StudentIeltsWritingTest = () => {
                   placeholder={`Enter your Part ${activePart + 1} answer...`}
                   className="flex-1 w-full p-8 lg:p-10 bg-transparent text-slate-800 dark:text-slate-200 outline-none resize-none font-serif text-lg leading-relaxed dark:placeholder:text-slate-700"
                 />
-
-                <div className="absolute bottom-6 right-6 flex items-center gap-3">
-                  <button className="flex items-center gap-2 px-3 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-[10px] font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 transition-colors">
-                    <FileText size={12} /> Image to Text
-                  </button>
-                </div>
               </div>
             )}
           </div>

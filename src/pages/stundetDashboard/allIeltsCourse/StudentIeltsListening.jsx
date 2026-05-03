@@ -132,12 +132,16 @@ const StudentIeltsListening = () => {
                             </button>
                           </>
                         ) : (
+                          <>
+                          {user && (
                           <Link
                             to={`/listening-test/${test.test_no}/part/1?book=${book.book_no}&type=${type}`}
                             className="text-white font-bold text-xs px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-200 dark:hover:shadow-none hover:scale-105 cursor-pointer transition-all duration-300"
                           >
-                            Start Test
+                            Start All Test
                           </Link>
+                        )}
+                          </>
                         )}
                       </div>
                     </div>
@@ -216,29 +220,29 @@ const StudentIeltsListening = () => {
                         ))}
                       </div>
 
-                      {!user && (
-                        <div className="absolute inset-0 flex flex-col items-center justify-center z-20 bg-gradient-to-b from-transparent via-white/50 to-white dark:via-slate-900/50 dark:to-slate-900 rounded-b-[2rem]">
-                          <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-100 dark:border-slate-700 flex flex-col items-center gap-3 transform hover:scale-105 transition-transform duration-300">
-                            <div className="w-12 h-12 bg-[#604CDF]/10 rounded-full flex items-center justify-center text-[#604CDF]">
-                              <Lock size={24} />
-                            </div>
-                            <div className="text-center">
-                              <p className="text-base font-bold text-slate-800 dark:text-white leading-tight">
-                                Test Restricted
-                              </p>
-                              <p className="text-[10px] text-slate-500 uppercase tracking-[0.2em] font-bold mt-1">
-                                Student Account Required
-                              </p>
-                            </div>
-                            <Link
-                              to="/auth/login"
-                              className="mt-2 px-8 py-2.5 bg-[#604CDF] text-white text-xs font-bold rounded-full hover:bg-[#5E4FD7] transition-all shadow-lg shadow-[#604CDF]/40 uppercase tracking-wider"
-                            >
-                              Sign In to Start
-                            </Link>
-                          </div>
-                        </div>
-                      )}
+               {!user && (
+                                    <div className="absolute inset-0 flex flex-col items-center justify-center z-20 ">
+                                      <div className="bg-white/70 dark:bg-slate-800/80 rounded-3xl p-5 flex flex-col items-center gap-3 ">
+                                        <div className="w-10 h-10 bg-[#604CDF]/10 rounded-full flex items-center justify-center text-[#604CDF]">
+                                          <Lock size={20} />
+                                        </div>
+                                        <div className="text-center">
+                                          <p className="text-sm font-bold text-slate-800 dark:text-white">
+                                            Start Your Test
+                                          </p>
+                                          <p className="text-[10px] text-slate-500 uppercase tracking-widest font-semibold mt-0.5">
+                                            Authentication Required
+                                          </p>
+                                        </div>
+                                        <Link
+                                          to="/auth"
+                                          className="mt-1 px-6 py-2 bg-[#604CDF] text-white text-xs font-bold rounded-full hover:bg-[#5E4FD7] transition-all shadow-lg shadow-[#604CDF]/30"
+                                        >
+                                          Sign In to Start
+                                        </Link>
+                                      </div>
+                                    </div>
+                                  )}
                     </div>
                   </div>
                 ))}

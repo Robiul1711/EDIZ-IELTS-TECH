@@ -30,8 +30,8 @@ const StudentIeltsListeningTest = () => {
   const type = searchParams.get("type") || "academic";
 
   const { data: testDetails, isLoading } = useApiQuery({
-    queryKey: ["listening-test-details", test_no, part_no, bookNo, type],
-    url: `/ielts/listening/tests/${part_no}`,
+    queryKey: ["listening-test-details", test_no, bookNo, type],
+    url: `/ielts/listening/tests/1`, // Fetching to get whole test data
     params: { book_no: bookNo, test_no: test_no, type },
     secure: true,
   });
@@ -53,9 +53,17 @@ const StudentIeltsListeningTest = () => {
   const [duration, setDuration] = useState(0);
   const audioRef = useRef(null);
 
-  const [activeQuestion, setActiveQuestion] = useState(1);
+  const [activePart, setActivePart] = useState(0);
 
-  const testPart = testDetails?.data?.[0] || {};
+  // Sync activePart with URL param
+  useEffect(() => {
+    if (part_no) {
+      setActivePart(parseInt(part_no) - 1);
+    }
+  }, [part_no]);
+
+  const testParts = testDetails?.data || [];
+  const testPart = testParts[activePart] || {};
   const questionGroups = testPart?.questions || [];
 
   const togglePlay = () => {
@@ -189,7 +197,7 @@ const StudentIeltsListeningTest = () => {
             <header className="space-y-4">
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 text-[10px] font-black tracking-[0.2em] uppercase">
                 <Volume2 size={12} />
-                IELTS Listening Part {part_no}
+                Part {testPart?.part_no || activePart + 1} Listening
               </div>
               <h1 className="text-3xl font-black text-slate-900 dark:text-white leading-tight">
                 {testPart?.title || "Listening Component"}
@@ -287,34 +295,50 @@ const StudentIeltsListeningTest = () => {
         </div>
       </main>
 
-      {/* Footer Submission */}
-      <footer className="h-24 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 flex items-center px-6 lg:px-12 z-20 shadow-[0_-10px_40px_rgba(0,0,0,0.02)]">
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-3 px-5 py-2.5 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700">
-            <Clock size={16} className="text-indigo-600" />
-            <span className="text-xs font-black text-slate-700 dark:text-slate-200 font-mono tracking-widest uppercase">
-              Listening SEC {part_no} Active
-            </span>
-          </div>
+      {/* Footer Submission & Navigation */}
+      <footer className="h-24 bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 flex items-center px-6 lg:px-12 z-50 gap-6">
+        {/* Tab System */}
+        <div className="flex-1 flex gap-2 overflow-x-auto no-scrollbar py-2">
+          {testParts.map((p, idx) => (
+            <button
+              key={idx}
+              onClick={() => {
+                setActivePart(idx);
+                setIsPlaying(false);
+                if (audioRef.current) {
+                  audioRef.current.pause();
+                  audioRef.current.currentTime = 0;
+                }
+              }}
+              className={`flex-shrink-0 px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-[0.15em] transition-all border ${
+                activePart === idx
+                  ? "bg-indigo-600 text-white border-indigo-600 shadow-lg shadow-indigo-200 dark:shadow-none"
+                  : "bg-white dark:bg-slate-900 text-slate-400 border-slate-100 dark:border-slate-800 hover:text-slate-600 dark:hover:text-slate-300"
+              }`}
+            >
+              Part {p.part_no || idx + 1}
+            </button>
+          ))}
         </div>
-
-        <div className="flex-1" />
 
         <button
           onClick={handleSubmit}
           disabled={isSubmitting || isSubmitted}
-          className="group relative flex items-center gap-4 px-12 h-14 bg-indigo-600 text-white font-black rounded-2xl hover:bg-indigo-700 transition-all active:scale-[0.98] disabled:opacity-50 shadow-xl shadow-indigo-100 dark:shadow-none uppercase text-xs tracking-[0.2em]"
+          className="group relative flex items-center gap-4 px-10 h-14 bg-indigo-600 text-white font-black rounded-2xl hover:bg-indigo-700 transition-all active:scale-[0.98] disabled:opacity-50 shadow-xl shadow-indigo-100 dark:shadow-none uppercase text-[10px] tracking-[0.2em]"
         >
           <span>
             {isSubmitting
-              ? "Submitting Request..."
+              ? "Submitting..."
               : isSubmitted
-                ? "Success - Submitted"
-                : "Finalize Test Part"}
+                ? "Submitted"
+                : `Submit Part ${testPart?.part_no || activePart + 1}`}
           </span>
-          <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center transition-transform group-hover:translate-x-1">
+          <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center transition-transform group-hover:translate-x-1">
             <Send size={18} strokeWidth={2.5} />
           </div>
+          {isSubmitted && (
+            <CheckCircle2 size={22} className="text-emerald-400 ml-2" />
+          )}
         </button>
       </footer>
 

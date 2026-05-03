@@ -4,8 +4,11 @@ import JoinAsStudent from "./JoinAsStudent";
 import JoinAsTeacher from "./JoinAsTeacher";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 
 const Register = () => {
+  const { user } = useAuth();
+  console.log(user);
   const [joinAs, setJoinAs] = useState(null); // ✅ IMPORTANT
 
   return (
@@ -17,9 +20,29 @@ const Register = () => {
       {!joinAs && (
         <div className="bg-white dark:bg-slate-900 w-full max-w-[380px] mx-4 rounded-2xl shadow-xl px-6 xxs:px-8 py-7 relative dark:border dark:border-slate-800">
           <div className="absolute top-2 left-4">
-            <Link to="/" className="text-sm  text-purple-600">
-              ← Back
-            </Link>
+            {user ? (
+              <>
+                {user?.role === "teacher" ? (
+                  <Link
+                    to="/classroom/register-as-teacher"
+                    className="text-sm  text-purple-600"
+                  >
+                    ← Back
+                  </Link>
+                ) : (
+                  <Link
+                    to="/classroom/register-as-student"
+                    className="text-sm  text-purple-600"
+                  >
+                    ← Back
+                  </Link>
+                )}
+              </>
+            ) : (
+              <Link to="/" className="text-sm  text-purple-600">
+                ← Back
+              </Link>
+            )}
           </div>
           <h2 className="text-center text-xl font-semibold text-gray-900 dark:text-white mb-6">
             Join EDIZ Classroom

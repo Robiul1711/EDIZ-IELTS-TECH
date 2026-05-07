@@ -129,7 +129,7 @@ const AssignHomeworkModal = ({ isOpen, onClose }) => {
                   name="examFormat"
                   value={formData.examFormat}
                   onChange={handleChange}
-                  className="w-full appearance-none px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-transparent focus:ring-2 focus:ring-indigo-500 outline-none dark:text-white"
+                  className="w-full appearance-none px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none dark:text-white"
                 >
                   <option value="Academic">Academic</option>
                   <option value="General Training">General Training</option>
@@ -154,7 +154,7 @@ const AssignHomeworkModal = ({ isOpen, onClose }) => {
                 name="skill"
                 value={formData.skill}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-transparent outline-none dark:text-white"
+                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700  outline-none  dark:bg-slate-900"
               >
                 <option value="writing">Writing</option>
                 <option value="reading">Reading</option>
@@ -173,7 +173,7 @@ const AssignHomeworkModal = ({ isOpen, onClose }) => {
                   name="book_no"
                   value={formData.book_no}
                   onChange={handleChange}
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-transparent outline-none dark:text-white"
+                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-transparent outline-none dark:text-white dark:bg-slate-900"
                 >
                   <option value="20">Book 20</option>
                   <option value="19">Book 19</option>
@@ -197,7 +197,7 @@ const AssignHomeworkModal = ({ isOpen, onClose }) => {
                   name="test_no"
                   value={formData.test_no}
                   onChange={handleChange}
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-transparent outline-none dark:text-white"
+                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-transparent outline-none dark:text-white dark:bg-slate-900"
                 >
                   <option value="1">Test-1</option>
                   <option value="2">Test-2</option>
@@ -213,7 +213,7 @@ const AssignHomeworkModal = ({ isOpen, onClose }) => {
                   name="part_no"
                   value={formData.part_no}
                   onChange={handleChange}
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-transparent outline-none dark:text-white"
+                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-transparent outline-none dark:text-white dark:bg-slate-900"
                 >
                   <option value="1">1</option>
                   <option value="2">2</option>

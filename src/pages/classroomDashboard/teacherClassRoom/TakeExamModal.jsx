@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { X, Clock, ChevronDown } from "lucide-react";
 import { useApiMutation } from "@/hooks/apiMutation";
+import { useApiQuery } from "@/hooks/apiQuery";
 import { useQueryClient } from "@tanstack/react-query";
 
 const TakeExamModal = ({ isOpen, onClose }) => {
@@ -13,6 +14,9 @@ const TakeExamModal = ({ isOpen, onClose }) => {
     test_no: "1",
     part_no: "1",
     time: "40",
+    description: "",
+    pte_test_config_id: "5",
+    due_date: "",
   });
 
   const handleChange = (e) => {
@@ -21,7 +25,7 @@ const TakeExamModal = ({ isOpen, onClose }) => {
   };
 
   const { mutate, isPending } = useApiMutation({
-    url: "/instructor/exam",
+    url: (data) => (data?.isPte ? "/instructor/pte-exam" : "/instructor/exam"),
     method: "POST",
     secure: true,
     invalidateKeys: ["instructor_exam"],
@@ -29,21 +33,40 @@ const TakeExamModal = ({ isOpen, onClose }) => {
       onClose();
     },
   });
+  
+  const { data: pteSetsData } = useApiQuery({
+    queryKey: ["pte_test_sets"],
+    url: "/instructor/pte-exam/sets",
+    secure: true,
+    enabled: isOpen && examType === "pte",
+  });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    const payload = {
-      title: formData.title || `${examType.toUpperCase()} ${formData.skill} Exam`,
-      skill: formData.skill,
-      test_type: examType,
-      book_no: formData.book_no,
-      test_no: formData.test_no,
-      part_no: formData.part_no,
-      time: formData.time,
-    };
 
-    mutate(payload);
+    if (examType === "pte") {
+      const payload = {
+        title: formData.title || "PTE Monthly Evaluation",
+        description: formData.description,
+        pte_test_config_id: parseInt(formData.pte_test_config_id),
+        due_date: formData.due_date,
+        time: parseInt(formData.time),
+        isPte: true,
+      };
+      mutate(payload);
+    } else {
+      const payload = {
+        title:
+          formData.title || `${examType.toUpperCase()} ${formData.skill} Exam`,
+        skill: formData.skill,
+        test_type: examType,
+        book_no: formData.book_no,
+        test_no: formData.test_no,
+        part_no: formData.part_no,
+        time: formData.time,
+      };
+      mutate(payload);
+    }
   };
 
   if (!isOpen) return null;
@@ -125,7 +148,7 @@ const TakeExamModal = ({ isOpen, onClose }) => {
                   name="examFormat"
                   value={formData.examFormat}
                   onChange={handleChange}
-                  className="w-full appearance-none px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-transparent focus:ring-2 focus:ring-indigo-500 outline-none dark:text-white"
+                  className="w-full appearance-none px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-transparent focus:ring-2 focus:ring-indigo-500 outline-none dark:text-white dark:bg-slate-900"
                 >
                   <option value="Academic">Academic</option>
                   <option value="General Training">General Training</option>
@@ -150,7 +173,7 @@ const TakeExamModal = ({ isOpen, onClose }) => {
                 name="skill"
                 value={formData.skill}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-transparent outline-none dark:text-white"
+                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-transparent outline-none dark:text-white dark:bg-slate-900"
               >
                 <option value="writing">Writing</option>
                 <option value="reading">Reading</option>
@@ -169,7 +192,7 @@ const TakeExamModal = ({ isOpen, onClose }) => {
                   name="book_no"
                   value={formData.book_no}
                   onChange={handleChange}
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-transparent outline-none dark:text-white"
+                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-transparent outline-none dark:text-white dark:bg-slate-900"
                 >
                   <option value="20">Book 20</option>
                   <option value="19">Book 19</option>
@@ -193,7 +216,7 @@ const TakeExamModal = ({ isOpen, onClose }) => {
                   name="test_no"
                   value={formData.test_no}
                   onChange={handleChange}
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-transparent outline-none dark:text-white"
+                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-transparent outline-none dark:text-white dark:bg-slate-900"
                 >
                   <option value="1">Test-1</option>
                   <option value="2">Test-2</option>
@@ -209,7 +232,7 @@ const TakeExamModal = ({ isOpen, onClose }) => {
                   name="part_no"
                   value={formData.part_no}
                   onChange={handleChange}
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-transparent outline-none dark:text-white"
+                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-transparent outline-none dark:text-white dark:bg-slate-900"
                 >
                   <option value="1">1</option>
                   <option value="2">2</option>
@@ -227,6 +250,60 @@ const TakeExamModal = ({ isOpen, onClose }) => {
           </div>
 
           {/* Details Grid */}
+          {/* PTE Specific Fields */}
+          {examType === "pte" && (
+            <>
+              <div className="space-y-1.5">
+                <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                  Description <span className="text-red-500">*</span>
+                </label>
+                <textarea
+                  name="description"
+                  value={formData.description}
+                  onChange={handleChange}
+                  required
+                  placeholder="e.g., Please complete this full mock test within the time limit."
+                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-transparent outline-none min-h-[100px] resize-none"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                    PTE Test Set <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    name="pte_test_config_id"
+                    value={formData.pte_test_config_id}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-transparent outline-none dark:text-white dark:bg-slate-900"
+                  >
+                    <option value="">Select a set</option>
+                    {pteSetsData?.data?.map((set) => (
+                      <option key={set.id} value={set.id}>
+                        {set.title}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                    Due Date <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="datetime-local"
+                    name="due_date"
+                    value={formData.due_date}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-transparent outline-none dark:text-white"
+                  />
+                </div>
+              </div>
+            </>
+          )}
+
           <div className="grid grid-cols-1 gap-4">
             <div className="space-y-1.5">
               <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">

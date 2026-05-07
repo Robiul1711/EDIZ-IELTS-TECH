@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { File, Check } from "lucide-react";
 import { MdDoubleArrow } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const MCQquestion = () => {
   const [selectedAnswers, setSelectedAnswers] = useState([]);
-
+  const location = useLocation();
+  const isDashboard = location.pathname.startsWith("/dashboard");
   const options = [
     {
       id: "A",
@@ -163,7 +164,7 @@ const MCQquestion = () => {
         </button>
 
         <Link
-          to={"/pte-examination-reading/fill-in-blanks-2"}
+          to={`/${isDashboard ? "dashboard" : "pte-examination-reading"}/fill-in-blanks-2`}
           className="w-full md:w-auto"
         >
           <button className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white w-full md:w-auto px-16 py-4 text-base md:text-lg shadow-lg shadow-indigo-200 dark:shadow-none rounded-2xl font-bold flex items-center justify-center gap-3 transition-all hover:opacity-95 active:scale-95 group">

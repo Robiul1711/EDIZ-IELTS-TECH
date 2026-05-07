@@ -1,9 +1,13 @@
 import React, { useState } from "react";
 import { ChevronDown, File } from "lucide-react";
 import { MdDoubleArrow } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const FillinBlank = () => {
+
+  const location = useLocation();
+  const isDashboard = location.pathname.startsWith("/dashboard");
+
   const [selections, setSelections] = useState({
     blank1: "",
     blank2: "",
@@ -11,6 +15,8 @@ const FillinBlank = () => {
     blank4: "",
     blank5: "",
   });
+
+
 
   const [activeBlank, setActiveBlank] = useState(null);
 
@@ -34,26 +40,23 @@ const FillinBlank = () => {
       <div className="relative inline-block mx-1 align-middle">
         <button
           onClick={() => setActiveBlank(isOpen ? null : id)}
-          className={`flex items-center justify-between min-w-[140px] px-3 py-1.5 border rounded-lg transition-all duration-200 ${
-            isOpen
-              ? "border-[#8673FF] ring-2 ring-[#8673FF]/20 bg-white dark:bg-slate-800"
-              : "border-gray-300 dark:border-slate-700 bg-gray-50/50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800"
-          }`}
+          className={`flex items-center justify-between min-w-[140px] px-3 py-1.5 border rounded-lg transition-all duration-200 ${isOpen
+            ? "border-[#8673FF] ring-2 ring-[#8673FF]/20 bg-white dark:bg-slate-800"
+            : "border-gray-300 dark:border-slate-700 bg-gray-50/50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800"
+            }`}
         >
           <span
-            className={`text-sm font-medium ${
-              value ? "text-[#8673FF]" : "text-transparent"
-            }`}
+            className={`text-sm font-medium ${value ? "text-[#8673FF]" : "text-transparent"
+              }`}
           >
             {value || "Select..."}
           </span>
           <ChevronDown
             size={16}
-            className={`ml-2 transition-transform duration-200 ${
-              isOpen
-                ? "rotate-180 text-[#8673FF]"
-                : "text-gray-400 dark:text-slate-500"
-            }`}
+            className={`ml-2 transition-transform duration-200 ${isOpen
+              ? "rotate-180 text-[#8673FF]"
+              : "text-gray-400 dark:text-slate-500"
+              }`}
           />
         </button>
 
@@ -151,7 +154,7 @@ const FillinBlank = () => {
         </button>
 
         <Link
-          to={"/pte-examination-reading/mcq-question"}
+          to={`/${isDashboard ? "dashboard" : "pte-examination-reading"}/mcq-single-answer`}
           className="w-full md:w-auto"
         >
           <button className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white w-full md:w-auto px-16 py-4 text-base md:text-lg shadow-lg shadow-indigo-200 dark:shadow-none rounded-2xl font-bold flex items-center justify-center gap-3 transition-all hover:opacity-95 active:scale-95 group">

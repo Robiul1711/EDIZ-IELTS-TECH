@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import { File, Move } from "lucide-react";
 import { MdDoubleArrow } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const FillinBlank2 = () => {
+
+  const location = useLocation();
+  const isDashboard = location.pathname.startsWith("/dashboard");
   const initialWords = [
     "Razed",
     "Defined",
@@ -173,7 +176,7 @@ const FillinBlank2 = () => {
           & Exit
         </button>
 
-        <Link to={"/pte-examination-reading/reorder-paragraphs"}>
+        <Link to={`/${isDashboard ? "dashboard" : "pte-examination-reading"}/reorder-paragraphs`}>
           <button className="bg-gradient-to-r from-[#A22BDE] to-[#8673FF] text-white w-full md:w-auto px-16 py-4 text-lg shadow-xl rounded-2xl font-semibold flex items-center justify-center gap-3 transition-all hover:scale-[1.02] hover:shadow-2xl active:scale-95">
             Next <MdDoubleArrow size={24} />
           </button>

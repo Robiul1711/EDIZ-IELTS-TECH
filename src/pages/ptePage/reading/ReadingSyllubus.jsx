@@ -1,9 +1,12 @@
 import React from "react";
 import { File } from "lucide-react";
 import { MdDoubleArrow } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const ReadingSyllubus = () => {
+  const location = useLocation();
+  const isDashboard = location.pathname.startsWith("/dashboard");
+
   return (
     <div className="flex flex-col min-h-screen items-center gap-6 md:gap-10  pb-10 font-poppins ">
       {/* Header Area */}
@@ -94,7 +97,7 @@ const ReadingSyllubus = () => {
         </button>
 
         <Link
-          to="/pte-examination-reading/fill-in-blanks"
+          to={`/${isDashboard ? "dashboard" : "pte-examination-reading"}/fill-in-blanks`}
           className="w-full md:w-auto"
         >
           <button className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white w-full md:w-auto px-16 py-4 text-base md:text-lg shadow-lg shadow-indigo-200 dark:shadow-none rounded-xl font-bold flex items-center justify-center gap-3 transition-all hover:opacity-95 active:scale-95 group">

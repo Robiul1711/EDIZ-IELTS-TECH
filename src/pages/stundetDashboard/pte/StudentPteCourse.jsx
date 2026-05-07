@@ -7,7 +7,7 @@ const IELTSCategory = [
     id: 1,
     name: "Reading",
     image: ImageAssets.R,
-    link: "/dashboard/ielts/reading",
+    link: "/dashboard/pte-reading-syllubus",
     bg: "#B6A4FF", // Matches the light purple
     color: "#6144D8",
   },

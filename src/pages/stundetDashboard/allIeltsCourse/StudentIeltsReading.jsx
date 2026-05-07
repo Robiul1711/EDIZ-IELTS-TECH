@@ -12,7 +12,11 @@ const StudentIeltsReading = () => {
   const [searchParams] = useSearchParams();
   const type = searchParams.get("type") || "academic";
 
-  const { data: allIeltsReadingTests, isLoading, refetch } = useApiQuery({
+  const {
+    data: allIeltsReadingTests,
+    isLoading,
+    refetch,
+  } = useApiQuery({
     queryKey: ["all-ielts-reading-tests", type],
     url: "/ielts/reading/all-tests",
     params: { type },
@@ -22,15 +26,18 @@ const StudentIeltsReading = () => {
   const { mutate: resetTest } = useApiMutation({
     url: "/ielts/reading/reset",
     method: "DELETE",
-    secure:true,
-    onSuccess: () => {    
+    secure: true,
+    onSuccess: () => {
       refetch();
     },
-
   });
 
   const handleReset = (book_no, test_no) => {
-    if (window.confirm("Are you sure you want to re-attempt? This will clear your previous progress.")) {
+    if (
+      window.confirm(
+        "Are you sure you want to re-attempt? This will clear your previous progress.",
+      )
+    ) {
       const formData = new FormData();
       formData.append("book_no", book_no);
       formData.append("test_no", test_no);
@@ -116,27 +123,27 @@ const StudentIeltsReading = () => {
                           <>
                             <Link
                               to={`/dashboard/reading-result/${test.test_no}?book=${book.book_no}&type=${type}`}
-                              className="text-white font-bold text-xs px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 hover:shadow-lg hover:shadow-emerald-200 transition-all duration-300 cursor-pointer"
+                              className="text-white font-bold text-xs px-4 py-2 rounded-full bg-emerald-500 hover:bg-emerald-600 hover:shadow-lg hover:shadow-emerald-200 transition-all duration-300 cursor-pointer"
                             >
                               View Results
                             </Link>
                             <button
-                              onClick={() => handleReset(book.book_no, test.test_no)}
-                              className="text-white font-bold text-xs px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 hover:shadow-lg hover:shadow-amber-200 transition-all duration-300 cursor-pointer"
+                              onClick={() =>
+                                handleReset(book.book_no, test.test_no)
+                              }
+                              className="text-white font-bold text-xs px-4 py-2 rounded-full bg-amber-500 hover:bg-amber-600 hover:shadow-lg hover:shadow-amber-200 transition-all duration-300 cursor-pointer"
                             >
                               Re-Attempt
                             </button>
                           </>
                         ) : (
                           <>
-                          {
-                            user && (
+                            {user && (
                               <Link
                                 to={`/reading-test/${test.test_no}/part/1?book=${book.book_no}&type=${type}`}
-                                className="text-white font-bold text-xs px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-200 dark:hover:shadow-none hover:scale-105 cursor-pointer transition-all duration-300 border border-white/50"
-                              >
-                            Start All Test
-                          </Link>
+                                className="px-3 py-1 text-xs md:px-4 md:py-1.5 rounded-full text-white font-semibold bg-white/10 backdrop-blur-md border border-white/30 shadow-lg hover:bg-white/20 transition-all duration-300">
+                                Start All Test
+                              </Link>
                             )}
                           </>
                         )}
@@ -207,7 +214,7 @@ const StudentIeltsReading = () => {
                               ) : (
                                 <Link
                                   to={`/reading-test/${test.test_no}/part/${part.part_no}?book=${book.book_no}&type=${type}`}
-                                  className="text-white font-bold text-[10px] px-4 py-1.5 rounded-lg bg-indigo-500 hover:bg-indigo-600 transition-all duration-300"
+                                  className="text-white font-bold text-[10px] px-4 py-1.5 rounded-full bg-indigo-500 hover:bg-indigo-600 transition-all duration-300"
                                 >
                                   Start Part
                                 </Link>

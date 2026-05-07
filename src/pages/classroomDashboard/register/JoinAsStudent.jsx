@@ -15,7 +15,7 @@ const JoinAsStudent = ({ onBack }) => {
 const { mutate, isPending } = useApiMutation({
     url: "/student-entry",
     method: "POST",
-    secure: true,
+    secure: false,
     onSuccess: (response) => {
       if (response.success) {
         localStorage.setItem("token", response.data.token.access_token);

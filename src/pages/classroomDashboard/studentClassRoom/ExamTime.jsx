@@ -1,94 +1,118 @@
-import React from 'react';
-import { Calendar, Clock } from 'lucide-react';
+import React, { useState } from "react";
 import { useApiQuery } from "@/hooks/apiQuery";
-import { Link } from "react-router-dom";
+import StudentExamRow from "./StudentExamRow";
 
-const ExamRow = ({ index, data, active }) => {
-  return (
-    <div className="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-slate-800 rounded-xl px-6 py-4 flex flex-wrap items-center gap-4 hover:shadow-sm transition-all mb-3 last:mb-0">
-      {/* Index */}
-      <span className="text-sm text-slate-400 dark:text-slate-500 w-8 font-medium">#{index}</span>
-
-      {/* Title */}
-      <span className="text-sm font-semibold text-slate-800 dark:text-white flex-1 min-w-[200px]">
-        {data.title}
-      </span>
-
-      {/* Date */}
-      <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 min-w-[220px]">
-        <Calendar size={16} className="text-slate-400" />
-        {data.created_at || data.date}
-      </div>
-
-      {/* Duration */}
-      <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 w-24">
-        <Clock size={16} className="text-slate-400" />
-        {data.time || data.duration} {data.time ? 'mins' : ''}
-      </div>
-
-      {/* Action Button */}
-      {active ? (
-        <Link 
-          to={`/classroom/register-as-student/start-exam/${data.id}`}
-          className="h-11 px-8 rounded-2xl bg-indigo-600 text-white text-sm font-bold shadow-lg shadow-indigo-500/30 hover:bg-indigo-700 transition-all ml-auto flex items-center justify-center"
-        >
-          Join Exam
-        </Link>
-      ) : (
-        <Link
-          to={`/classroom/register-as-student/view-results/${data.id}`}
-          className="h-11 px-8 rounded-2xl bg-[#0f172a] text-white text-sm font-bold shadow-lg shadow-slate-900/30 hover:bg-slate-900 transition-all ml-auto flex items-center justify-center"
-        >
-          See Results
-        </Link>
-      )}
+const ExamSkeleton = () => (
+  <div className="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-slate-800 rounded-2xl px-6 py-6 flex flex-wrap items-center gap-4 animate-pulse mb-4">
+    <div className="h-10 w-10 bg-slate-100 dark:bg-slate-800 rounded-xl"></div>
+    <div className="flex-1 space-y-2">
+      <div className="h-4 bg-slate-100 dark:bg-slate-800 rounded w-1/3"></div>
+      <div className="h-3 bg-slate-100 dark:bg-slate-800 rounded w-1/4"></div>
     </div>
-  );
-};
+    <div className="flex gap-4">
+        <div className="h-10 w-20 bg-slate-100 dark:bg-slate-800 rounded-xl"></div>
+        <div className="h-10 w-20 bg-slate-100 dark:bg-slate-800 rounded-xl"></div>
+    </div>
+    <div className="h-10 w-32 bg-slate-100 dark:bg-slate-800 rounded-xl ml-auto"></div>
+  </div>
+);
 
 const ExamDashboard = () => {
+  const [activeTab, setActiveTab] = useState("ielts"); // 'ielts' or 'pte'
+  
   const { data: studentExamData, isLoading } = useApiQuery({
     queryKey: ["student_exam"],
     url: "/student/exam",
     secure: true,
   });
 
+  const filteredOngoing = studentExamData?.data?.ongoing?.filter(
+    (exam) => exam.test_type === activeTab
+  );
+  const filteredSubmitted = studentExamData?.data?.submitted?.filter(
+    (exam) => exam.test_type === activeTab
+  );
+
   return (
-    <div className="space-y-10 min-h-screen">
+    <div className="min-h-screen">
+      {/* Tabs */}
+      <div className="flex bg-gray-100 dark:bg-slate-800 p-1.5 rounded-2xl w-fit mb-8">
+        <button
+          onClick={() => setActiveTab("ielts")}
+          className={`px-8 py-2.5 rounded-xl text-sm font-bold transition-all ${
+            activeTab === "ielts"
+              ? "bg-white dark:bg-slate-900 text-indigo-600 shadow-sm"
+              : "text-slate-500 hover:text-slate-700 dark:text-slate-400"
+          }`}
+        >
+          IELTS Exams
+        </button>
+        <button
+          onClick={() => setActiveTab("pte")}
+          className={`px-8 py-2.5 rounded-xl text-sm font-bold transition-all ${
+            activeTab === "pte"
+              ? "bg-white dark:bg-slate-900 text-indigo-600 shadow-sm"
+              : "text-slate-500 hover:text-slate-700 dark:text-slate-400"
+          }`}
+        >
+          PTE Exams
+        </button>
+      </div>
+
       {/* Active Exam Section */}
-      <section>
-        <h2 className="text-xl font-bold text-[#1A1A1A] dark:text-white mb-5 ml-1">Active Exam</h2>
+      <section className="mb-12">
+        <div className="flex items-center gap-3 mb-6">
+          <h2 className="text-xl font-black text-slate-800 dark:text-white uppercase tracking-tight">
+            Active Exam
+          </h2>
+          <span className="bg-indigo-100 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 text-xs font-black px-2.5 py-1 rounded-lg">
+            {filteredOngoing?.length || 0}
+          </span>
+        </div>
+        
         <div>
           {isLoading ? (
-            Array.from({ length: 2 }).map((_, idx) => (
-              <div key={idx} className="h-16 bg-white dark:bg-[#1A1A1A] rounded-xl border border-gray-100 animate-pulse mb-3" />
-            ))
+            Array(2).fill(0).map((_, idx) => <ExamSkeleton key={idx} />)
           ) : (
-            studentExamData?.data?.ongoing?.map((exam, idx) => (
-              <ExamRow key={exam.id} index={idx + 1} data={exam} active />
+            filteredOngoing?.map((exam, idx) => (
+              <StudentExamRow key={exam.id} index={idx + 1} data={exam} />
             ))
           )}
-          {!isLoading && studentExamData?.data?.ongoing?.length === 0 && (
-            <p className="text-slate-400 text-sm italic ml-1">No active exams.</p>
+          {!isLoading && filteredOngoing?.length === 0 && (
+            <div className="bg-white dark:bg-slate-900/40 border border-dashed border-gray-200 dark:border-slate-800 rounded-3xl p-12 text-center">
+              <p className="text-slate-400 text-sm font-medium italic">
+                No active {activeTab.toUpperCase()} exams assigned to you.
+              </p>
+            </div>
           )}
         </div>
       </section>
 
       {/* Previous Exam Section */}
       <section>
-        <h2 className="text-xl font-bold text-[#1A1A1A] dark:text-white mb-5 ml-1">Previous Exam</h2>
+        <div className="flex items-center gap-3 mb-6">
+          <h2 className="text-xl font-black text-slate-800 dark:text-white uppercase tracking-tight">
+            Previous Exam
+          </h2>
+          <span className="bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-xs font-black px-2.5 py-1 rounded-lg">
+            {filteredSubmitted?.length || 0}
+          </span>
+        </div>
+
         <div>
           {isLoading ? (
-            Array.from({ length: 2 }).map((_, idx) => (
-              <div key={idx} className="h-16 bg-white dark:bg-[#1A1A1A] rounded-xl border border-gray-100 animate-pulse mb-3" />
-            ))
+            Array(3).fill(0).map((_, idx) => <ExamSkeleton key={idx} />)
           ) : (
-            studentExamData?.data?.submitted?.map((exam, idx) => (
-              <ExamRow key={exam.id} index={idx + 1} data={exam} />
+            filteredSubmitted?.map((exam, idx) => (
+              <StudentExamRow key={exam.id} index={idx + 1} data={exam} />
             ))
           )}
-          {!isLoading && studentExamData?.data?.submitted?.length === 0 && (
-            <p className="text-slate-400 text-sm italic ml-1">No previous exams.</p>
+          {!isLoading && filteredSubmitted?.length === 0 && (
+            <div className="bg-white dark:bg-slate-900/40 border border-dashed border-gray-200 dark:border-slate-800 rounded-3xl p-12 text-center">
+              <p className="text-slate-400 text-sm font-medium italic">
+                You haven't completed any {activeTab.toUpperCase()} exams yet.
+              </p>
+            </div>
           )}
         </div>
       </section>

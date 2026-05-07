@@ -49,7 +49,7 @@ const StudentIeltsSpeaking = () => {
   if (isLoading) {
     // ... existing isLoading code ...
     return (
-           <div className="flex items-center justify-center h-[calc(100vh-15rem)]">
+      <div className="flex items-center justify-center h-[calc(100vh-15rem)]">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#604CDF]"></div>
       </div>
     );
@@ -114,29 +114,30 @@ const StudentIeltsSpeaking = () => {
                           <>
                             <Link
                               to={`/dashboard/speaking-result/${test.test_no}?book=${book.book_no}&type=${type}`}
-                              className="text-white font-bold text-xs px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 hover:shadow-lg hover:shadow-emerald-200 transition-all duration-300 cursor-pointer"
+                              className="text-white font-bold text-xs px-4 py-2 rounded-full bg-emerald-500 hover:bg-emerald-600 hover:shadow-lg hover:shadow-emerald-200 transition-all duration-300 cursor-pointer"
                             >
                               View Results
                             </Link>
                             <button
-                              onClick={() => handleReset(book.book_no, test.test_no)}
-                              className="text-white font-bold text-xs px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 hover:shadow-lg hover:shadow-amber-200 transition-all duration-300 cursor-pointer"
+                              onClick={() =>
+                                handleReset(book.book_no, test.test_no)
+                              }
+                              className="text-white font-bold text-xs px-4 py-2 rounded-full bg-amber-500 hover:bg-amber-600 hover:shadow-lg hover:shadow-amber-200 transition-all duration-300 cursor-pointer"
                             >
                               Re-Attempt
                             </button>
                           </>
                         ) : (
                           <>
-                          {
-                            user && (
-                          <Link
-                            to={`/speaking-test/${test.test_no}/part/1?book=${book.book_no}&type=${type}`}
-                            className="text-white font-bold text-xs px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-200 dark:hover:shadow-none hover:scale-105 cursor-pointer transition-all duration-300"
-                          >
-                            Start All Test
-                          </Link>
-                        )}
-                        </>
+                            {user && (
+                              <Link
+                                to={`/speaking-test/${test.test_no}/part/1?book=${book.book_no}&type=${type}`}
+                                className="px-3 py-1 text-xs md:px-4 md:py-1.5 rounded-full text-white font-semibold bg-white/10 backdrop-blur-md border border-white/30 shadow-lg hover:bg-white/20 transition-all duration-300"
+                              >
+                                Start All Test
+                              </Link>
+                            )}
+                          </>
                         )}
                       </div>
                     </div>
@@ -197,24 +198,24 @@ const StudentIeltsSpeaking = () => {
                               </div>
                             </div>
 
-                             <div className="flex items-center gap-2 ml-4 self-center">
-                               {test.is_submit ? (
+                            <div className="flex items-center gap-2 ml-4 self-center">
+                              {test.is_submit ? (
                                 <div className="text-white font-bold text-[10px] px-3 py-1.5 rounded-lg bg-slate-700/80 backdrop-blur-sm shadow-sm cursor-help">
-                                     Already Submitted
-                                   </div>
-                               ) : (
-                                 <Link
-                                   to={`/speaking-test/${test.test_no}/part/${part.part_no}?book=${book.book_no}&type=${type}`}
-                                   className="text-white font-bold text-[10px] px-4 py-1.5 rounded-lg bg-indigo-500 hover:bg-indigo-600 transition-all duration-300"
-                                 >
-                                   Start Part
-                                 </Link>
-                               )}
-                             </div>
+                                  Already Submitted
+                                </div>
+                              ) : (
+                                <Link
+                                  to={`/speaking-test/${test.test_no}/part/${part.part_no}?book=${book.book_no}&type=${type}`}
+                                  className="text-white font-bold text-[10px] px-4 py-1.5 rounded-full bg-indigo-500 hover:bg-indigo-600 transition-all duration-300"
+                                >
+                                  Start Part
+                                </Link>
+                              )}
+                            </div>
                           </div>
                         ))}
                       </div>
-   {!user && (
+                      {!user && (
                         <div className="absolute inset-0 flex flex-col items-center justify-center z-20 ">
                           <div className="bg-white/70 dark:bg-slate-800/80 rounded-3xl p-5 flex flex-col items-center gap-3 ">
                             <div className="w-10 h-10 bg-[#604CDF]/10 rounded-full flex items-center justify-center text-[#604CDF]">

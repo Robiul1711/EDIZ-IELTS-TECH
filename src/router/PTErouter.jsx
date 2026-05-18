@@ -140,7 +140,7 @@ export const pteExaminationReadingRoutes = {
             element: <FillinBlank />
         },
         {
-            path: "mcq-question",
+            path: "mcq-multiple-question",
             element: <MCQquestion />
         },
         {

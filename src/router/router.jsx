@@ -19,6 +19,9 @@ import StudentIeltsWriting from "@/pages/stundetDashboard/allIeltsCourse/Student
 import StudentIeltsSpeaking from "@/pages/stundetDashboard/allIeltsCourse/StudentIeltsSpeaking";
 import StudentIeltsListening from "@/pages/stundetDashboard/allIeltsCourse/StudentIeltsListening";
 import StudentPteCourse from "@/pages/stundetDashboard/pte/StudentPteCourse";
+import PteTestDetails from "@/pages/stundetDashboard/pte/PteTestDetails";
+import PteTestAttempt from "@/pages/stundetDashboard/pte/PteTestAttempt";
+import PteTestResult from "@/pages/stundetDashboard/pte/PteTestResult";
 import StudentClassRoom from "@/pages/stundetDashboard/classroom/StudentClassRoom";
 import StudentScoreDashboard from "@/pages/stundetDashboard/score/StudentScoreDashboard";
 import ReadingLayout from "@/layout/ReadingLayout";
@@ -68,6 +71,12 @@ import NotFound from "@/pages/notFound/NotFound";
 import PrivateRoute from "@/routes/PrivateRoute";
 import ReadingResultDetail from "@/pages/stundetDashboard/allIeltsCourse/ReadingResultDetail";
 import ListeningResultDetail from "@/pages/stundetDashboard/allIeltsCourse/ListeningResultDetail";
+import ReadingSyllubus from "@/pages/ptePage/reading/ReadingSyllubus";
+import FillinBlank from "@/pages/ptePage/reading/FillinBlank";
+import MCQquestion from "@/pages/ptePage/reading/MCQquestion";
+import MCQSingleQuestion from "@/pages/ptePage/reading/MCQSingleQuestion";
+import FillinBlank2 from "@/pages/ptePage/reading/FillinBlank2";
+import ReOrder from "@/pages/ptePage/reading/ReOrder";
 import Success from "@/pages/payment/Success";
 import Failed from "@/pages/payment/Failed";
 import Cancelled from "@/pages/payment/Cancelled";
@@ -180,18 +189,47 @@ const router = createBrowserRouter([
       { path: "ielts/writing", element: <StudentIeltsWriting /> },
       { path: "ielts/speaking", element: <StudentIeltsSpeaking /> },
       { path: "ielts/listening", element: <StudentIeltsListening /> },
-      { path: "pte", element: <StudentPteCourse /> },
       { path: "classroom", element: <StudentClassRoom /> },
       { path: "score", element: <StudentScoreDashboard /> },
       { path: "profile", element: <Profile /> },
       { path: "reading-result/:test_no", element: <ReadingResultDetail /> },
       { path: "listening-result/:test_no", element: <ListeningResultDetail /> },
       { path: "writing-result/:test_no", element: <ReadingResultDetail /> }, // Placeholder
-      { path: "speaking-result/:test_no", element: <ReadingResultDetail /> }, // Placeholder
+      { path: "speaking-result/:test_no", element: <ReadingResultDetail /> },
       { path: "reading-review/:id", element: <ReadingReview /> },
       { path: "writing-review/:id", element: <WritingReview /> },
       { path: "speaking-review/:id", element: <SpeakingReview /> },
       { path: "listening-review/:id", element: <ListeningReview /> },
+
+
+      { path: "pte", element: <StudentPteCourse /> },
+      { path: "pte/test-set/:id", element: <PteTestDetails /> },
+      { path: "pte/test-attempt/:attemptId", element: <PteTestAttempt /> },
+      { path: "pte/result/:attemptId", element: <PteTestResult /> },
+      {
+        path: "pte-reading-syllubus",
+        element: <ReadingSyllubus />
+      },
+      {
+        path: "fill-in-blanks",
+        element: <FillinBlank />
+      },
+      {
+        path: "mcq-single-answer",
+        element: <MCQSingleQuestion />
+      },
+      {
+        path: "mcq-multiple-question",
+        element: <MCQquestion />
+      },
+      {
+        path: "fill-in-blanks-2",
+        element: <FillinBlank2 />
+      },
+      {
+        path: "reorder-paragraphs",
+        element: <ReOrder />
+      }
     ],
   },
   // TeacherDashboard routes

@@ -1,124 +1,86 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { FaCheckCircle, FaArrowRight, FaSpinner } from "react-icons/fa";
+import { useApiQuery } from "@/hooks/apiQuery";
+import { useApiMutation } from "@/hooks/apiMutation";
+import { toast } from "react-toastify";
 
 gsap.registerPlugin(ScrollTrigger);
-import { FaCheckCircle, FaArrowRight } from "react-icons/fa";
 
 const PricingSection = () => {
   const [activeTab, setActiveTab] = useState("IELTS");
 
-  // Pricing Data Structure
-  const pricingData = {
-    IELTS: [
-      {
-        title: "Free",
-        subtitle: "Google ads",
-        price: "0.00",
-        originalPrice: null,
-        description: "Begin your IELTS journey",
-        features: [
-          "Foundation of all four modules",
-          "Grammar + Vocabulary essentials",
-          "Listening & Reading practice sets",
-          "Weekly study tracking",
-          "Access to basic lesson library",
-          "Email support",
-        ],
-        buttonText: "Start now",
-        isPopular: false,
-      },
-      {
-        title: "Standard",
-        subtitle: "Billed Monthly",
-        price: "2,900",
-        originalPrice: null,
-        description: "Boost your score with full guidance",
-        features: [
-          "All Starter features",
-          "Complete Writing Task 1 & 2 training",
-          "Daily Speaking questions & tips",
-          "Band-wise strategies & templates",
-          "Full-length mock tests",
-          "Instructor feedback twice a week",
-        ],
-        buttonText: "Get best value",
-        isPopular: true, // This triggers the purple card design
-      },
-      {
-        title: "Premium",
-        subtitle: "Billed Monthly",
-        price: "1,000",
-        originalPrice: "3,900",
-        description: "Target your exact band score",
-        features: [
-          "1-on-1 Speaking sessions",
-          "Advanced Writing correction",
-          "Band 7+ strategies",
-          "Custom study plan",
-          "Topic-wise intensive practice",
-          "Priority instructor access",
-        ],
-        buttonText: "Build your plan",
-        isPopular: false,
-      },
-    ],
-    // Placeholder data for PTE to demonstrate the switch
-    PTE: [
-      {
-        title: "PTE Starter",
-        subtitle: "Basic Access",
-        price: "0.00",
-        originalPrice: null,
-        description: "Start your PTE preparation",
-        features: [
-          "Intro to Speaking & Writing",
-          "Basic Reading materials",
-          "Limited Mock Tests",
-          "Community Support",
-        ],
-        buttonText: "Start Free",
-        isPopular: false,
-      },
-      {
-        title: "PTE Pro",
-        subtitle: "Billed Monthly",
-        price: "3,500",
-        originalPrice: null,
-        description: "Everything you need to pass",
-        features: [
-          "Full AI Scoring",
-          "Unlimited Mock Tests",
-          "Speaking Templates",
-          "Writing Correction",
-        ],
-        buttonText: "Go Pro",
-        isPopular: true,
-      },
-      {
-        title: "PTE Elite",
-        subtitle: "Billed Monthly",
-        price: "5,000",
-        originalPrice: "6,500",
-        description: "Guaranteed Results",
-        features: [
-          "1-on-1 Coaching",
-          "Personalized Study Plan",
-          "Exam Booking Assistance",
-          "Priority Support",
-        ],
-        buttonText: "Get Elite",
-        isPopular: false,
-      },
-    ],
+  // Fetch plans using useApiQuery
+  const { data: plans = [], isLoading: loading } = useApiQuery({
+    queryKey: ["pricing-plans", activeTab],
+    url: "/plans",
+    params: { type: activeTab.toLowerCase() },
+    secure: false,
+    select: (response) => {
+      if (response.success) {
+        const apiPlans = response.data[activeTab.toLowerCase()];
+        return apiPlans.map((plan, index) => ({
+          id: plan.id,
+          title: plan.name,
+          subtitle:
+            plan.price_monthly === "0.00" ? "Free Access" : "Billed Monthly",
+          price: parseFloat(plan.price_monthly).toLocaleString(),
+          originalPrice:
+            plan.price_yearly !== "0.00"
+              ? parseFloat(plan.price_yearly / 10).toLocaleString()
+              : null,
+          description: plan.description,
+          features: plan.features
+            .map((f) =>
+              f.feature_value === "true"
+                ? f.feature_label
+                : f.feature_value === "false"
+                  ? null
+                  : `${f.feature_label}: ${f.feature_value}`,
+            )
+            .filter(Boolean),
+          buttonText:
+            plan.price_monthly === "0.00" ? "Start Free" : "Subscribe Now",
+          isPopular: index === 1,
+        }));
+      }
+      return [];
+    },
+  });
+
+  const [submittingId, setSubmittingId] = useState(null);
+
+  // Handle subscription using useApiMutation
+  const { mutate: subscribe } = useApiMutation({
+    url: (id) => `/subscribe/${id}`,
+    method: "POST",
+    secure: true,
+    successMessage: "Redirecting to payment...",
+    onSuccess: (data) => {
+      if (data.success && data.payment_url) {
+        window.location.href = data.payment_url;
+      }
+    },
+    onError: (error) => {
+      if (error.response?.status === 401) {
+        toast.warning("Please login to subscribe");
+      }
+    },
+    onSettled: () => {
+      setSubmittingId(null);
+    },
+  });
+
+  const handleSubscribe = (planId) => {
+    setSubmittingId(planId);
+    subscribe(planId);
   };
 
-  const currentPlans = pricingData[activeTab];
-
-  const containerRef = React.useRef(null);
-  const headerRef = React.useRef(null);
-  const cardsRef = React.useRef(null);
+  const containerRef = useRef(null);
+  const headerRef = useRef(null);
+  const cardsRef = useRef(null);
 
   useGSAP(
     () => {
@@ -138,7 +100,7 @@ const PricingSection = () => {
         ease: "power3.out",
       });
     },
-    { scope: containerRef }
+    { scope: containerRef },
   );
 
   // Animate cards when tab changes or on initial scroll
@@ -157,11 +119,12 @@ const PricingSection = () => {
         },
       });
     },
-    { scope: containerRef, dependencies: [activeTab] }
+    { scope: containerRef, dependencies: [activeTab] },
   );
 
   return (
-    <section id="pricing"
+    <section
+      id="pricing"
       ref={containerRef}
       className="  section-padding-x my-20 "
     >
@@ -199,31 +162,48 @@ const PricingSection = () => {
         {/* Pricing Cards Grid */}
         <div
           ref={cardsRef}
-          className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start"
+          className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start min-h-[400px]"
         >
-          {currentPlans.map((plan, index) => (
-            <div
-              key={index}
-              className={`relative ${plan.isPopular ? "-mt-4 md:-mt-8" : ""}`}
-            >
-              {/* Standard (Popular) Card Wrapper */}
-              {plan.isPopular ? (
-                <div className="bg-gradient-to-b from-[#9F5BF2] to-[#7B5BF2] rounded-[32px] p-1 pb-1 shadow-2xl transform transition-transform duration-300 hover:scale-[1.01]">
-                  <div className="text-center text-white font-semibold text-sm py-3 tracking-wide">
-                    BEST VALUE TO PRICE
-                  </div>
-                  <div className="bg-white dark:bg-gray-800 rounded-[28px] p-8 h-full">
-                    <PricingContent plan={plan} isPopular={true} />
-                  </div>
-                </div>
-              ) : (
-                /* Normal Card */
-                <div className="bg-white rounded-[32px] p-8 shadow-lg border border-gray-100 dark:border-gray-700  dark:shadow-gray-900 dark:bg-gray-900 h-full transform transition-transform duration-300 hover:-translate-y-1">
-                  <PricingContent plan={plan} isPopular={false} />
-                </div>
-              )}
+          {loading ? (
+            <div className="col-span-full flex flex-col items-center justify-center py-20">
+              <FaSpinner className="text-4xl text-[#604CDF] animate-spin mb-4" />
+              <p className="text-gray-500">Loading plans...</p>
             </div>
-          ))}
+          ) : (
+            plans.map((plan, index) => (
+              <div
+                key={index}
+                className={`relative ${plan.isPopular ? "-mt-4 md:-mt-8" : ""}`}
+              >
+                {/* Standard (Popular) Card Wrapper */}
+                {plan.isPopular ? (
+                  <div className="bg-gradient-to-b from-[#9F5BF2] to-[#7B5BF2] rounded-[32px] p-1 pb-1 shadow-2xl transform transition-transform duration-300 hover:scale-[1.01]">
+                    <div className="text-center text-white font-semibold text-sm py-3 tracking-wide">
+                      BEST VALUE TO PRICE
+                    </div>
+                    <div className="bg-white dark:bg-gray-800 rounded-[28px] p-8 h-full">
+                      <PricingContent
+                        plan={plan}
+                        isPopular={true}
+                        onSubscribe={() => handleSubscribe(plan.id)}
+                        isSubscribing={submittingId === plan.id}
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  /* Normal Card */
+                  <div className="bg-white rounded-[32px] p-8 shadow-lg border border-gray-100 dark:border-gray-700  dark:shadow-gray-900 dark:bg-gray-900 h-full transform transition-transform duration-300 hover:-translate-y-1">
+                    <PricingContent
+                      plan={plan}
+                      isPopular={false}
+                      onSubscribe={() => handleSubscribe(plan.id)}
+                      isSubscribing={submittingId === plan.id}
+                    />
+                  </div>
+                )}
+              </div>
+            ))
+          )}
         </div>
       </div>
     </section>
@@ -231,16 +211,20 @@ const PricingSection = () => {
 };
 
 // Sub-component for inner content to keep code clean
-const PricingContent = ({ plan, isPopular }) => (
+const PricingContent = ({ plan, isPopular, onSubscribe, isSubscribing }) => (
   <div className="flex flex-col h-full">
     <div className="mb-6">
-      <h3 className="text-xl font-bold text-[#1C1C33] dark:text-white">{plan.title}</h3>
+      <h3 className="text-xl font-bold text-[#1C1C33] dark:text-white">
+        {plan.title}
+      </h3>
       <p className="text-xs text-gray-500 mt-1">{plan.subtitle}</p>
     </div>
 
     <div className="mb-6">
       <div className="flex items-baseline gap-2">
-        <span className="text-lg italic font-semibold text-gray-500 dark:text-gray-400  ">BDT</span>
+        <span className="text-lg italic font-semibold text-gray-500 dark:text-gray-400  ">
+          BDT
+        </span>
 
         {plan.originalPrice && (
           <span className="text-2xl text-gray-400 line-through decoration-gray-400 dark:decoration-gray-600 decoration-2">
@@ -248,10 +232,14 @@ const PricingContent = ({ plan, isPopular }) => (
           </span>
         )}
 
-        <span className="text-4xl font-bold text-[#1C1C33] dark:text-white">{plan.price}</span>
+        <span className="text-4xl font-bold text-[#1C1C33] dark:text-white">
+          {plan.price}
+        </span>
         <span className="text-gray-500 text-sm font-medium">/month</span>
       </div>
-      <p className="text-sm text-gray-500 mt-3 dark:text-gray-400">{plan.description}</p>
+      <p className="text-sm text-gray-500 mt-3 dark:text-gray-400">
+        {plan.description}
+      </p>
     </div>
 
     <ul className="space-y-4 mb-8 flex-grow">
@@ -266,14 +254,22 @@ const PricingContent = ({ plan, isPopular }) => (
     </ul>
 
     <button
+      onClick={onSubscribe}
+      disabled={isSubscribing}
       className={`w-full py-3.5 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all duration-300 ${
         isPopular
-          ? "bg-[#604CDF] text-white hover:bg-[#4c3cb5] shadow-lg shadow-purple-200"
+          ? "bg-[#604CDF] text-white hover:bg-[#4c3cb5] shadow-lg  dark:shadow-gray-900 shadow-purple-200"
           : "bg-white dark:bg-gray-800 dark:text-white dark:hover:bg-Primary text-[#604CDF] border border-[#604CDF]/30 hover:bg-[#604CDF] hover:text-white"
-      }`}
+      } ${isSubscribing ? "opacity-70 cursor-not-allowed" : ""}`}
     >
-      {plan.buttonText}
-      <FaArrowRight className="text-sm" />
+      {isSubscribing ? (
+        <FaSpinner className="animate-spin" />
+      ) : (
+        <>
+          {plan.buttonText}
+          <FaArrowRight className="text-sm" />
+        </>
+      )}
     </button>
   </div>
 );

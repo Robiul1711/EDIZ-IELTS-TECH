@@ -68,6 +68,9 @@ import NotFound from "@/pages/notFound/NotFound";
 import PrivateRoute from "@/routes/PrivateRoute";
 import ReadingResultDetail from "@/pages/stundetDashboard/allIeltsCourse/ReadingResultDetail";
 import ListeningResultDetail from "@/pages/stundetDashboard/allIeltsCourse/ListeningResultDetail";
+import Success from "@/pages/payment/Success";
+import Failed from "@/pages/payment/Failed";
+import Cancelled from "@/pages/payment/Cancelled";
 
 
 const router = createBrowserRouter([
@@ -95,6 +98,16 @@ const router = createBrowserRouter([
       { path: "pte", element: <PTEHomePage /> },
       { path: "privacy-policy", element: <PrivacyPolicy /> },
       { path: "terms-and-conditions", element: <TermsAndConditions /> },
+    ],
+  },
+
+  // Payment routes
+  {
+    path: "/payment",
+    children: [
+      { path: "success", element: <Success /> },
+      { path: "failed", element: <Failed /> },
+      { path: "cancelled", element: <Cancelled /> },
     ],
   },
 

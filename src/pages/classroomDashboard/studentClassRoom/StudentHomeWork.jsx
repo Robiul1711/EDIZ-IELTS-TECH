@@ -71,8 +71,8 @@ const HomeworkCard = ({ data, onViewResult }) => {
           Due: <b className="text-slate-700 dark:text-slate-200">{data.due_date}</b>
         </span>
       </div>
-
-      {data.submitted === "Ongoing" ? (
+{console.log(data)}
+      {data.status === "not_complete" ? (
         <Link
           to={`/classroom/register-as-student/start-homework/${data.id}`}
           className="w-full py-2.5 rounded-lg bg-[#334156] hover:bg-[#2a3547] text-white font-semibold transition-colors mt-auto flex items-center justify-center"

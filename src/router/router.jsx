@@ -19,6 +19,9 @@ import StudentIeltsWriting from "@/pages/stundetDashboard/allIeltsCourse/Student
 import StudentIeltsSpeaking from "@/pages/stundetDashboard/allIeltsCourse/StudentIeltsSpeaking";
 import StudentIeltsListening from "@/pages/stundetDashboard/allIeltsCourse/StudentIeltsListening";
 import StudentPteCourse from "@/pages/stundetDashboard/pte/StudentPteCourse";
+import PteTestDetails from "@/pages/stundetDashboard/pte/PteTestDetails";
+import PteTestAttempt from "@/pages/stundetDashboard/pte/PteTestAttempt";
+import PteTestResult from "@/pages/stundetDashboard/pte/PteTestResult";
 import StudentClassRoom from "@/pages/stundetDashboard/classroom/StudentClassRoom";
 import StudentScoreDashboard from "@/pages/stundetDashboard/score/StudentScoreDashboard";
 import ReadingLayout from "@/layout/ReadingLayout";
@@ -187,6 +190,9 @@ const router = createBrowserRouter([
 
 
       { path: "pte", element: <StudentPteCourse /> },
+      { path: "pte/test-set/:id", element: <PteTestDetails /> },
+      { path: "pte/test-attempt/:attemptId", element: <PteTestAttempt /> },
+      { path: "pte/result/:attemptId", element: <PteTestResult /> },
       {
         path: "pte-reading-syllubus",
         element: <ReadingSyllubus />

@@ -77,6 +77,9 @@ import MCQquestion from "@/pages/ptePage/reading/MCQquestion";
 import MCQSingleQuestion from "@/pages/ptePage/reading/MCQSingleQuestion";
 import FillinBlank2 from "@/pages/ptePage/reading/FillinBlank2";
 import ReOrder from "@/pages/ptePage/reading/ReOrder";
+import Success from "@/pages/payment/Success";
+import Failed from "@/pages/payment/Failed";
+import Cancelled from "@/pages/payment/Cancelled";
 
 
 const router = createBrowserRouter([
@@ -104,6 +107,16 @@ const router = createBrowserRouter([
       { path: "pte", element: <PTEHomePage /> },
       { path: "privacy-policy", element: <PrivacyPolicy /> },
       { path: "terms-and-conditions", element: <TermsAndConditions /> },
+    ],
+  },
+
+  // Payment routes
+  {
+    path: "/payment",
+    children: [
+      { path: "success", element: <Success /> },
+      { path: "failed", element: <Failed /> },
+      { path: "cancelled", element: <Cancelled /> },
     ],
   },
 

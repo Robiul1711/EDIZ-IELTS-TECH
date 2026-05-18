@@ -11,8 +11,8 @@ const StudentSidebar = ({ isOpen, onClose }) => {
   const menuItems = [
     
     { name: "Exam", icon: ReportIcon, path: "/classroom/register-as-student" },
-    { name: "Report", icon: ExamIcon, path: "/classroom/register-as-student/report" },
     { name: "HomeWork", icon: HomeWorkIcon, path: "/classroom/register-as-student/student-home-work" },
+    { name: "Report", icon: ExamIcon, path: "/classroom/register-as-student/report" },
   ];
 
   return (

@@ -310,6 +310,7 @@ const PteTestAttempt = () => {
   };
 
   const saveAndNavigate = async (nextIndex) => {
+    if (nextIndex < currentQuestionIndex) return;
     if (nextIndex === currentQuestionIndex) return;
 
     const currentQuestion = questions[currentQuestionIndex];
@@ -343,9 +344,7 @@ const PteTestAttempt = () => {
   };
 
   const handlePrevious = () => {
-    if (currentQuestionIndex > 0) {
-      saveAndNavigate(currentQuestionIndex - 1);
-    }
+    // Disabled going back to previous questions
   };
 
   const performSubmission = async () => {
@@ -417,7 +416,7 @@ const PteTestAttempt = () => {
         <p className="text-red-500 text-lg">Failed to load attempt data or no questions found.</p>
         <button 
           onClick={() => navigate("/dashboard/pte")}
-          className="mt-4 px-6 py-2 bg-primary text-white rounded-lg"
+          className="mt-4 px-6 py-2 bg-primary text-primary-foreground rounded-lg"
         >
           Back to Dashboard
         </button>
@@ -464,7 +463,7 @@ const PteTestAttempt = () => {
         {/* Question Info */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <span className="bg-primary text-white w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 font-bold text-lg shadow-sm">
+            <span className="bg-primary text-primary-foreground w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 font-bold text-lg shadow-sm">
               {currentQuestionIndex + 1}
             </span>
             <div className="min-w-0 flex-1">
@@ -509,42 +508,44 @@ const PteTestAttempt = () => {
 
       {/* Footer Navigation */}
       <footer className="bg-white dark:bg-slate-900 border-t border-gray-200 dark:border-slate-800 px-4 md:px-8 py-4 sticky bottom-0 z-50">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           <button 
             onClick={handlePrevious}
-            disabled={currentQuestionIndex === 0}
-            className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold transition-all ${
-              currentQuestionIndex === 0 
-              ? 'text-gray-300 dark:text-slate-700 cursor-not-allowed' 
-              : 'text-gray-700 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800'
-            }`}
+            disabled={true}
+            className="flex items-center gap-2 px-6 py-3 rounded-xl font-bold transition-all text-gray-300 dark:text-slate-700 cursor-not-allowed opacity-50 flex-shrink-0"
           >
             <ChevronLeft size={20} /> Previous
           </button>
 
-          <div className="hidden md:flex gap-2">
-            {questions.map((_, idx) => (
-               <button
-                 key={idx}
-                 onClick={() => saveAndNavigate(idx)}
-                 className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${
-                   currentQuestionIndex === idx
-                   ? 'bg-primary text-white shadow-md scale-110'
-                   : 'bg-gray-100 dark:bg-slate-800 text-gray-400 dark:text-slate-500 hover:bg-gray-200 dark:hover:bg-slate-700'
-                 }`}
-               >
-                 {idx + 1}
-               </button>
-            ))}
+          <div className="hidden md:flex flex-wrap justify-center items-center gap-2 max-w-[55%] lg:max-w-[65%]">
+            {questions.map((_, idx) => {
+              const isPast = idx < currentQuestionIndex;
+              return (
+                <button
+                  key={idx}
+                  onClick={() => !isPast && saveAndNavigate(idx)}
+                  disabled={isPast}
+                  className={`w-8 h-8 rounded-lg text-xs font-bold transition-all flex-shrink-0 ${
+                    currentQuestionIndex === idx
+                    ? 'bg-primary text-primary-foreground shadow-md scale-110 font-black'
+                    : isPast
+                    ? 'bg-gray-50 dark:bg-slate-900 text-gray-300 dark:text-slate-700 cursor-not-allowed opacity-40'
+                    : 'bg-gray-100 dark:bg-slate-800 text-gray-400 dark:text-slate-500 hover:bg-gray-200 dark:hover:bg-slate-700'
+                  }`}
+                >
+                  {idx + 1}
+                </button>
+              );
+            })}
           </div>
 
           <button 
             onClick={handleNext}
             disabled={currentQuestionIndex === questions.length - 1 || submitAnswerMutation.isPending}
-            className={`flex items-center gap-2 px-10 py-3 rounded-xl font-bold transition-all ${
+            className={`flex items-center gap-2 px-10 py-3 rounded-xl font-bold transition-all flex-shrink-0 ${
               currentQuestionIndex === questions.length - 1 || submitAnswerMutation.isPending
               ? 'text-gray-300 dark:text-slate-700 cursor-not-allowed' 
-              : 'bg-primary text-white hover:bg-primary/90 shadow-lg shadow-primary/20'
+              : 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20'
             }`}
           >
             {submitAnswerMutation.isPending ? 'Saving...' : 'Next'} <ChevronRight size={20} />
@@ -568,7 +569,7 @@ const PteTestAttempt = () => {
             <div className="flex flex-col w-full gap-4">
               <button
                 onClick={() => navigate(`/dashboard/pte/result/${attemptId}`)}
-                className="w-full py-4 bg-primary text-white font-bold rounded-xl hover:bg-primary/90 transition-all shadow-lg shadow-primary/20"
+                className="w-full py-4 bg-primary text-primary-foreground font-bold rounded-xl hover:bg-primary/90 transition-all shadow-lg shadow-primary/20"
               >
                 Result
               </button>
@@ -608,13 +609,143 @@ const PteTestAttempt = () => {
                   setShowConfirmModal(false);
                   performSubmission();
                 }}
-                className="flex-1 py-3.5 bg-primary text-white font-bold rounded-xl hover:bg-primary/90 transition-all shadow-lg shadow-primary/20"
+                className="flex-1 py-3.5 bg-primary text-primary-foreground font-bold rounded-xl hover:bg-primary/90 transition-all shadow-lg shadow-primary/20"
               >
                 Yes, Submit
               </button>
             </div>
           </div>
         </div>
+      )}
+    </div>
+  );
+};
+
+// Play-once Audio Player for Test Questions
+const QuestionAudioPlayer = ({ src, keyId }) => {
+  const audioRef = useRef(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [hasPlayed, setHasPlayed] = useState(false);
+
+  useEffect(() => {
+    setIsPlaying(false);
+    setCurrentTime(0);
+    setDuration(0);
+    setHasPlayed(false);
+    if (audioRef.current) {
+      audioRef.current.load();
+    }
+  }, [src, keyId]);
+
+  const handlePlayPause = () => {
+    if (hasPlayed) return;
+
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+        setIsPlaying(false);
+      } else {
+        audioRef.current.play().then(() => {
+          setIsPlaying(true);
+        }).catch(err => {
+          console.error("Audio playback failed:", err);
+        });
+      }
+    }
+  };
+
+  const handleTimeUpdate = () => {
+    if (audioRef.current) {
+      setCurrentTime(audioRef.current.currentTime);
+    }
+  };
+
+  const handleLoadedMetadata = () => {
+    if (audioRef.current) {
+      setDuration(audioRef.current.duration);
+    }
+  };
+
+  const handleEnded = () => {
+    setIsPlaying(false);
+    setHasPlayed(true);
+    setCurrentTime(duration);
+  };
+
+  const formatTime = (time) => {
+    if (isNaN(time)) return "00:00";
+    const mins = Math.floor(time / 60);
+    const secs = Math.floor(time % 60);
+    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+  };
+
+  return (
+    <div className="w-full max-w-md bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-3xl p-5 shadow-md flex flex-col items-center gap-3">
+      <audio
+        ref={audioRef}
+        src={src}
+        onTimeUpdate={handleTimeUpdate}
+        onLoadedMetadata={handleLoadedMetadata}
+        onEnded={handleEnded}
+        preload="metadata"
+      />
+      
+      <div className="flex items-center justify-between w-full">
+        {/* Play Button */}
+        <button
+          type="button"
+          onClick={handlePlayPause}
+          disabled={hasPlayed}
+          className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all ${
+            hasPlayed
+              ? "bg-gray-100 dark:bg-slate-800 text-gray-400 cursor-not-allowed"
+              : isPlaying
+              ? "bg-red-500 hover:bg-red-600 text-white shadow-lg shadow-red-200 dark:shadow-none"
+              : "bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-200 dark:shadow-none hover:scale-105 active:scale-95"
+          }`}
+        >
+          {hasPlayed ? (
+            <Volume2 size={20} className="opacity-50" />
+          ) : isPlaying ? (
+            <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+              <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+            </svg>
+          ) : (
+            <svg className="w-5 h-5 fill-current translate-x-0.5" viewBox="0 0 24 24">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+          )}
+        </button>
+
+        {/* Time and Status */}
+        <div className="flex flex-col flex-1 ml-4 gap-1.5">
+          <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+            <span>
+              {hasPlayed ? "Completed" : isPlaying ? "Playing" : "Ready to play"}
+            </span>
+            <span className="tabular-nums">
+              {formatTime(currentTime)} / {formatTime(duration)}
+            </span>
+          </div>
+
+          {/* Progress Bar */}
+          <div className="w-full h-2 bg-gray-100 dark:bg-slate-800 rounded-full overflow-hidden">
+            <div
+              className={`h-full transition-all duration-100 ${
+                hasPlayed ? "bg-green-500" : "bg-indigo-600"
+              }`}
+              style={{ width: `${duration ? (currentTime / duration) * 100 : 0}%` }}
+            />
+          </div>
+        </div>
+      </div>
+      
+      {hasPlayed && (
+        <span className="text-[10px] font-bold text-red-500 uppercase tracking-widest mt-1">
+          ⚠️ Played once. This audio cannot be replayed.
+        </span>
       )}
     </div>
   );
@@ -666,14 +797,12 @@ const TaskRenderer = ({
                 </div>
               )}
               {isAudio && (
-                <div className="w-full p-10 bg-indigo-50/50 dark:bg-indigo-900/10 rounded-[3rem] border-2 border-dashed border-indigo-100 dark:border-indigo-900/30 flex flex-col items-center gap-6">
-                   <div className="w-20 h-20 bg-primary text-white rounded-full flex items-center justify-center shadow-xl shadow-primary/30 animate-pulse">
-                      <Volume2 size={40} />
+                <div className="w-full p-6 bg-indigo-50/50 dark:bg-indigo-900/10 rounded-3xl border-2 border-dashed border-indigo-100 dark:border-indigo-900/30 flex flex-col items-center gap-4">
+                   <div className="w-14 h-14 bg-primary text-primary-foreground rounded-full flex items-center justify-center shadow-lg shadow-primary/30">
+                      <Volume2 size={24} />
                    </div>
-                   <div className="w-full max-w-md">
-                      <audio src={media_url} controls className="w-full h-12 accent-primary" />
-                   </div>
-                   <p className="text-sm font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-[0.2em]">Listen carefully to the recording</p>
+                   <QuestionAudioPlayer src={media_url} keyId={id} />
+                   <p className="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest">Listen carefully to the recording</p>
                 </div>
               )}
             </div>
@@ -681,8 +810,8 @@ const TaskRenderer = ({
 
           {/* Text content for Read Aloud / Transcripts */}
           {(content.text || content.transcript) && (
-            <div className="p-10 bg-white dark:bg-slate-900 rounded-[3rem] border border-gray-100 dark:border-slate-800 w-full shadow-sm">
-              <p className="text-gray-700 dark:text-slate-200 text-xl md:text-3xl font-medium leading-relaxed italic text-center">
+            <div className="p-8 bg-white dark:bg-slate-900 rounded-[2.5rem] border border-gray-100 dark:border-slate-800 w-full shadow-sm">
+              <p className="text-gray-700 dark:text-slate-200 text-base md:text-lg font-normal leading-relaxed italic text-center">
                 "{content.text || content.transcript}"
               </p>
             </div>
@@ -700,7 +829,7 @@ const TaskRenderer = ({
                     <div className="absolute inset-0 bg-red-400 rounded-full animate-ping opacity-25"></div>
                   </div>
                   <div className="text-center">
-                    <p className="text-red-600 font-black uppercase tracking-widest text-xs">Recording Active</p>
+                    <p className="text-red-600 font-bold uppercase tracking-widest text-xs">Recording Active</p>
                     <p className="text-4xl font-mono font-bold text-slate-800 dark:text-white mt-2">
                       {Math.floor(qRecordingDuration / 60)}:{(qRecordingDuration % 60).toString().padStart(2, "0")}
                     </p>
@@ -721,17 +850,17 @@ const TaskRenderer = ({
                       <RotateCcw size={24} />
                     </button>
                   </div>
-                  <p className="text-sm font-black text-green-600 uppercase tracking-[0.3em]">Answer Captured Successfully</p>
+                  <p className="text-sm font-bold text-green-600 uppercase tracking-widest">Answer Captured Successfully</p>
                 </div>
               ) : (
                 <div className="flex flex-col items-center gap-6">
                   <button 
                     onClick={() => startRecording(id, task_type)}
-                    className="w-28 h-28 bg-primary text-white rounded-full flex items-center justify-center shadow-2xl shadow-primary/30 hover:scale-110 active:scale-95 transition-all group"
+                    className="w-28 h-28 bg-primary text-primary-foreground rounded-full flex items-center justify-center shadow-2xl shadow-primary/30 hover:scale-110 active:scale-95 transition-all group"
                   >
                     <Mic size={48} className="group-hover:animate-bounce" />
                   </button>
-                  <p className="text-primary font-black uppercase tracking-[0.3em] text-xs">Start Your Response</p>
+                  <p className="text-primary font-bold uppercase tracking-widest text-xs">Start Your Response</p>
                 </div>
               )}
             </div>
@@ -749,15 +878,15 @@ const TaskRenderer = ({
           {/* Reference Content (Text or Audio) */}
           <div className="w-full">
             {media_url && isAudio ? (
-              <div className="p-10 bg-indigo-50/50 dark:bg-indigo-900/10 rounded-[3rem] border border-indigo-100 dark:border-indigo-900/30 flex flex-col items-center gap-6 mb-8">
-                <div className="w-16 h-16 bg-indigo-600 text-white rounded-full flex items-center justify-center shadow-lg shadow-indigo-200 dark:shadow-none">
-                   <Volume2 size={32} />
+              <div className="p-6 bg-indigo-50/50 dark:bg-indigo-900/10 rounded-3xl border border-indigo-100 dark:border-indigo-900/30 flex flex-col items-center gap-4 mb-6">
+                <div className="w-12 h-12 bg-indigo-600 text-white rounded-full flex items-center justify-center shadow-md">
+                   <Volume2 size={24} />
                 </div>
-                <audio src={media_url} controls className="w-full max-w-md h-12" />
+                <QuestionAudioPlayer src={media_url} keyId={id} />
               </div>
             ) : content.text ? (
-              <div className="p-8 bg-white dark:bg-slate-900 rounded-[2.5rem] border border-gray-100 dark:border-slate-800 shadow-sm mb-8">
-                <p className="text-gray-700 dark:text-slate-200 text-xl font-medium leading-relaxed">
+              <div className="p-6 bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm mb-6">
+                <p className="text-gray-700 dark:text-slate-200 text-sm md:text-base font-normal leading-relaxed">
                   {content.text}
                 </p>
               </div>
@@ -766,14 +895,14 @@ const TaskRenderer = ({
 
           <div className="space-y-4">
             <textarea 
-              className="w-full min-h-[300px] p-8 rounded-[2.5rem] border-2 border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-950 focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all dark:text-white text-lg shadow-sm"
+              className="w-full min-h-[250px] p-5 rounded-2xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-950 focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all dark:text-white text-base shadow-sm"
               placeholder="Type your response here..."
               value={typeof currentAnswer.answers === 'string' ? currentAnswer.answers : ''}
               onChange={(e) => handleInputChange(id, task_type, e.target.value)}
             ></textarea>
-            <div className="flex justify-between items-center px-6">
-              <span className="text-xs font-bold text-gray-400 uppercase tracking-widest italic">Character limit may apply</span>
-              <div className="px-6 py-2 bg-primary/5 text-primary rounded-full text-sm font-black uppercase tracking-wider">
+            <div className="flex justify-between items-center px-4">
+              <span className="text-xs font-medium text-gray-400 uppercase tracking-widest italic">Character limit may apply</span>
+              <div className="px-4 py-1.5 bg-primary/5 text-primary rounded-full text-xs font-bold uppercase tracking-wider">
                 Word Count: {(typeof currentAnswer.answers === 'string' ? currentAnswer.answers : '').split(/\s+/).filter(Boolean).length}
               </div>
             </div>
@@ -784,8 +913,8 @@ const TaskRenderer = ({
     // --- Section 3: Reading (Interactive Inputs) ---
     case "fill_in_the_blanks_dropdown":
       return (
-        <div className="p-10 bg-white dark:bg-slate-900 rounded-[3rem] border border-gray-100 dark:border-slate-800 shadow-sm">
-           <p className="text-gray-700 dark:text-slate-200 text-xl md:text-3xl font-medium leading-[5rem]">
+        <div className="p-6 bg-white dark:bg-slate-900 rounded-3xl border border-gray-100 dark:border-slate-800 shadow-sm">
+           <p className="text-gray-700 dark:text-slate-200 text-sm md:text-base font-normal leading-[3rem]">
              {content.text.split(/\[\d+\]/).map((part, index) => (
                <React.Fragment key={index}>
                  {part}
@@ -793,7 +922,7 @@ const TaskRenderer = ({
                    <select 
                     value={answers[index + 1] || ""}
                     onChange={(e) => handleInputChange(id, task_type, e.target.value, index + 1)}
-                    className="mx-3 px-4 py-2 rounded-xl border-2 border-gray-100 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-lg focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold text-primary"
+                    className="mx-2 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-sm focus:ring-2 focus:ring-primary/10 focus:border-primary outline-none transition-all font-medium text-primary"
                    >
                       <option value="">Select...</option>
                       {content.choices[index].map((choice, cIdx) => (
@@ -811,9 +940,9 @@ const TaskRenderer = ({
       const fibaAnswer = currentAnswer.blanks || {};
       const fibaBank = currentAnswer.bank || content.all_options;
       return (
-        <div className="space-y-12">
-          <div className="p-10 bg-white dark:bg-slate-900 rounded-[3.5rem] border border-gray-100 dark:border-slate-800 shadow-sm">
-             <p className="text-gray-700 dark:text-slate-200 text-xl md:text-3xl font-medium leading-[5rem]">
+        <div className="space-y-6">
+          <div className="p-6 bg-white dark:bg-slate-900 rounded-3xl border border-gray-100 dark:border-slate-800 shadow-sm">
+             <p className="text-gray-700 dark:text-slate-200 text-sm md:text-base font-normal leading-[3rem]">
                {content.text.split(/\[\d+\]/).map((part, index, arr) => (
                  <React.Fragment key={index}>
                    {part}
@@ -821,9 +950,9 @@ const TaskRenderer = ({
                      <span 
                         onDragOver={handleDragOver}
                         onDrop={(e) => handleDrop(e, "fiba_blank", id, index)}
-                        className={`mx-3 inline-block min-w-[140px] h-14 border-4 border-dashed rounded-2xl align-middle transition-all ${
+                        className={`mx-2 inline-block min-w-[110px] h-9 border-2 border-dashed rounded-xl align-middle transition-all ${
                           fibaAnswer[index] 
-                          ? 'border-primary bg-primary/5 text-primary text-center leading-[3.2rem] font-black'
+                          ? 'border-primary bg-primary/5 text-primary text-center leading-[2rem] font-medium text-sm'
                           : 'border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-slate-950/50'
                         }`}
                       >
@@ -847,17 +976,17 @@ const TaskRenderer = ({
           <div 
             onDragOver={handleDragOver}
             onDrop={(e) => handleDrop(e, "fiba_bank", id)}
-            className="flex flex-wrap gap-4 justify-center p-12 bg-gray-50/50 dark:bg-slate-950/50 rounded-[4rem] border-4 border-dashed border-gray-200 dark:border-slate-800"
+            className="flex flex-wrap gap-3 justify-center p-6 bg-gray-50/50 dark:bg-slate-950/50 rounded-3xl border-2 border-dashed border-gray-200 dark:border-slate-800"
           >
              {fibaBank.map((option, idx) => (
                <div 
                   key={idx} 
                   draggable
                   onDragStart={(e) => handleDragStart(e, option, "fiba_bank", id)}
-                  className="px-8 py-4 bg-white dark:bg-slate-800 border-2 border-gray-100 dark:border-slate-700 rounded-2xl shadow-xl cursor-grab active:cursor-grabbing hover:border-primary transition-all font-black text-primary text-lg"
+                  className="px-4 py-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl shadow-md cursor-grab active:cursor-grabbing hover:border-primary transition-all font-medium text-primary text-sm"
                 >
-                 {option}
-               </div>
+                  {option}
+                </div>
              ))}
           </div>
         </div>
@@ -865,28 +994,25 @@ const TaskRenderer = ({
 
     case "fill_in_the_blanks_write_word":
       return (
-        <div className="p-10 bg-white dark:bg-slate-900 rounded-[3rem] border border-gray-100 dark:border-slate-800 shadow-sm">
+        <div className="p-6 bg-white dark:bg-slate-900 rounded-3xl border border-gray-100 dark:border-slate-800 shadow-sm">
            {media_url && isAudio && (
-              <div className="flex flex-col items-center gap-4 mb-10 p-8 bg-indigo-50/50 dark:bg-indigo-900/10 rounded-[2rem]">
-                 <div className="w-12 h-12 bg-indigo-600 text-white rounded-full flex items-center justify-center">
-                    <Volume2 size={24} />
-                 </div>
-                 <audio src={media_url} controls className="w-full max-w-sm" />
+              <div className="flex flex-col items-center gap-4 mb-6 p-6 bg-indigo-50/50 dark:bg-indigo-900/10 rounded-2xl">
+                 <QuestionAudioPlayer src={media_url} keyId={id} />
               </div>
            )}
-           <p className="text-gray-700 dark:text-slate-200 text-xl md:text-3xl font-medium leading-[5rem]">
+           <p className="text-gray-700 dark:text-slate-200 text-sm md:text-base font-normal leading-[3rem]">
              {content.text.split(/\[\d+\]/).map((part, index, arr) => (
                <React.Fragment key={index}>
                  {part}
                  {index < arr.length - 1 && (
-                    <input 
-                      type="text" 
-                      value={answers[index + 1] || ""}
-                      onChange={(e) => handleInputChange(id, task_type, e.target.value, index + 1)}
-                      className="mx-3 w-44 px-4 py-2 rounded-xl border-2 border-gray-100 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-xl font-black text-primary focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all text-center"
-                      placeholder="..."
-                    />
-                 )}
+                     <input 
+                       type="text" 
+                       value={answers[index + 1] || ""}
+                       onChange={(e) => handleInputChange(id, task_type, e.target.value, index + 1)}
+                       className="mx-2 w-32 px-3 py-1 rounded-lg border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-sm font-medium text-primary focus:ring-2 focus:ring-primary/10 focus:border-primary outline-none transition-all text-center"
+                       placeholder="..."
+                     />
+                  )}
                </React.Fragment>
              ))}
            </p>
@@ -903,7 +1029,7 @@ const TaskRenderer = ({
              onDragOver={handleDragOver}
              onDrop={(e) => handleDrop(e, "reorder_source", id)}
            >
-              <h3 className="text-xs font-black text-gray-400 uppercase tracking-[0.3em] flex items-center gap-3 px-4">
+              <h3 className="text-xs font-bold text-gray-400 uppercase tracking-[0.3em] flex items-center gap-3 px-4">
                 <span className="w-3 h-3 bg-gray-300 rounded-full"></span> Source Paragraphs ({reorderSource.length})
               </h3>
               <div className="space-y-4 min-h-[300px] lg:min-h-[400px] p-2">
@@ -912,7 +1038,7 @@ const TaskRenderer = ({
                     key={idx} 
                     draggable
                     onDragStart={(e) => handleDragStart(e, p, "reorder_source", id, idx)}
-                    className="p-4 lg:p-6 bg-white dark:bg-slate-800 rounded-2xl lg:rounded-3xl border-2 border-gray-100 dark:border-slate-700 shadow-sm cursor-grab active:cursor-grabbing hover:border-primary transition-all text-sm lg:text-lg font-medium leading-relaxed break-words"
+                    className="p-3 lg:p-4 bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 shadow-sm cursor-grab active:cursor-grabbing hover:border-primary transition-all text-xs lg:text-sm font-normal leading-relaxed break-words"
                   >
                     {p.text}
                   </div>
@@ -920,17 +1046,17 @@ const TaskRenderer = ({
               </div>
            </div>
            <div className="space-y-6 flex flex-col">
-              <h3 className="text-xs font-black text-primary uppercase tracking-[0.3em] flex items-center gap-3 px-4">
+              <h3 className="text-xs font-bold text-primary uppercase tracking-[0.3em] flex items-center gap-3 px-4">
                 <span className="w-3 h-3 bg-primary rounded-full"></span> Final Sequence ({reorderTarget.length})
               </h3>
               <div 
                 onDragOver={handleDragOver}
                 onDrop={(e) => handleDrop(e, "reorder_target", id)}
-                className="flex-1 min-h-[300px] lg:min-h-[400px] bg-gray-50/50 dark:bg-slate-950/50 border-4 border-dashed border-gray-200 dark:border-slate-800 rounded-[2.5rem] lg:rounded-[3.5rem] p-4 lg:p-6 flex flex-col gap-4"
+                className="flex-1 min-h-[300px] lg:min-h-[400px] bg-gray-50/50 dark:bg-slate-950/50 border-2 border-dashed border-gray-200 dark:border-slate-800 rounded-3xl p-3 lg:p-4 flex flex-col gap-4"
               >
                 {reorderTarget.length === 0 ? (
                   <div className="flex-1 flex flex-col items-center justify-center text-gray-400 gap-4">
-                    <p className="text-center font-black uppercase tracking-widest text-[10px]">Drop items here</p>
+                    <p className="text-center font-bold uppercase tracking-widest text-[10px]">Drop items here</p>
                     <p className="text-center font-medium max-w-[200px] text-xs">Drag paragraphs from the left to build the correct order</p>
                   </div>
                 ) : (
@@ -941,7 +1067,7 @@ const TaskRenderer = ({
                       onDragStart={(e) => handleDragStart(e, p, "reorder_target", id, idx)}
                       onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
                       onDrop={(e) => { e.stopPropagation(); handleDrop(e, "reorder_target", id, idx); }}
-                      className="p-4 lg:p-6 bg-white dark:bg-slate-800 rounded-2xl lg:rounded-3xl border-4 border-primary/10 shadow-xl cursor-grab active:cursor-grabbing hover:border-primary transition-all border-l-8 border-l-primary text-sm lg:text-lg font-medium leading-relaxed break-words"
+                      className="p-3 lg:p-4 bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 shadow-md cursor-grab active:cursor-grabbing hover:border-primary transition-all border-l-4 border-l-primary text-xs lg:text-sm font-normal leading-relaxed break-words"
                     >
                       {p.text}
                     </div>
@@ -964,23 +1090,20 @@ const TaskRenderer = ({
           {/* Reference Side */}
           <div className="w-full overflow-hidden">
             {media_url && isAudio ? (
-              <div className="p-6 lg:p-10 bg-indigo-50/50 dark:bg-indigo-900/10 rounded-[2.5rem] lg:rounded-[3rem] border border-indigo-100 dark:border-indigo-900/30 flex flex-col items-center gap-6">
-                 <div className="w-12 h-12 lg:w-16 lg:h-16 bg-indigo-600 text-white rounded-full flex items-center justify-center shadow-lg">
-                    <Volume2 size={28} />
-                 </div>
-                 <audio src={media_url} controls className="w-full max-w-sm h-12" />
-                 <p className="text-[10px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-widest">Listening task reference</p>
+              <div className="p-6 lg:p-8 bg-indigo-50/50 dark:bg-indigo-900/10 rounded-3xl border border-indigo-100 dark:border-indigo-900/30 flex flex-col items-center gap-4">
+                 <QuestionAudioPlayer src={media_url} keyId={id} />
+                 <p className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest">Listening task reference</p>
               </div>
             ) : content.text ? (
-              <div className="p-6 lg:p-10 bg-white dark:bg-slate-900 rounded-[2.5rem] lg:rounded-[3rem] border border-gray-100 dark:border-slate-800 shadow-sm max-h-[400px] lg:max-h-[500px] overflow-y-auto scrollbar-thin prose dark:prose-invert prose-p:text-base max-w-none">
+              <div className="p-6 lg:p-8 bg-white dark:bg-slate-900 rounded-3xl border border-gray-100 dark:border-slate-800 shadow-sm max-h-[400px] lg:max-h-[500px] overflow-y-auto scrollbar-thin prose dark:prose-invert prose-p:text-sm max-w-none">
                  <div 
-                   className="text-gray-700 dark:text-slate-200 text-base leading-relaxed"
+                   className="text-gray-700 dark:text-slate-200 text-sm leading-relaxed"
                    dangerouslySetInnerHTML={{ __html: content.text }}
                  />
               </div>
             ) : (
-              <div className="p-10 bg-gray-50 dark:bg-slate-800/30 rounded-[2.5rem] lg:rounded-[3rem] border-2 border-dashed border-gray-200 dark:border-slate-800 flex flex-col items-center justify-center min-h-[250px] lg:min-h-[300px]">
-                 <Volume2 size={40} className="text-gray-300 mb-4" />
+              <div className="p-8 bg-gray-50 dark:bg-slate-800/30 rounded-3xl border-2 border-dashed border-gray-200 dark:border-slate-800 flex flex-col items-center justify-center min-h-[250px] lg:min-h-[300px]">
+                 <Volume2 size={36} className="text-gray-300 mb-4" />
                  <p className="text-gray-400 font-bold uppercase tracking-widest text-[10px] text-center">Audio/Text reference required</p>
               </div>
             )}
@@ -988,8 +1111,8 @@ const TaskRenderer = ({
 
           {/* Question Side */}
           <div className="space-y-6 lg:space-y-8 w-full overflow-hidden">
-             <div className="p-6 lg:p-8 bg-primary/5 rounded-2xl lg:rounded-[2.5rem] border border-primary/10">
-                <h3 className="text-base lg:text-lg font-black text-slate-800 dark:text-white leading-snug break-words">
+             <div className="p-4 lg:p-5 bg-primary/5 rounded-xl border border-primary/10">
+                <h3 className="text-sm lg:text-base font-medium text-slate-800 dark:text-white leading-snug break-words">
                   {content.question || "Select the most appropriate option(s) based on the context."}
                 </h3>
              </div>
@@ -1001,13 +1124,13 @@ const TaskRenderer = ({
                   return (
                     <label 
                       key={idx}
-                      className={`flex items-center gap-4 lg:gap-6 p-4 lg:p-6 rounded-2xl lg:rounded-3xl border-2 transition-all group cursor-pointer ${
+                      className={`flex items-center gap-4 lg:gap-6 p-3 lg:p-4.5 rounded-xl border border-gray-200 dark:border-slate-800 hover:bg-gray-50 dark:hover:bg-slate-800/50 hover:border-primary/30 transition-all group cursor-pointer ${
                         isSelected
-                        ? 'border-primary bg-primary/5 shadow-lg scale-[1.01] lg:scale-[1.02]'
-                        : 'border-gray-100 dark:border-slate-800 hover:bg-gray-50 dark:hover:bg-slate-800/50 hover:border-primary/30'
+                        ? 'border-primary bg-primary/5 shadow-md'
+                        : 'border-gray-100 dark:border-slate-800'
                       }`}
                     >
-                       <div className={`w-6 h-6 lg:w-8 lg:h-8 rounded-lg lg:rounded-xl border-2 flex items-center justify-center flex-shrink-0 transition-all ${
+                       <div className={`w-5 h-5 rounded-lg border flex items-center justify-center flex-shrink-0 transition-all ${
                          isSelected ? 'bg-primary border-primary' : 'border-gray-200 dark:border-slate-700'
                        }`}>
                           <input 
@@ -1016,9 +1139,9 @@ const TaskRenderer = ({
                             onChange={() => handleInputChange(id, task_type, idx)}
                             className="hidden"
                           />
-                          {isSelected && <div className="w-2 h-2 lg:w-3 lg:h-3 bg-white rounded-sm"></div>}
+                          {isSelected && <div className="w-1.5 h-1.5 bg-white rounded-sm"></div>}
                        </div>
-                       <span className={`text-sm lg:text-base font-bold transition-colors break-words ${isSelected ? 'text-primary' : 'text-gray-700 dark:text-slate-300'}`}>
+                       <span className={`text-xs lg:text-sm font-normal transition-colors break-words ${isSelected ? 'text-primary' : 'text-gray-700 dark:text-slate-300'}`}>
                          {option}
                        </span>
                     </label>
@@ -1032,14 +1155,11 @@ const TaskRenderer = ({
     case "highlight_incorrect_words":
       return (
         <div className="space-y-8">
-           <div className="p-8 lg:p-10 bg-indigo-50/50 dark:bg-indigo-900/10 rounded-[2.5rem] lg:rounded-[3rem] border border-indigo-100 dark:border-indigo-900/30 flex flex-col items-center gap-6">
-              <div className="w-12 h-12 lg:w-16 lg:h-16 bg-indigo-600 text-white rounded-full flex items-center justify-center shadow-lg">
-                 <Volume2 size={28} />
-              </div>
-              <audio src={media_url} controls className="w-full max-w-sm h-12" />
-              <p className="text-[10px] lg:text-xs font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-widest text-center">Click on words that differ from the recording</p>
+           <div className="p-6 lg:p-8 bg-indigo-50/50 dark:bg-indigo-900/10 rounded-3xl border border-indigo-100 dark:border-indigo-900/30 flex flex-col items-center gap-4">
+              <QuestionAudioPlayer src={media_url} keyId={id} />
+              <p className="text-[10px] lg:text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest text-center">Click on words that differ from the recording</p>
            </div>
-           <div className="p-6 lg:p-12 bg-white dark:bg-slate-900 rounded-[2.5rem] lg:rounded-[4rem] border border-gray-100 dark:border-slate-800 shadow-inner overflow-hidden">
+           <div className="p-5 lg:p-8 bg-white dark:bg-slate-900 rounded-3xl border border-gray-100 dark:border-slate-800 shadow-inner overflow-hidden">
               <div className="flex flex-wrap gap-x-2 lg:gap-x-3 gap-y-4 lg:gap-y-6 leading-relaxed lg:leading-[3.5rem]">
                 {content.tokens.map((token, idx) => {
                   const isHighlighted = (Array.isArray(answers) && answers.includes(idx));
@@ -1047,9 +1167,9 @@ const TaskRenderer = ({
                     <span 
                       key={idx}
                       onClick={() => handleInputChange(id, task_type, idx)}
-                      className={`px-2 lg:px-3 py-1 rounded-lg lg:rounded-xl cursor-pointer transition-all text-base lg:text-2xl font-bold break-words ${
+                      className={`px-2 lg:px-3 py-1 rounded-lg lg:rounded-xl cursor-pointer transition-all text-sm lg:text-base font-normal break-words ${
                         isHighlighted
-                        ? 'bg-red-500 text-white shadow-lg -translate-y-1'
+                        ? 'bg-red-500 text-white shadow-lg -translate-y-0.5'
                         : 'text-gray-700 dark:text-slate-300 hover:bg-primary/10 hover:text-primary'
                       }`}
                     >

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import useAxiosSecure from "@/hooks/useAxiosSecure";
 import { useQuery } from "@tanstack/react-query";
@@ -28,6 +28,11 @@ const PteTestResult = () => {
 
   const [showSummary, setShowSummary] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [activeAiTab, setActiveAiTab] = useState(null);
+
+  useEffect(() => {
+    setActiveAiTab(null);
+  }, [currentQuestionIndex]);
 
   const { data: resultData, isLoading: isLoadingResult, isError: isErrorResult } = useQuery({
     queryKey: ["pte-result", attemptId],
@@ -64,7 +69,7 @@ const PteTestResult = () => {
           <p className="text-gray-500 dark:text-slate-400 mb-8 font-medium">Could not fetch test results. Please try again later.</p>
           <button
             onClick={() => navigate("/dashboard/pte")}
-            className="w-full py-4 bg-primary text-white font-bold rounded-xl hover:bg-primary/90 transition-all shadow-lg shadow-primary/20"
+            className="w-full py-4 bg-primary text-primary-foreground font-bold rounded-xl hover:bg-primary/90 transition-all shadow-lg shadow-primary/20"
           >
             Back to Dashboard
           </button>
@@ -91,7 +96,7 @@ const PteTestResult = () => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-slate-950 font-poppins pb-20">
       {/* Header */}
-      <div className="bg-primary pt-8 pb-32 px-4 md:px-8 relative overflow-hidden">
+      <div className="bg-gradient-to-r from-[#8370FF] to-[#6C5CE7] dark:from-slate-900 dark:to-slate-900/80 pt-8 pb-32 px-4 md:px-8 relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full overflow-hidden opacity-10 pointer-events-none">
           <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-white blur-3xl"></div>
           <div className="absolute top-40 -left-20 w-72 h-72 rounded-full bg-white blur-3xl"></div>
@@ -107,7 +112,7 @@ const PteTestResult = () => {
             <h1 className="text-3xl md:text-5xl font-black text-white tracking-tight mb-2">
               Test Results
             </h1>
-            <p className="text-primary-50 font-medium text-lg flex items-center gap-2">
+            <p className="text-indigo-100 dark:text-slate-400 font-medium text-lg flex items-center gap-2">
               <span className="opacity-75">Test Title:</span> <span className="font-bold">{resultData.test_title}</span>
             </p>
           </div>
@@ -210,22 +215,65 @@ const PteTestResult = () => {
                           <div className="bg-white dark:bg-slate-900 p-6 rounded-[1.5rem] border border-gray-100 dark:border-slate-800 shadow-sm">
                             <h4 className="font-bold text-slate-800 dark:text-white mb-6">My Answer</h4>
                             {(() => {
-                              const userAnswer = q.details?.user_answer || q.details?.student_answer || q.details?.answers || q.user_answer || q.submitted_answer;
-                              const correctAnswer = q.details?.correct_answer || q.correct_answer || q.details?.answer_key;
+                              const getWordAtIndex = (val, contentText) => {
+                                if (contentText && typeof contentText === 'string') {
+                                  const cleanText = contentText.replace(/<[^>]*>/g, '').replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+                                  const words = cleanText.split(/\s+/).filter(Boolean);
+                                  const idx = parseInt(val, 10);
+                                  if (!isNaN(idx) && words[idx] !== undefined) {
+                                    return `"${words[idx]}" (Index ${idx})`;
+                                  }
+                                }
+                                return `Index ${val}`;
+                              };
 
-                              if (!userAnswer) return <p className="text-gray-400 text-sm italic">No answer data provided.</p>;
+                              const getOptionText = (val, options) => {
+                                if (options && Array.isArray(options)) {
+                                  const idx = parseInt(val, 10);
+                                  if (!isNaN(idx) && options[idx] !== undefined) {
+                                    return options[idx];
+                                  }
+                                }
+                                return val;
+                              };
 
-                              if (typeof userAnswer === 'object' && userAnswer !== null) {
+                              const studentAnswer = q.student_answer !== undefined ? q.student_answer : (q.details?.student_answer || q.details?.user_answer || q.details?.answers || q.user_answer || q.submitted_answer);
+                              const correctAnswer = q.correct_answer !== undefined ? q.correct_answer : (q.details?.correct_answer || q.details?.answer_key);
+
+                              if (studentAnswer === undefined || studentAnswer === null || (Array.isArray(studentAnswer) && studentAnswer.length === 0) || (typeof studentAnswer === 'object' && Object.keys(studentAnswer).length === 0)) {
+                                return <p className="text-gray-400 text-sm italic">No answer data provided.</p>;
+                              }
+
+                              if (Array.isArray(studentAnswer)) {
                                 return (
-                                  <div className="space-y-4">
-                                    {Object.entries(userAnswer).map(([key, val], i) => {
-                                      const compVal = typeof correctAnswer === 'object' && correctAnswer !== null ? correctAnswer[key] : correctAnswer;
-                                      const isCorrect = String(val).toLowerCase().trim() === String(compVal).toLowerCase().trim();
+                                  <div className="space-y-3">
+                                    {studentAnswer.map((val, idx) => {
+                                      let isCorrect = false;
+                                      if (Array.isArray(correctAnswer)) {
+                                        isCorrect = correctAnswer.some(cVal => {
+                                          if (typeof cVal === 'object' && cVal !== null) {
+                                            return String(cVal.index) === String(val) || String(cVal.word).toLowerCase().trim() === String(val).toLowerCase().trim();
+                                          }
+                                          return String(cVal).toLowerCase().trim() === String(val).toLowerCase().trim();
+                                        });
+                                      } else if (correctAnswer !== undefined && correctAnswer !== null) {
+                                        isCorrect = String(correctAnswer).toLowerCase().trim() === String(val).toLowerCase().trim();
+                                      }
+
+                                      let displayText = "";
+                                      if (q.task_type === 'highlight_incorrect_words') {
+                                        displayText = getWordAtIndex(val, q.content?.text);
+                                      } else if (q.content?.options) {
+                                        displayText = getOptionText(val, q.content.options);
+                                      } else {
+                                        displayText = String(val);
+                                      }
+
                                       return (
-                                        <div key={key} className="flex gap-3 text-sm md:text-base">
-                                          <span className="text-red-400">{i + 1}.</span>
-                                          <span className={`${isCorrect ? "text-green-500" : "text-red-500"} font-medium capitalize`}>
-                                            {String(val) || 'Unknown'}
+                                        <div key={idx} className="flex items-center gap-3 text-sm md:text-base bg-gray-50 dark:bg-slate-800/40 p-2.5 rounded-xl border border-gray-100 dark:border-slate-800">
+                                          <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${isCorrect ? "bg-green-500" : "bg-red-500"}`} />
+                                          <span className={`font-semibold capitalize ${isCorrect ? "text-green-600 dark:text-green-400" : "text-red-500 dark:text-red-400"}`}>
+                                            {displayText}
                                           </span>
                                         </div>
                                       );
@@ -233,7 +281,33 @@ const PteTestResult = () => {
                                   </div>
                                 );
                               }
-                              return <p className="text-gray-700 dark:text-slate-300">{String(userAnswer)}</p>;
+
+                              if (typeof studentAnswer === 'object' && studentAnswer !== null) {
+                                return (
+                                  <div className="space-y-3">
+                                    {Object.entries(studentAnswer).map(([key, val]) => {
+                                      const compVal = typeof correctAnswer === 'object' && correctAnswer !== null ? correctAnswer[key] : correctAnswer;
+                                      const isCorrect = val && compVal && String(val).toLowerCase().trim() === String(compVal).toLowerCase().trim();
+                                      return (
+                                        <div key={key} className="flex flex-col gap-1 text-sm md:text-base bg-gray-50 dark:bg-slate-800/40 p-2.5 rounded-xl border border-gray-100 dark:border-slate-800">
+                                          <span className="text-gray-400 text-xs font-bold uppercase tracking-wider">Blank {key}</span>
+                                          <span className={`${isCorrect ? "text-green-600 dark:text-green-400" : "text-red-500 dark:text-red-400"} font-semibold`}>
+                                            {String(val) || 'Blank'}
+                                          </span>
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                );
+                              }
+
+                              return (
+                                <div className="bg-gray-50 dark:bg-slate-800/40 p-4 rounded-xl border border-gray-100 dark:border-slate-800">
+                                  <p className="text-gray-700 dark:text-slate-300 text-sm leading-relaxed whitespace-pre-wrap">
+                                    {String(studentAnswer)}
+                                  </p>
+                                </div>
+                              );
                             })()}
                           </div>
 
@@ -243,45 +317,135 @@ const PteTestResult = () => {
                               Answer Key
                             </div>
                             {(() => {
-                              const correctAnswer = q.details?.correct_answer || q.correct_answer || q.details?.answer_key;
+                              const getWordAtIndex = (val, contentText) => {
+                                if (contentText && typeof contentText === 'string') {
+                                  const cleanText = contentText.replace(/<[^>]*>/g, '').replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+                                  const words = cleanText.split(/\s+/).filter(Boolean);
+                                  const idx = parseInt(val, 10);
+                                  if (!isNaN(idx) && words[idx] !== undefined) {
+                                    return `"${words[idx]}" (Index ${idx})`;
+                                  }
+                                }
+                                return `Index ${val}`;
+                              };
 
-                              if (!correctAnswer) return <p className="text-gray-400 text-sm italic">No correct answer data provided.</p>;
+                              const getOptionText = (val, options) => {
+                                if (options && Array.isArray(options)) {
+                                  const idx = parseInt(val, 10);
+                                  if (!isNaN(idx) && options[idx] !== undefined) {
+                                    return options[idx];
+                                  }
+                                }
+                                return val;
+                              };
+
+                              const correctAnswer = q.correct_answer !== undefined ? q.correct_answer : (q.details?.correct_answer || q.details?.answer_key);
+
+                              if (correctAnswer === undefined || correctAnswer === null || (Array.isArray(correctAnswer) && correctAnswer.length === 0) || (typeof correctAnswer === 'object' && Object.keys(correctAnswer).length === 0)) {
+                                return <p className="text-gray-400 text-sm italic">No correct answer data provided.</p>;
+                              }
+
+                              if (Array.isArray(correctAnswer)) {
+                                return (
+                                  <div className="space-y-3">
+                                    {correctAnswer.map((val, idx) => {
+                                      let displayText = "";
+                                      if (typeof val === 'object' && val !== null) {
+                                        displayText = `${val.word} (Index ${val.index})`;
+                                      } else if (q.task_type === 'highlight_incorrect_words') {
+                                        displayText = getWordAtIndex(val, q.content?.text);
+                                      } else if (q.content?.options) {
+                                        displayText = getOptionText(val, q.content.options);
+                                      } else {
+                                        displayText = String(val);
+                                      }
+
+                                      return (
+                                        <div key={idx} className="flex items-center gap-3 text-sm md:text-base bg-green-50/50 dark:bg-green-950/20 p-2.5 rounded-xl border border-green-100/50 dark:border-green-900/30">
+                                          <div className="w-2.5 h-2.5 rounded-full bg-green-500 flex-shrink-0" />
+                                          <span className="text-green-600 dark:text-green-400 font-semibold">
+                                            {displayText}
+                                          </span>
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                );
+                              }
 
                               if (typeof correctAnswer === 'object' && correctAnswer !== null) {
                                 return (
-                                  <div className="space-y-4">
-                                    {Object.entries(correctAnswer).map(([key, val], i) => (
-                                      <div key={key} className="flex gap-3 text-sm md:text-base">
-                                        <span className="text-green-500">{i + 1}.</span>
-                                        <span className="text-green-500 font-medium capitalize">{String(val)}</span>
+                                  <div className="space-y-3">
+                                    {Object.entries(correctAnswer).map(([key, val]) => (
+                                      <div key={key} className="flex flex-col gap-1 text-sm md:text-base bg-green-50/50 dark:bg-green-950/20 p-2.5 rounded-xl border border-green-100/50 dark:border-green-900/30">
+                                        <span className="text-green-500/80 text-xs font-bold uppercase tracking-wider">Blank {key}</span>
+                                        <span className="text-green-600 dark:text-green-400 font-semibold">
+                                          {String(val)}
+                                        </span>
                                       </div>
                                     ))}
                                   </div>
                                 );
                               }
-                              return <p className="text-green-500 font-medium capitalize">{String(correctAnswer)}</p>;
+
+                              return (
+                                <div className="bg-green-50/50 dark:bg-green-950/20 p-4 rounded-xl border border-green-100/50 dark:border-green-900/30">
+                                  <p className="text-green-600 dark:text-green-400 text-sm leading-relaxed font-medium">
+                                    {String(correctAnswer)}
+                                  </p>
+                                </div>
+                              );
                             })()}
                           </div>
 
                           {/* AI Feedback */}
                           <div className="bg-white dark:bg-slate-900 p-6 rounded-[1.5rem] border border-gray-100 dark:border-slate-800 shadow-sm flex flex-col">
                             <div className="flex items-center justify-between mb-4">
-                              <h4 className="font-bold text-[#6C5CE7] text-lg">AI Feedback</h4>
-                              <button className="bg-[#6C5CE7] hover:bg-indigo-600 text-white text-xs px-4 py-1.5 rounded-lg transition-colors font-medium shadow-sm">
-                                Feedback
-                              </button>
+                              <h4 className="font-bold text-[#6C5CE7] text-lg">
+                                {activeAiTab === "explanation" ? "AI Explanation" : "AI Feedback"}
+                              </h4>
+                              {activeAiTab && (
+                                <span className="bg-[#6C5CE7]/10 text-[#6C5CE7] text-xs px-3 py-1 rounded-full font-bold uppercase tracking-wider">
+                                  {activeAiTab}
+                                </span>
+                              )}
                             </div>
-                            <div className="bg-gray-50 dark:bg-slate-800/50 p-5 rounded-2xl border border-gray-100 dark:border-slate-700 flex-1">
-                              <p className="text-gray-700 dark:text-slate-300 text-sm whitespace-pre-line leading-relaxed mb-6">
-                                {q.details?.feedback || "No feedback available for this question."}
-                              </p>
+                            <div className="flex flex-col gap-4 flex-1 justify-between">
+                              {activeAiTab ? (
+                                <div className="bg-gray-50 dark:bg-slate-800/50 p-5 rounded-2xl border border-gray-100 dark:border-slate-700 flex-1 animate-in fade-in slide-in-from-top-2 duration-300">
+                                  <p className="text-gray-700 dark:text-slate-300 text-sm whitespace-pre-line leading-relaxed">
+                                    {activeAiTab === "feedback"
+                                      ? (q.details?.feedback || "No feedback available for this question.")
+                                      : (q.details?.explanation || "No explanation available for this question.")
+                                    }
+                                  </p>
+                                </div>
+                              ) : (
+                                <div className="bg-gray-50/50 dark:bg-slate-800/20 p-8 rounded-2xl border border-dashed border-gray-200 dark:border-slate-800 text-center flex-1 flex flex-col items-center justify-center text-gray-400 min-h-[150px]">
+                                  <p className="text-xs font-semibold uppercase tracking-wider leading-relaxed">Select Feedback or Explanation below to view details</p>
+                                </div>
+                              )}
 
                               {/* Action Buttons */}
-                              <div className="mt-auto flex flex-col gap-2">
-                                <button className="w-full py-2.5 rounded-xl border border-[#6C5CE7]/20 text-[#6C5CE7] text-sm font-medium hover:bg-[#6C5CE7]/5 transition-colors">
+                              <div className="flex flex-col gap-2 mt-auto">
+                                <button
+                                  onClick={() => setActiveAiTab(prev => prev === "explanation" ? null : "explanation")}
+                                  className={`w-full py-2.5 rounded-xl border text-sm font-medium transition-colors ${
+                                    activeAiTab === "explanation"
+                                      ? 'border-[#6C5CE7] bg-[#6C5CE7]/10 text-[#6C5CE7]'
+                                      : 'border-gray-200 dark:border-slate-700 text-gray-600 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-800/20'
+                                  }`}
+                                >
                                   Explanation
                                 </button>
-                                <button className="w-full py-2.5 rounded-xl border border-[#6C5CE7]/20 bg-[#6C5CE7]/5 text-[#6C5CE7] text-sm font-medium hover:bg-[#6C5CE7]/10 transition-colors">
+                                <button
+                                  onClick={() => setActiveAiTab(prev => prev === "feedback" ? null : "feedback")}
+                                  className={`w-full py-2.5 rounded-xl border text-sm font-medium transition-colors ${
+                                    activeAiTab === "feedback"
+                                      ? 'border-[#6C5CE7] bg-[#6C5CE7]/10 text-[#6C5CE7]'
+                                      : 'border-gray-200 dark:border-slate-700 text-gray-600 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-800/20'
+                                  }`}
+                                >
                                   Feedback
                                 </button>
                               </div>
@@ -323,7 +487,7 @@ const PteTestResult = () => {
                         key={idx}
                         onClick={() => setCurrentQuestionIndex(idx)}
                         className={`w-10 h-10 rounded-xl font-bold transition-all ${currentQuestionIndex === idx
-                          ? 'bg-primary text-white shadow-md scale-110'
+                          ? 'bg-primary text-primary-foreground shadow-md scale-110'
                           : 'bg-white text-slate-500 border border-gray-200 hover:border-primary hover:text-primary dark:bg-slate-800 dark:border-slate-700 dark:text-slate-400'
                           }`}
                       >

@@ -1,9 +1,15 @@
 import React, { useState, useRef } from "react";
 import { File } from "lucide-react";
 import { MdDoubleArrow } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 
 const PTEMicrophoneCheck = () => {
+  const [searchParams] = useSearchParams();
+  const attemptId = searchParams.get("attemptId");
+
+  const nextPath = attemptId
+    ? `/pte/keyboard-check?attemptId=${attemptId}`
+    : "/pte/keyboard-check";
   const [status, setStatus] = useState("off"); // 'off', 'recording', 'completed'
   const [audioUrl, setAudioUrl] = useState(null);
 
@@ -89,56 +95,52 @@ const PTEMicrophoneCheck = () => {
             {status === "recording"
               ? "Recording Started..."
               : status === "playing"
-              ? "Playing..."
-              : status === "completed"
-              ? "Recording Finished"
-              : "Ready to record"}
+                ? "Playing..."
+                : status === "completed"
+                  ? "Recording Finished"
+                  : "Ready to record"}
           </p>
         </div>
 
         {/* Progress Bar */}
         <div className="w-full h-3 bg-gray-100 dark:bg-slate-800 rounded-full overflow-hidden">
           <div
-            className={`h-full bg-gradient-to-r from-[#A22BDE] to-[#8673FF] rounded-full transition-all duration-300 ${
-              status === "recording" || status === "playing"
+            className={`h-full bg-gradient-to-r from-[#A22BDE] to-[#8673FF] rounded-full transition-all duration-300 ${status === "recording" || status === "playing"
                 ? "w-full animate-pulse shadow-[0_0_15px_rgba(162,43,222,0.4)]"
                 : status === "completed"
-                ? "w-full"
-                : "w-0"
-            }`}
+                  ? "w-full"
+                  : "w-0"
+              }`}
           ></div>
         </div>
 
         {/* Controls */}
         <div className="grid grid-cols-3 gap-3 w-full">
           <button
-            className={`py-3 md:py-4 rounded-xl font-bold transition-all active:scale-95 text-xs md:text-sm ${
-              status === "recording" || status === "playing"
+            className={`py-3 md:py-4 rounded-xl font-bold transition-all active:scale-95 text-xs md:text-sm ${status === "recording" || status === "playing"
                 ? "bg-gray-200 dark:bg-slate-800 text-gray-400 dark:text-slate-600 cursor-not-allowed"
                 : "bg-indigo-600 text-white hover:bg-indigo-700 shadow-md shadow-indigo-100 dark:shadow-none"
-            }`}
+              }`}
             onClick={startRecording}
             disabled={status === "recording" || status === "playing"}
           >
             Record
           </button>
           <button
-            className={`py-3 md:py-4 rounded-xl font-bold transition-all active:scale-95 text-xs md:text-sm ${
-              !audioUrl || status === "playing"
+            className={`py-3 md:py-4 rounded-xl font-bold transition-all active:scale-95 text-xs md:text-sm ${!audioUrl || status === "playing"
                 ? "bg-gray-100 dark:bg-slate-800 text-gray-300 dark:text-slate-600 cursor-not-allowed"
                 : "bg-indigo-600 text-white hover:bg-indigo-700 shadow-md shadow-indigo-100 dark:shadow-none"
-            }`}
+              }`}
             onClick={playRecording}
             disabled={!audioUrl || status === "playing"}
           >
             Playback
           </button>
           <button
-            className={`py-3 md:py-4 rounded-xl font-bold transition-all active:scale-95 text-xs md:text-sm ${
-              status !== "recording"
+            className={`py-3 md:py-4 rounded-xl font-bold transition-all active:scale-95 text-xs md:text-sm ${status !== "recording"
                 ? "bg-gray-100 dark:bg-slate-800 text-gray-300 dark:text-slate-600 cursor-not-allowed"
                 : "bg-rose-500 text-white hover:bg-rose-600 shadow-md shadow-rose-100 dark:shadow-none"
-            }`}
+              }`}
             onClick={stopRecording}
             disabled={status !== "recording"}
           >
@@ -171,11 +173,13 @@ const PTEMicrophoneCheck = () => {
 
       {/* Action Buttons */}
       <div className="flex flex-col-reverse md:flex-row gap-4 w-full md:w-auto mt-auto md:mt-6 px-4">
-        <button className="bg-slate-900 dark:bg-slate-800 text-white w-full md:w-auto px-10 py-4 text-base md:text-lg shadow-lg rounded-xl font-semibold flex items-center justify-center gap-2 transition-all hover:bg-slate-800 dark:hover:bg-slate-700 active:scale-95">
-          <File size={20} /> Save & Exit
-        </button>
+        <Link to="/dashboard/pte" className="w-full md:w-auto">
+          <button className="bg-slate-900 dark:bg-slate-800 text-white w-full md:w-auto px-10 py-4 text-base md:text-lg shadow-lg rounded-xl font-semibold flex items-center justify-center gap-2 transition-all hover:bg-slate-800 dark:hover:bg-slate-700 active:scale-95">
+            <File size={20} /> Save & Exit
+          </button>
+        </Link>
 
-        <Link to="/pte/listening/keyboard-check" className="w-full md:w-auto">
+        <Link to={nextPath} className="w-full md:w-auto">
           <button className="bg-[#A22BDE] hover:bg-[#8e24c5] text-white w-full md:w-auto px-16 py-4 text-base md:text-lg shadow-lg rounded-xl font-semibold flex items-center justify-center gap-2 transition-all active:scale-95">
             Next <MdDoubleArrow />
           </button>

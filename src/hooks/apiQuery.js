@@ -9,6 +9,7 @@ export const useApiQuery = ({
   enabled = true,
   secure = false,
   select,
+  ...options
 }) => {
   const axiosPublic = useAxiosPublic();
   const axiosSecure = useAxiosSecure();
@@ -28,6 +29,7 @@ export const useApiQuery = ({
     
     // ✅ v5 SYNTAX: This keeps the old data visible while fetching new data (smooth pagination)
     placeholderData: keepPreviousData, 
+    ...options
   });
 };
 

@@ -1,11 +1,32 @@
 import React from "react";
-import { Calendar, Clock, ChevronRight } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Calendar, Clock, ChevronRight, Loader2 } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
+import useAxiosSecure from "@/hooks/useAxiosSecure";
+import { toast } from "react-hot-toast";
 
 const StudentExamRow = ({ index, data }) => {
   const isPte = data.test_type === "pte";
   const isCompleted = data.status === "complete";
   const isInactive = data.status === "inactive";
+
+  const navigate = useNavigate();
+  const axiosSecure = useAxiosSecure();
+
+  const startPteMutation = useMutation({
+    mutationFn: async () => {
+      const response = await axiosSecure.post(`/student/pte-exam/${data.id}/start`);
+      return response.data;
+    },
+    onSuccess: () => {
+      toast.success("PTE Exam started successfully!");
+      navigate(`/classroom/register-as-student/start-pte-exam/${data.id}`);
+    },
+    onError: (err) => {
+      console.error("Error starting PTE exam:", err);
+      toast.error(err?.response?.data?.message || "Failed to start the PTE exam.");
+    }
+  });
 
   return (
     <div className="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-slate-800 rounded-2xl px-6 py-5 flex flex-wrap items-center gap-4 hover:shadow-md transition-all mb-4 last:mb-0 group">
@@ -68,17 +89,33 @@ const StudentExamRow = ({ index, data }) => {
       {/* Actions */}
       <div className="ml-auto">
         {data.status === "active" ? (
-          <Link
-            to={
-              isPte
-                ? `/classroom/register-as-student/start-pte-exam/${data.id}`
-                : `/classroom/register-as-student/start-exam/${data.id}`
-            }
-            className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-bold shadow-lg shadow-indigo-500/30 hover:bg-indigo-700 hover:scale-[1.02] active:scale-95 transition-all"
-          >
-            Start Exam
-            <ChevronRight size={16} />
-          </Link>
+          isPte ? (
+            <button
+              onClick={() => startPteMutation.mutate()}
+              disabled={startPteMutation.isPending}
+              className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-bold shadow-lg shadow-indigo-500/30 hover:bg-indigo-700 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50"
+            >
+              {startPteMutation.isPending ? (
+                <>
+                  <Loader2 size={16} className="animate-spin" />
+                  Starting...
+                </>
+              ) : (
+                <>
+                  Start Exam
+                  <ChevronRight size={16} />
+                </>
+              )}
+            </button>
+          ) : (
+            <Link
+              to={`/classroom/register-as-student/start-exam/${data.id}`}
+              className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-bold shadow-lg shadow-indigo-500/30 hover:bg-indigo-700 hover:scale-[1.02] active:scale-95 transition-all"
+            >
+              Start Exam
+              <ChevronRight size={16} />
+            </Link>
+          )
         ) : isInactive ? (
           <button
             disabled

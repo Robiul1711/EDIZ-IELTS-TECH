@@ -24,6 +24,7 @@ const ExamDashboard = () => {
     queryKey: ["student_exam"],
     url: "/student/exam",
     secure: true,
+    refetchInterval: 3000, // Refetch from server every 10 seconds
   });
 
   const filteredOngoing = studentExamData?.data?.ongoing?.filter(

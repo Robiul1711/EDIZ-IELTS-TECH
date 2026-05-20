@@ -37,6 +37,9 @@ const StudentIeltsWritingTest = () => {
     url: "/ielts/writing/tests/submit",
     method: "POST",
     secure: true,
+    onSuccess: () => {
+      navigate(`/dashboard/writing-result/${test_no}?book=${bookNo}&type=${type}`);
+    },
   });
 
   const [activePart, setActivePart] = useState(0);

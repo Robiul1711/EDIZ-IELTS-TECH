@@ -126,7 +126,7 @@ const StudentIeltsWriting = () => {
                           <>
                             {user && (
                               <Link
-                                to={`/writing-test/${test.test_no}?book=${book.book_no}&type=${type}`}
+                                to={`/keyboard-check?returnTo=${encodeURIComponent(`/writing-test/${test.test_no}?book=${book.book_no}&type=${type}`)}`}
                                 className="px-3 py-1 text-xs md:px-4 md:py-1.5 rounded-full text-white font-semibold bg-white/10 backdrop-blur-md border border-white/30 shadow-lg hover:bg-white/20 transition-all duration-300">
                                 Start All Test
                               </Link>
@@ -199,7 +199,7 @@ const StudentIeltsWriting = () => {
                                 </div>
                               ) : (
                                 <Link
-                                  to={`/writing-test/${test.test_no}?book=${book.book_no}&type=${type}&part=${task.part_no || task.task_no || taskIdx + 1}`}
+                                  to={`/keyboard-check?returnTo=${encodeURIComponent(`/writing-test/${test.test_no}?book=${book.book_no}&type=${type}&part=${task.part_no || task.task_no || taskIdx + 1}`)}`}
                                   className="text-white font-bold text-[10px] px-4 py-1.5 rounded-full bg-indigo-500 hover:bg-indigo-600 transition-all duration-300"
                                 >
                                   Start Task

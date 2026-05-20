@@ -138,7 +138,7 @@ const StartExam = () => {
             </div>
 
             <div className="p-8 space-y-8">
-              {block.type === "identify_info" && (
+              {(block.type === "identify_info" || block.type === "identify_info_yn") && (
                 <div className="space-y-6">
                   {block.questions.map((q) => (
                     <div key={q.serial_number} className="flex flex-col md:flex-row md:items-center gap-6 p-6 rounded-2xl bg-gray-50/50 dark:bg-slate-800/20 border border-transparent hover:border-indigo-100 dark:hover:border-indigo-900/30 transition-all">

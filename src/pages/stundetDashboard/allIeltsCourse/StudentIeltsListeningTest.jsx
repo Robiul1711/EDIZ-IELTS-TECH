@@ -44,6 +44,9 @@ const StudentIeltsListeningTest = () => {
     url: "/ielts/listening/tests/submit",
     method: "POST",
     secure: true,
+    onSuccess: () => {
+      navigate(`/dashboard/listening-result/${test_no}?book=${bookNo}&type=${type}`);
+    },
   });
 
   const [startTime] = useState(Date.now());

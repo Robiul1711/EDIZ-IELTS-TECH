@@ -18,6 +18,8 @@ import StudentIeltsReading from "@/pages/stundetDashboard/allIeltsCourse/Student
 import StudentIeltsWriting from "@/pages/stundetDashboard/allIeltsCourse/StudentIeltsWriting";
 import StudentIeltsSpeaking from "@/pages/stundetDashboard/allIeltsCourse/StudentIeltsSpeaking";
 import StudentIeltsListening from "@/pages/stundetDashboard/allIeltsCourse/StudentIeltsListening";
+import KeyboardTest from "@/pages/stundetDashboard/allIeltsCourse/KeyboardTest";
+import AudioTest from "@/pages/stundetDashboard/allIeltsCourse/AudioTest";
 import StudentPteCourse from "@/pages/stundetDashboard/pte/StudentPteCourse";
 import PteTestDetails from "@/pages/stundetDashboard/pte/PteTestDetails";
 import PteTestAttempt from "@/pages/stundetDashboard/pte/PteTestAttempt";
@@ -118,6 +120,16 @@ const router = createBrowserRouter([
       { path: "failed", element: <Failed /> },
       { path: "cancelled", element: <Cancelled /> },
     ],
+  },
+
+  // Check routes
+  {
+    path: "/keyboard-check",
+    element: <KeyboardTest />,
+  },
+  {
+    path: "/audio-check",
+    element: <AudioTest />,
   },
 
   // Listening routes

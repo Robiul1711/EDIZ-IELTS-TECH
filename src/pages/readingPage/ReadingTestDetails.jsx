@@ -7,6 +7,7 @@ import FillGap from "@/components/studentDashboard/readingQuestions/FillGap";
 import MCQ from "@/components/studentDashboard/readingQuestions/MCQ";
 import Matching from "@/components/studentDashboard/readingQuestions/Matching";
 import TFNG from "@/components/studentDashboard/readingQuestions/TFNG";
+import FillGapOptions from "@/components/studentDashboard/readingQuestions/FillGapOptions";
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -23,10 +24,15 @@ const ReadingTestDetails = () => {
     secure: true,
   });
 
+  const navigate = useNavigate();
+
   const { mutate: submitTest, isPending: isSubmitting } = useApiMutation({
     url: "/ielts/reading/tests/submit",
     method: "POST",
     secure: true,
+    onSuccess: () => {
+      navigate(`/dashboard/reading-result/${test_no}?book=${bookNo}&type=${type}`);
+    },
   });
 
   const [activePart, setActivePart] = useState(0);
@@ -143,6 +149,7 @@ const ReadingTestDetails = () => {
         {(() => {
           switch (group.type) {
             case "identify_info":
+            case "identify_info_yn":
               return (
                 <TFNG
                   group={group}
@@ -161,6 +168,14 @@ const ReadingTestDetails = () => {
             case "fill_gap":
               return (
                 <FillGap
+                  group={group}
+                  answers={answers}
+                  onChange={handleAnswerChange}
+                />
+              );
+            case "fill_gap_options":
+              return (
+                <FillGapOptions
                   group={group}
                   answers={answers}
                   onChange={handleAnswerChange}

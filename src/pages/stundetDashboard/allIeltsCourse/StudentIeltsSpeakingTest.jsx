@@ -12,6 +12,10 @@ import {
   Clock,
   StopCircle,
   CheckCircle2,
+  ChevronRight,
+  ChevronLeft,
+  UserCircle2,
+  FileText
 } from "lucide-react";
 
 const StudentIeltsSpeakingTest = () => {
@@ -23,7 +27,7 @@ const StudentIeltsSpeakingTest = () => {
 
   const { data: fetchResult, isLoading } = useApiQuery({
     queryKey: ["speaking-test-details", test_no, bookNo, type],
-    url: `/ielts/speaking/tests/1`, // Fetching part 1 to get the whole test data if the API allows
+    url: `/ielts/speaking/tests/1`,
     params: { book_no: bookNo, test_no: test_no, type },
     secure: true,
   });
@@ -36,23 +40,39 @@ const StudentIeltsSpeakingTest = () => {
     url: "/ielts/speaking/tests/submit",
     method: "POST",
     secure: true,
+    onSuccess: () => {
+      navigate(`/dashboard/speaking-result/${test_no}?book=${bookNo}&type=${type}`);
+    },
   });
 
+  const testParts = fetchResult?.data || [];
+  
+  // State variables
   const [activePart, setActivePart] = useState(0);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [answers, setAnswers] = useState({}); // { serial_number: { blob, url, duration } }
   const [startTime] = useState(Date.now());
-  const [isRecording, setIsRecording] = useState(false);
+  
+  // Recording/Interaction states
+  const [step, setStep] = useState("idle"); // 'idle', 'speaking', 'thinking', 'ready', 'recording', 'recorded'
+  const [thinkingTime, setThinkingTime] = useState(0);
   const [recordingDuration, setRecordingDuration] = useState(0);
-  const [audioBlob, setAudioBlob] = useState(null);
-  const [audioUrl, setAudioUrl] = useState(null);
-
+  
   const mediaRecorderRef = useRef(null);
   const chunksRef = useRef([]);
   const timerRef = useRef(null);
-
-  const testParts = fetchResult?.data || [];
+  
   const testPart = testParts[activePart] || {};
-  // The questions are nested: array of objects, each containing a 'questions' array
   const questions = testPart?.questions?.flatMap(group => group.questions) || [];
+  const currentQuestion = questions[currentQuestionIndex];
+
+  const totalQuestionsInTest = testParts.reduce((acc, part) => {
+    return acc + (part?.questions?.flatMap(g => g.questions)?.length || 0);
+  }, 0);
+
+  const isLastQuestionOfTest = 
+    activePart === testParts.length - 1 && 
+    currentQuestionIndex === questions.length - 1;
 
   // Sync activePart with URL param on mount
   useEffect(() => {
@@ -61,53 +81,50 @@ const StudentIeltsSpeakingTest = () => {
     }
   }, [part_no]);
 
-  // Recording Logic
-  const startRecording = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      mediaRecorderRef.current = new MediaRecorder(stream);
-      chunksRef.current = [];
+  // When question changes, reset state
+  useEffect(() => {
+    if (!currentQuestion) return;
+    window.speechSynthesis.cancel();
+    const existingAnswer = answers[currentQuestion.serial_number];
+    if (existingAnswer) {
+      setStep("recorded");
+    } else {
+      setStep("idle");
+    }
+  }, [currentQuestionIndex, activePart, currentQuestion, answers]);
 
-      mediaRecorderRef.current.ondataavailable = (e) => {
-        if (e.data.size > 0) chunksRef.current.push(e.data);
-      };
-
-      mediaRecorderRef.current.onstop = () => {
-        const blob = new Blob(chunksRef.current, { type: "audio/mp3" });
-        setAudioBlob(blob);
-        setAudioUrl(URL.createObjectURL(blob));
-      };
-
-      mediaRecorderRef.current.start();
-      setIsRecording(true);
-      setRecordingDuration(0);
-
-      timerRef.current = setInterval(() => {
-        setRecordingDuration((prev) => prev + 1);
+  // Thinking countdown
+  useEffect(() => {
+    let interval;
+    if (step === "thinking" && thinkingTime > 0) {
+      interval = setInterval(() => {
+        setThinkingTime(prev => prev - 1);
       }, 1000);
-    } catch (err) {
-      toast.error("Microphone access denied or error occurring.");
-      console.error(err);
+    } else if (step === "thinking" && thinkingTime === 0) {
+      setStep("ready");
     }
-  };
+    return () => clearInterval(interval);
+  }, [step, thinkingTime]);
 
-  const stopRecording = () => {
-    if (mediaRecorderRef.current && isRecording) {
-      mediaRecorderRef.current.stop();
-      mediaRecorderRef.current.stream
-        .getTracks()
-        .forEach((track) => track.stop());
-      setIsRecording(false);
-      clearInterval(timerRef.current);
+  // Clean up on unmount
+  useEffect(() => {
+    return () => {
+      window.speechSynthesis.cancel();
+      if (timerRef.current) clearInterval(timerRef.current);
     }
-  };
+  }, []);
 
   const speakText = (text) => {
     window.speechSynthesis.cancel();
+    setStep("speaking");
     const cleanText = text.replace(/<[^>]*>/g, "");
     const utterance = new SpeechSynthesisUtterance(cleanText);
     
-    // Voices might not be loaded yet, handle it
+    utterance.onend = () => {
+      setStep("thinking");
+      setThinkingTime(5);
+    };
+
     const getVoices = () => {
       const voices = window.speechSynthesis.getVoices();
       const englishVoice =
@@ -128,15 +145,96 @@ const StudentIeltsSpeakingTest = () => {
     }
   };
 
+  const startRecording = async () => {
+    try {
+      window.speechSynthesis.cancel();
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaRecorderRef.current = new MediaRecorder(stream);
+      chunksRef.current = [];
+
+      mediaRecorderRef.current.ondataavailable = (e) => {
+        if (e.data.size > 0) chunksRef.current.push(e.data);
+      };
+
+      mediaRecorderRef.current.onstop = () => {
+        const blob = new Blob(chunksRef.current, { type: "audio/mp3" });
+        const url = URL.createObjectURL(blob);
+        setAnswers(prev => ({
+          ...prev,
+          [currentQuestion.serial_number]: { blob, url, duration: recordingDuration }
+        }));
+      };
+
+      mediaRecorderRef.current.start();
+      setStep("recording");
+      setRecordingDuration(0);
+
+      timerRef.current = setInterval(() => {
+        setRecordingDuration((prev) => prev + 1);
+      }, 1000);
+    } catch (err) {
+      toast.error("Microphone access denied or error occurring.");
+      console.error(err);
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && step === "recording") {
+      mediaRecorderRef.current.stop();
+      mediaRecorderRef.current.stream
+        .getTracks()
+        .forEach((track) => track.stop());
+      clearInterval(timerRef.current);
+      setStep("recorded");
+    }
+  };
+
+  const deleteRecording = () => {
+    if (!currentQuestion) return;
+    const serial = currentQuestion.serial_number;
+    setAnswers(prev => {
+      const newAnswers = { ...prev };
+      delete newAnswers[serial];
+      return newAnswers;
+    });
+    setStep("idle");
+    setRecordingDuration(0);
+  };
+
   const formatDuration = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
+  const handleNext = () => {
+    if (step === "recording") stopRecording();
+    if (currentQuestionIndex < questions.length - 1) {
+      setCurrentQuestionIndex(prev => prev + 1);
+    } else if (activePart < testParts.length - 1) {
+      setActivePart(prev => prev + 1);
+      setCurrentQuestionIndex(0);
+    }
+  };
+
+  const handlePrev = () => {
+    if (step === "recording") stopRecording();
+    if (currentQuestionIndex > 0) {
+      setCurrentQuestionIndex(prev => prev - 1);
+    } else if (activePart > 0) {
+      const prevPart = testParts[activePart - 1];
+      const prevQuestions = prevPart?.questions?.flatMap(group => group.questions) || [];
+      setActivePart(prev => prev - 1);
+      setCurrentQuestionIndex(prevQuestions.length > 0 ? prevQuestions.length - 1 : 0);
+    }
+  };
+
   const handleSubmit = () => {
-    if (!audioBlob) {
-      toast.error("Please record your answer first!");
+    if (step === "recording") stopRecording();
+    
+    // Check if at least one recording is present
+    if (Object.keys(answers).length === 0) {
+      toast.error("Please record at least one answer before submitting.");
       return;
     }
 
@@ -144,10 +242,12 @@ const StudentIeltsSpeakingTest = () => {
     const formData = new FormData();
     formData.append("book_no", bookNo);
     formData.append("test_no", test_no);
-    formData.append("part_no", testPart?.part_no || activePart + 1);
     formData.append("type", type);
     formData.append("time_spent", timeSpent);
-    formData.append("audio", audioBlob, `speaking_part${activePart + 1}.mp3`);
+
+    Object.entries(answers).forEach(([serial, data]) => {
+      formData.append(`answer[${serial}]`, data.blob, `speaking_${serial}.mp3`);
+    });
 
     submitTest(formData);
   };
@@ -165,107 +265,133 @@ const StudentIeltsSpeakingTest = () => {
     );
   }
 
+  const currentAnswer = currentQuestion ? answers[currentQuestion.serial_number] : null;
+
   return (
     <div className="flex flex-col h-screen bg-white dark:bg-slate-950 overflow-hidden font-sans">
       <TestHeader
-        durationInSeconds={testPart?.duration_seconds || 900}
+        durationInSeconds={testParts.reduce((acc, part) => acc + (part.duration_seconds || 900), 0)}
         onExit="/dashboard/ielts/speaking"
       />
 
       <main className="flex-1 flex flex-col md:flex-row overflow-hidden relative">
-        {/* Left Side: Questions & Prompts */}
-        <div className="md:w-1/2 h-full overflow-y-auto p-6 lg:p-12 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 custom-scrollbar">
-          <div className="max-w-2xl mx-auto space-y-10 pb-20">
-            <header className="space-y-4">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 text-[10px] font-black tracking-[0.2em] uppercase">
-                <Volume2 size={12} />
-                Part {testPart?.part_no || activePart + 1} Speaking
+        {/* Left Side: Avatar & Question */}
+        <div className="md:w-1/2 h-full overflow-y-auto p-6 lg:p-12 border-r border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 custom-scrollbar flex flex-col items-center justify-center">
+          <div className="w-full max-w-lg space-y-8 pb-10">
+            <header className="text-center space-y-2">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-400 text-xs font-black tracking-widest uppercase">
+                Part {testPart?.part_no || activePart + 1}
               </div>
-              <h1 className="text-3xl font-black text-slate-900 dark:text-white leading-tight">
+              <h1 className="text-2xl font-black text-slate-900 dark:text-white leading-tight">
                 {testPart?.title || "Speaking Test Part"}
               </h1>
             </header>
 
-            {/* Questions List */}
-            <div className="space-y-8">
-              {questions.map((q, idx) => (
-                <div
-                  key={idx}
-                  className="bg-slate-50 dark:bg-slate-800/50 p-8 rounded-[2rem] border border-slate-100 dark:border-slate-800 transition-all hover:shadow-md group relative"
-                >
-                  <button
-                    onClick={() => speakText(q.text)}
-                    className="absolute top-6 right-6 p-3 bg-white dark:bg-slate-900 rounded-2xl text-indigo-600 dark:text-indigo-400 shadow-sm border border-slate-100 dark:border-slate-700 hover:scale-110 active:scale-95 transition-all opacity-0 group-hover:opacity-100"
-                    title="Listen to question"
-                    >
-                    <Volume2 size={16} />
-                  </button>
-
-                  <div className="flex items-start gap-5">
-                    
-                    <div className="w-10 h-10 bg-white dark:bg-slate-900 rounded-2xl flex items-center justify-center text-xs font-bold text-indigo-600 shadow-sm border border-slate-100 dark:border-slate-800 transition-transform group-hover:scale-110">
-                      {q.serial_number || idx + 1}
-                    </div>
-                    <div className="flex-1 space-y-3">
-                      <div
-                        className="text-slate-800 dark:text-slate-100 text-lg leading-relaxed font-medium"
-                        dangerouslySetInnerHTML={{ __html: q.text }}
-                      />
-                      {q.explanation && (
-                        <div
-                          className="text-slate-500 dark:text-slate-400 text-sm italic"
-                          dangerouslySetInnerHTML={{ __html: q.explanation }}
-                        />
-                      )}
-                    </div>
-                  </div>
+            <div className="flex flex-col items-center justify-center p-8 bg-white dark:bg-slate-800 rounded-[2.5rem] border border-slate-200 dark:border-slate-700 shadow-xl relative overflow-hidden">
+              <div className={`w-32 h-32 bg-indigo-50 dark:bg-indigo-900/40 rounded-full flex items-center justify-center border-4 border-white dark:border-slate-700 shadow-lg relative overflow-hidden transition-all duration-300 ${step === 'speaking' ? 'ring-4 ring-indigo-400/50 scale-110' : ''}`}>
+                 <UserCircle2 size={80} strokeWidth={1.5} className={`text-indigo-500 ${step === 'speaking' ? 'animate-pulse' : ''}`} />
+              </div>
+              
+              <div className="mt-8 w-full text-center space-y-4">
+                <span className="inline-flex items-center justify-center px-4 py-1 rounded-full bg-slate-100 dark:bg-slate-700 text-xs font-bold text-slate-500 dark:text-slate-300">
+                  Question {currentQuestionIndex + 1} of {questions.length}
+                </span>
+                <div className="min-h-[80px] flex items-center justify-center">
+                   <h3 className="text-xl md:text-2xl font-bold text-slate-800 dark:text-white" dangerouslySetInnerHTML={{ __html: currentQuestion?.text }} />
                 </div>
-              ))}
+              </div>
+              
+              <button
+                 onClick={() => speakText(currentQuestion?.text)}
+                 disabled={step === 'speaking' || step === 'recording'}
+                 className={`mt-8 px-8 py-3 rounded-2xl flex items-center gap-3 transition-all font-bold ${
+                   step === 'speaking' 
+                     ? 'bg-indigo-100 text-indigo-400 dark:bg-indigo-900/30 cursor-not-allowed'
+                     : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-200 dark:shadow-none hover:-translate-y-1'
+                 }`}
+               >
+                 <Volume2 size={20} />
+                 {step === 'speaking' ? 'Speaking...' : 'Listen to Question'}
+               </button>
             </div>
+
+            {testPart?.cue_card && (
+              <div className="p-6 bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-800/40 rounded-3xl shadow-sm">
+                <h4 className="text-amber-800 dark:text-amber-200 font-bold mb-3 flex items-center gap-2">
+                  <FileText size={18} /> Cue Card
+                </h4>
+                <div 
+                  className="text-slate-700 dark:text-slate-300 prose prose-sm dark:prose-invert font-medium" 
+                  dangerouslySetInnerHTML={{ __html: testPart.cue_card }} 
+                />
+              </div>
+            )}
           </div>
         </div>
 
         {/* Right Side: Recorder Control */}
-        <div className="flex-1 h-full flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-950 p-10 relative overflow-hidden">
-          {/* Decorative Background Elements */}
+        <div className="flex-1 h-full flex flex-col items-center justify-center bg-white dark:bg-slate-950 p-6 lg:p-10 relative overflow-hidden">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-indigo-500/5 rounded-full blur-[120px] pointer-events-none" />
 
-          <div className="relative z-10 w-full max-w-md text-center space-y-12">
-            <div className="space-y-4">
-              <h2 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
-                Record Your Answer
-              </h2>
-              <p className="text-slate-500 text-sm font-medium">
-                Please speak clearly into your microphone.
-              </p>
+          <div className="relative z-10 w-full max-w-md text-center space-y-10">
+            
+            {/* Status indicator */}
+            <div className="h-16 flex items-center justify-center">
+               {step === 'idle' && (
+                 <p className="text-slate-400 font-medium animate-pulse">Click Listen to Question to start</p>
+               )}
+               {step === 'speaking' && (
+                 <p className="text-indigo-500 font-bold text-lg animate-pulse">Listen carefully...</p>
+               )}
+               {step === 'thinking' && (
+                 <div className="flex flex-col items-center">
+                    <p className="text-amber-500 font-bold text-xl">Thinking Time</p>
+                    <p className="text-amber-600 font-black text-4xl">{thinkingTime}s</p>
+                 </div>
+               )}
+               {step === 'ready' && (
+                 <p className="text-emerald-500 font-bold text-lg animate-pulse">Ready to Record!</p>
+               )}
+               {step === 'recorded' && (
+                 <div className="flex items-center gap-2 text-emerald-500 font-bold text-lg">
+                   <CheckCircle2 size={24} />
+                   Answer Recorded
+                 </div>
+               )}
             </div>
 
             {/* Microphone / Wave UI */}
-            <div className="relative flex items-center justify-center">
-              {isRecording && (
+            <div className="relative flex items-center justify-center h-56">
+              {step === 'recording' && (
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-64 h-64 bg-indigo-500/10 rounded-full animate-ping" />
-                  <div className="w-48 h-48 bg-indigo-500/20 rounded-full animate-ping animation-delay-500" />
+                  <div className="w-56 h-56 bg-red-500/10 rounded-full animate-ping" />
+                  <div className="w-40 h-40 bg-red-500/20 rounded-full animate-ping animation-delay-500" />
                 </div>
               )}
 
               <button
-                onClick={isRecording ? stopRecording : startRecording}
-                disabled={isSubmitted}
-                className={`relative w-40 h-40 ${isRecording ? "bg-red-500 shadow-red-200" : "bg-indigo-600 shadow-indigo-200"} text-white rounded-[3rem] flex flex-col items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 shadow-2xl group z-20`}
+                onClick={step === 'recording' ? stopRecording : startRecording}
+                disabled={isSubmitted || step === 'speaking'}
+                className={`relative w-40 h-40 rounded-[3rem] flex flex-col items-center justify-center transition-all duration-300 active:scale-95 shadow-2xl group z-20 ${
+                  step === 'recording' 
+                    ? "bg-red-500 text-white shadow-red-200" 
+                    : step === 'speaking'
+                      ? "bg-slate-200 dark:bg-slate-800 text-slate-400 cursor-not-allowed shadow-none"
+                      : "bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-200 hover:scale-105"
+                }`}
               >
-                {isRecording ? (
+                {step === 'recording' ? (
                   <>
                     <StopCircle size={48} fill="currentColor" />
                     <span className="mt-3 text-[10px] font-black uppercase tracking-widest">
-                      Stop Recording
+                      Stop
                     </span>
                   </>
                 ) : (
                   <>
-                    <Mic size={48} className="group-hover:animate-bounce" />
+                    <Mic size={48} className={step === 'ready' || step === 'idle' || step === 'recorded' ? "group-hover:animate-bounce" : ""} />
                     <span className="mt-3 text-[10px] font-black uppercase tracking-widest">
-                      Start Recording
+                      {currentAnswer ? 'Record Again' : 'Record'}
                     </span>
                   </>
                 )}
@@ -273,31 +399,25 @@ const StudentIeltsSpeakingTest = () => {
             </div>
 
             {/* Status & Timer */}
-            <div className="flex flex-col items-center gap-4">
-              <div className="flex items-center gap-3 px-6 py-3 bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
-                <Clock
-                  size={16}
-                  className={isRecording ? "text-red-500" : "text-indigo-600"}
-                />
-                <span
-                  className={`text-xl font-mono font-bold tracking-widest ${isRecording ? "text-red-500" : "text-slate-700 dark:text-slate-200"}`}
-                >
-                  {formatDuration(recordingDuration)}
-                </span>
-              </div>
+            <div className="flex flex-col items-center gap-4 h-24">
+              {step === 'recording' && (
+                <div className="flex items-center gap-3 px-6 py-3 bg-red-50 dark:bg-red-900/20 rounded-2xl shadow-sm border border-red-100 dark:border-red-800/40">
+                  <Clock size={16} className="text-red-500" />
+                  <span className="text-xl font-mono font-bold tracking-widest text-red-500">
+                    {formatDuration(recordingDuration)}
+                  </span>
+                </div>
+              )}
 
-              {audioUrl && !isRecording && (
-                <div className="w-full  p-2 bg-indigo-50 dark:bg-indigo-900/20 rounded-3xl border border-indigo-100 dark:border-indigo-800/40 flex items-center justify-between">
-                  <audio src={audioUrl} controls className="h-8 " />
+              {currentAnswer && step !== 'recording' && (
+                <div className="w-full p-2 bg-indigo-50 dark:bg-indigo-900/20 rounded-2xl border border-indigo-100 dark:border-indigo-800/40 flex items-center justify-between">
+                  <audio src={currentAnswer.url} controls className="h-10 w-full rounded-lg" />
                   <button
-                    onClick={() => {
-                      setAudioBlob(null);
-                      setAudioUrl(null);
-                      setRecordingDuration(0);
-                    }}
-                    className="p-2 text-slate-400 hover:text-red-500 transition-colors"
+                    onClick={deleteRecording}
+                    className="p-3 text-slate-400 hover:text-red-500 transition-colors ml-2 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700"
+                    title="Delete Recording"
                   >
-                    <RotateCcw size={16} />
+                    <RotateCcw size={18} />
                   </button>
                 </div>
               )}
@@ -306,49 +426,45 @@ const StudentIeltsSpeakingTest = () => {
         </div>
       </main>
 
-      {/* Footer Submission & Navigation */}
-      <footer className="h-24 bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 flex items-center px-6 lg:px-12 z-50 gap-6">
-        {/* Tab System */}
-        <div className="flex-1 flex gap-2 overflow-x-auto no-scrollbar py-2">
-          {testParts.map((p, idx) => (
-            <button
-              key={idx}
-              onClick={() => {
-                setActivePart(idx);
-                // Clear current recording state when switching? 
-                // Maybe keep it if we want to support multi-part submission
-                // But for now let's just switch view
-              }}
-              className={`flex-shrink-0 px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-[0.15em] transition-all border ${
-                activePart === idx
-                  ? "bg-indigo-600 text-white border-indigo-600 shadow-lg shadow-indigo-200 dark:shadow-none"
-                  : "bg-white dark:bg-slate-900 text-slate-400 border-slate-100 dark:border-slate-800 hover:text-slate-600 dark:hover:text-slate-300"
-              }`}
-            >
-              Part {p.part_no || idx + 1}
-            </button>
-          ))}
+      {/* Footer Navigation */}
+      <footer className="h-20 md:h-24 bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between px-4 lg:px-12 z-50">
+        
+        <button 
+          onClick={handlePrev}
+          disabled={activePart === 0 && currentQuestionIndex === 0}
+          className="flex items-center gap-2 px-4 md:px-6 py-3 rounded-2xl font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors disabled:opacity-50 disabled:hover:bg-transparent"
+        >
+          <ChevronLeft size={20} />
+          <span className="hidden md:inline">Previous</span>
+        </button>
+
+        <div className="text-center hidden sm:block">
+           <div className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-1">Overall Progress</div>
+           <div className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+             {Object.keys(answers).length} of {totalQuestionsInTest} Answered
+           </div>
         </div>
 
-        <button
-          onClick={handleSubmit}
-          disabled={!audioBlob || isSubmitting || isSubmitted}
-          className="group relative flex items-center gap-4 px-10 h-14 bg-indigo-600 text-white font-black rounded-2xl hover:bg-indigo-700 transition-all active:scale-[0.98] disabled:opacity-50 shadow-xl shadow-indigo-100 dark:shadow-none uppercase text-[10px] tracking-[0.2em]"
-        >
-          <span>
-            {isSubmitting
-              ? "Uploading..."
-              : isSubmitted
-                ? "Submitted"
-                : `Submit Part ${testPart?.part_no || activePart + 1}`}
-          </span>
-          <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center transition-transform group-hover:translate-x-1">
-            <Send size={18} strokeWidth={2.5} />
-          </div>
-          {isSubmitted && (
-            <CheckCircle2 size={22} className="text-emerald-400 ml-2" />
-          )}
-        </button>
+        {isLastQuestionOfTest ? (
+          <button
+            onClick={handleSubmit}
+            disabled={isSubmitting || isSubmitted}
+            className="group relative flex items-center gap-3 px-6 md:px-8 py-3 bg-indigo-600 text-white font-black rounded-2xl hover:bg-indigo-700 transition-all active:scale-[0.98] disabled:opacity-50 shadow-lg shadow-indigo-200 dark:shadow-none uppercase text-xs tracking-widest"
+          >
+            <span>{isSubmitting ? "Uploading..." : isSubmitted ? "Submitted" : "Submit Test"}</span>
+            <div className="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center transition-transform group-hover:translate-x-1">
+              <Send size={16} strokeWidth={2.5} />
+            </div>
+          </button>
+        ) : (
+          <button 
+            onClick={handleNext}
+            className="flex items-center gap-2 px-6 md:px-8 py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-2xl font-bold hover:bg-slate-800 dark:hover:bg-slate-100 transition-all active:scale-95 shadow-lg shadow-slate-200 dark:shadow-none"
+          >
+            <span className="hidden md:inline">Next</span>
+            <ChevronRight size={20} />
+          </button>
+        )}
       </footer>
 
       <style jsx="true">{`
@@ -362,11 +478,11 @@ const StudentIeltsSpeakingTest = () => {
           background: transparent;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: #e2e8f0;
+          background: #cbd5e1;
           border-radius: 10px;
         }
         .dark .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: #1e293b;
+          background: #334155;
         }
       `}</style>
     </div>

@@ -137,7 +137,7 @@ const StudentIeltsListening = () => {
                           <>
                             {user && (
                               <Link
-                                to={`/listening-test/${test.test_no}/part/1?book=${book.book_no}&type=${type}`}
+                                to={`/audio-check?returnTo=${encodeURIComponent(`/listening-test/${test.test_no}/part/1?book=${book.book_no}&type=${type}`)}`}
                                 className="px-3 py-1 text-xs md:px-4 md:py-1.5 rounded-full text-white font-semibold bg-white/10 backdrop-blur-md border border-white/30 shadow-lg hover:bg-white/20 transition-all duration-300"
                               >
                                 Start All Test
@@ -211,7 +211,7 @@ const StudentIeltsListening = () => {
                                 </div>
                               ) : (
                                 <Link
-                                  to={`/listening-test/${test.test_no}/part/${part.part_no}?book=${book.book_no}&type=${type}`}
+                                  to={`/audio-check?returnTo=${encodeURIComponent(`/listening-test/${test.test_no}/part/${part.part_no}?book=${book.book_no}&type=${type}`)}`}
                                   className="text-white font-bold text-[10px] px-4 py-1.5 rounded-full bg-indigo-500 hover:bg-indigo-600 transition-all duration-300"
                                 >
                                   Start Part

@@ -6,8 +6,11 @@ import { useState } from "react";
 import { FaEyeSlash, FaEye } from "react-icons/fa";
 
 
+import { useAuth } from "@/hooks/useAuth";
+
 const JoinAsTeacher = ({ onBack }) => {
   const navigate = useNavigate();
+  const { saveAuth } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const {
     register,
@@ -15,17 +18,19 @@ const JoinAsTeacher = ({ onBack }) => {
     formState: { errors },
   } = useForm();
 
-const { mutate, isPending } = useApiMutation({
+  const { mutate, isPending } = useApiMutation({
     url: "/teacher-entry",
     method: "POST",
     secure: true,
     onSuccess: (response) => {
       console.log("success", response);
       if (response.success) {
-        localStorage.setItem("token", response.data.token.access_token);
-        localStorage.setItem("user", JSON.stringify(response.data.user));
+        saveAuth({
+          token: response.data.token.access_token,
+          user: response.data.user,
+        });
+        navigate("/classroom/register-as-teacher");
       }
-      navigate("/classroom/register-as-teacher");
     },
   });
 

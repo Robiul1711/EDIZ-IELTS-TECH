@@ -14,7 +14,13 @@ const TeacherDashboard = () => {
     url: "/instructor/dashboard",
     secure: true,
   });
-  console.log(teacherDashboardData?.data);
+    const { data: teacherDashboarpteData } = useApiQuery({
+    queryKey: ["instructor_pte_homework"],
+    url: "/instructor/pte-homework",
+    secure: true,
+  });
+
+  console.log(teacherDashboarpteData?.data);
 
   return (
     <div className="">

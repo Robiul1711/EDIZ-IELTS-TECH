@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { X, Clock, Calendar as CalendarIcon, ChevronDown } from "lucide-react";
 import { useApiMutation } from "@/hooks/apiMutation";
 import { useQueryClient } from "@tanstack/react-query";
+import { useApiQuery } from "@/hooks/apiQuery";
 
 const AssignHomeworkModal = ({ isOpen, onClose }) => {
   const [examType, setExamType] = useState("ielts");
@@ -16,18 +17,26 @@ const AssignHomeworkModal = ({ isOpen, onClose }) => {
     score: "9",
     due_date: "",
     total: "24",
+    description: "",
+    pte_test_config_id: "",
   });
 
+     const { data: pteSetsData} = useApiQuery({
+      queryKey: ["pteSets"],
+      url: "/instructor/pte-homework/sets",
+      secure: true,
+    });
+    
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const { mutate, isPending } = useApiMutation({
-    url: "/instructor/homework",
+    url: examType === "pte" ? "/instructor/pte-homework" : "/instructor/homework",
     method: "POST",
     secure: true,
-    invalidateKeys: ["teachersHomeworks"],
+    invalidateKeys: ["teachersHomeworks", "pteTeachersHomeworks"],
     onSuccess: () => {
       onClose();
     },
@@ -36,16 +45,29 @@ const AssignHomeworkModal = ({ isOpen, onClose }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    const payload = {
-      title: formData.title || `${examType.toUpperCase()} ${formData.skill} Task`,
-      skill: formData.skill,
-      test_type: examType,
-      book_no: formData.book_no,
-      test_no: formData.test_no,
-      part_no: formData.part_no,
-      due_date: formData.due_date,
-      time: formData.time,
-    };
+    let payload;
+    
+    if (examType === "pte") {
+      const defaultPteId = pteSetsData?.data?.length > 0 ? pteSetsData.data[0].id : 10;
+      payload = {
+        title: formData.title || "Weekend Reading Mock Test Practice",
+        pte_test_config_id: parseInt(formData.pte_test_config_id) || defaultPteId,
+        description: formData.description || "Please complete this mock test by the end of the weekend to prepare for Monday's session.",
+        due_date: formData.due_date,
+        time: parseInt(formData.time) || 120,
+      };
+    } else {
+      payload = {
+        title: formData.title || `${examType.toUpperCase()} ${formData.skill} Task`,
+        skill: formData.skill,
+        test_type: examType,
+        book_no: formData.book_no,
+        test_no: formData.test_no,
+        part_no: formData.part_no,
+        due_date: formData.due_date,
+        time: formData.time,
+      };
+    }
 
     mutate(payload);
   };
@@ -143,28 +165,25 @@ const AssignHomeworkModal = ({ isOpen, onClose }) => {
           )}
 
           {/* Skill & Book Grid */}
-          <div
-            className={`grid ${examType === "ielts" ? "grid-cols-2" : "grid-cols-1"} gap-4`}
-          >
-            <div className="space-y-1.5">
-              <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">
-                Skill <span className="text-red-500">*</span>
-              </label>
-              <select
-                name="skill"
-                value={formData.skill}
-                onChange={handleChange}
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700  outline-none  dark:bg-slate-900"
-              >
-                <option value="writing">Writing</option>
-                <option value="reading">Reading</option>
-                <option value="listening">Listening</option>
-                <option value="speaking">Speaking</option>
-              </select>
-            </div>
+          {examType === "ielts" && (
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                  Skill <span className="text-red-500">*</span>
+                </label>
+                <select
+                  name="skill"
+                  value={formData.skill}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700  outline-none  dark:bg-slate-900"
+                >
+                  <option value="writing">Writing</option>
+                  <option value="reading">Reading</option>
+                  <option value="listening">Listening</option>
+                  <option value="speaking">Speaking</option>
+                </select>
+              </div>
 
-            {/* Conditional Rendering: Only show Book if IELTS */}
-            {examType === "ielts" && (
               <div className="space-y-1.5">
                 <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">
                   Choose Book <span className="text-red-500">*</span>
@@ -183,8 +202,8 @@ const AssignHomeworkModal = ({ isOpen, onClose }) => {
                   <option value="15">Book 15</option>
                 </select>
               </div>
-            )}
-          </div>
+            </div>
+          )}
 
           {/* Conditional Rendering: Only show Test & Part if IELTS */}
           {examType === "ielts" && (
@@ -220,6 +239,43 @@ const AssignHomeworkModal = ({ isOpen, onClose }) => {
                   <option value="3">3</option>
                   <option value="4">4</option>
                 </select>
+              </div>
+            </div>
+          )}
+
+          {/* Conditional Rendering: PTE specific fields */}
+          {examType === "pte" && (
+            <div className="space-y-4">
+         <div className="space-y-1.5">
+                <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                  Choose PTE Test <span className="text-red-500">*</span>
+                </label>
+                <select
+                  name="pte_test_config_id"
+                  value={formData.pte_test_config_id}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-transparent outline-none dark:text-white dark:bg-slate-900"
+                >
+                  <option value="" disabled>Select a test</option>
+                  {pteSetsData?.data?.map((test) => (
+                    <option key={test.id} value={test.id}>
+                      {test.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                  Description
+                </label>
+                <textarea
+                  name="description"
+                  value={formData.description}
+                  onChange={handleChange}
+                  placeholder="e.g., Please complete this mock test..."
+                  rows={3}
+                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-transparent focus:ring-2 focus:ring-indigo-500 outline-none transition-all resize-none"
+                />
               </div>
             </div>
           )}

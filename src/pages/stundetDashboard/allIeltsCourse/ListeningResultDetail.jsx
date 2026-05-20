@@ -105,6 +105,7 @@ const QuestionGroupRenderer = ({ group }) => {
       case "multiple_question":
         return <MultipleQuestionView group={group} />;
       case "identify_info":
+      case "identify_info_yn":
         return <IdentifyInfoView group={group} />;
       default:
         return <DefaultQuestionView group={group} />;
@@ -135,6 +136,73 @@ const QuestionGroupRenderer = ({ group }) => {
 };
 
 const FillGapView = ({ group }) => {
+  // Build a lookup map from serial_number -> question data
+  const questionMap = {};
+  (group.questions || []).forEach((q) => {
+    questionMap[q.serial_number] = q;
+  });
+
+  // If there's passage_text with [blank] tokens, render inline
+  const hasPassage = group.passage_text && /\d+\[blank\]/.test(group.passage_text);
+
+  const processedHtml = hasPassage
+    ? (group.passage_text || "").replace(
+        /(\d+)\[blank\]/g,
+        (match, num) => {
+          const q = questionMap[parseInt(num)];
+          if (!q) return match;
+          const userAns = q.user_answer || "";
+          const correctAns = q.correct_answer || "";
+          const isCorrect = q.is_correct;
+
+          if (isCorrect) {
+            return `<span style="display:inline-flex;align-items:center;gap:4px;margin:0 2px;padding:2px 10px;border-radius:9999px;background:#dcfce7;border:1.5px solid #86efac;color:#16a34a;font-weight:700;font-size:0.85em;vertical-align:middle;">
+              <span style="width:16px;height:16px;border-radius:50%;background:#16a34a;color:#fff;font-size:0.65em;font-weight:900;display:inline-flex;align-items:center;justify-content:center;">${num}</span>
+              ${userAns}
+            </span>`;
+          } else {
+            return `<span style="display:inline-flex;align-items:center;gap:4px;margin:0 2px;vertical-align:middle;">
+              ${userAns
+                ? `<span style="padding:2px 10px;border-radius:9999px;background:#fee2e2;border:1.5px solid #fca5a5;color:#dc2626;font-weight:700;font-size:0.85em;text-decoration:line-through;display:inline-flex;align-items:center;gap:4px;">
+                    <span style="width:16px;height:16px;border-radius:50%;background:#dc2626;color:#fff;font-size:0.65em;font-weight:900;display:inline-flex;align-items:center;justify-content:center;">${num}</span>
+                    ${userAns}
+                  </span>`
+                : `<span style="padding:2px 10px;border-radius:9999px;background:#fee2e2;border:1.5px dashed #fca5a5;color:#dc2626;font-weight:700;font-size:0.85em;display:inline-flex;align-items:center;gap:4px;">
+                    <span style="width:16px;height:16px;border-radius:50%;background:#dc2626;color:#fff;font-size:0.65em;font-weight:900;display:inline-flex;align-items:center;justify-content:center;">${num}</span>
+                    empty
+                  </span>`
+              }
+              <span style="padding:2px 10px;border-radius:9999px;background:#dcfce7;border:1.5px solid #86efac;color:#16a34a;font-weight:700;font-size:0.85em;display:inline-flex;align-items:center;gap:4px;">
+                ✓ ${correctAns}
+              </span>
+            </span>`;
+          }
+        }
+      )
+    : null;
+
+  if (hasPassage) {
+    return (
+      <div className="space-y-4">
+        <div className="flex flex-wrap items-center gap-4 text-xs font-bold px-1">
+          <div className="flex items-center gap-1.5">
+            <span className="inline-block w-3 h-3 rounded-full bg-emerald-500"></span>
+            <span className="text-emerald-600">Correct Answer</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="inline-block w-3 h-3 rounded-full bg-red-400"></span>
+            <span className="text-red-500">Your Answer (wrong)</span>
+          </div>
+        </div>
+        <div
+          className="bg-slate-50 dark:bg-slate-800/30 p-6 rounded-2xl border border-slate-100 dark:border-slate-800 text-sm leading-[2.2] text-slate-700 dark:text-slate-300"
+          dangerouslySetInnerHTML={{ __html: processedHtml }}
+        />
+      </div>
+    );
+  }
+
+  // Fallback: grid view (for listening without passage_text)
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       {group.questions.map((q) => (
@@ -161,9 +229,7 @@ const FillGapView = ({ group }) => {
             {!q.is_correct && (
               <div className="flex flex-col items-end">
                 <span className="text-[10px] text-emerald-500 uppercase font-bold">Correct</span>
-                <span className="text-sm font-bold text-emerald-700">
-                  {q.correct_answer}
-                </span>
+                <span className="text-sm font-bold text-emerald-700">{q.correct_answer}</span>
               </div>
             )}
           </div>
@@ -177,6 +243,7 @@ const FillGapView = ({ group }) => {
       ))}
     </div>
   );
+
 };
 
 const ChoiceView = ({ group }) => {

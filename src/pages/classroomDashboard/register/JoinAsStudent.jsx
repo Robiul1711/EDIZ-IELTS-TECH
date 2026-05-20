@@ -3,8 +3,11 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { FaEyeSlash, FaEye } from "react-icons/fa";
 import { useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
+
 const JoinAsStudent = ({ onBack }) => {
   const navigate = useNavigate();
+  const { saveAuth } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const {
     register,
@@ -12,16 +15,17 @@ const JoinAsStudent = ({ onBack }) => {
     formState: { errors },
   } = useForm();
 
-const { mutate, isPending } = useApiMutation({
+  const { mutate, isPending } = useApiMutation({
     url: "/student-entry",
     method: "POST",
-    secure: false,
     onSuccess: (response) => {
       if (response.success) {
-        localStorage.setItem("token", response.data.token.access_token);
-        localStorage.setItem("user", JSON.stringify(response.data.user));
+        saveAuth({
+          token: response.data.token.access_token,
+          user: response.data.user,
+        });
+        navigate("/classroom/register-as-student");
       }
-      navigate("/classroom/register-as-student");
     },
   });
 
@@ -68,33 +72,28 @@ const { mutate, isPending } = useApiMutation({
             Password
           </label>
           <div className="relative">
-          <input
-            type={showPassword ? "text" : "password"}
-            placeholder="Enter your password"
-            {...register("password", { required: "Password is required" })}
-            className="w-full h-10 rounded-full border border-gray-200 dark:border-slate-700 px-4 text-sm text-black dark:text-white dark:bg-slate-800
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Enter your password"
+              {...register("password", { required: "Password is required" })}
+              className="w-full h-10 rounded-full border border-gray-200 dark:border-slate-700 px-4 text-sm text-black dark:text-white dark:bg-slate-800
                        placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 
                        focus:ring-purple-400"
-          />
-          <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 focus:outline-none"
-                    >
-                      {showPassword ? (
-                        <FaEyeSlash size={20} />
-                      ) : (
-                        <FaEye size={20} />
-                      )}
-                    </button>
-          {errors.password && (
-            <p className="text-xs text-red-500 mt-1">
-              {errors.password.message}
-            </p>
-          )}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 focus:outline-none"
+            >
+              {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
+            </button>
+            {errors.password && (
+              <p className="text-xs text-red-500 mt-1">
+                {errors.password.message}
+              </p>
+            )}
           </div>
         </div>
-
 
         {/* Submit */}
         <button

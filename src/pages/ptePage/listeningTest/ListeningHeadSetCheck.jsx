@@ -2,9 +2,16 @@ import { ImageAssets } from "@/lib/ImageProvider";
 import { File } from "lucide-react";
 import React from "react";
 import { MdDoubleArrow } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 
 const ListeningHeadSetCheck = () => {
+  const [searchParams] = useSearchParams();
+  const attemptId = searchParams.get("attemptId");
+
+  const nextPath = attemptId
+    ? `/dashboard/pte/test-attempt/${attemptId}`
+    : "/pte/listening/microphone-check";
+
   return (
     <div className="flex flex-col min-h-screen items-center gap-6 md:gap-10 px-4 pb-10 dark:bg-slate-950 transition-colors duration-300">
       <h1 className="text-2xl md:text-4xl font-bold text-center mt-6 md:mt-12 text-slate-900 dark:text-white">
@@ -39,10 +46,12 @@ const ListeningHeadSetCheck = () => {
       </ul>
 
       <div className="flex flex-col-reverse md:flex-row gap-4 w-full md:w-auto mt-auto md:mt-6 px-4">
-        <button className="bg-slate-900 dark:bg-slate-800 text-white w-full md:w-auto px-10 py-4 text-base md:text-lg shadow-lg rounded-xl font-semibold flex items-center justify-center gap-2 transition-all hover:bg-slate-800 dark:hover:bg-slate-700 active:scale-95">
-          <File size={20} /> Save & Exit
-        </button>
-        <Link to="/pte/listening/microphone-check" className="w-full md:w-auto">
+        <Link to="/dashboard/pte" className="w-full md:w-auto">
+          <button className="bg-slate-900 dark:bg-slate-800 text-white w-full md:w-auto px-10 py-4 text-base md:text-lg shadow-lg rounded-xl font-semibold flex items-center justify-center gap-2 transition-all hover:bg-slate-800 dark:hover:bg-slate-700 active:scale-95">
+            <File size={20} /> Save & Exit
+          </button>
+        </Link>
+        <Link to={nextPath} className="w-full md:w-auto">
           <button className="bg-[#A22BDE] hover:bg-[#8e24c5] text-white w-full md:w-auto px-16 py-4 text-base md:text-lg shadow-lg rounded-xl font-semibold flex items-center justify-center gap-2 transition-all active:scale-95">
             Next <MdDoubleArrow />
           </button>

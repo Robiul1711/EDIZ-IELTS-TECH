@@ -3,9 +3,12 @@ import React from "react";
 import { Link } from "react-router-dom";
 import useAxiosSecure from "@/hooks/useAxiosSecure";
 import { useQuery } from "@tanstack/react-query";
+import { useTheme } from "@/context/ThemeContext";
 
 const StudentPteCourse = () => {
   const axiosSecure = useAxiosSecure();
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
 
   const { data: testSets = [], isLoading: loading } = useQuery({
     queryKey: ["pte-test-sets"],
@@ -22,31 +25,35 @@ const StudentPteCourse = () => {
   const otherTests = testSets.filter((test) => test.category !== "mock_test");
 
   // Helper to get styling based on category
-  const getCategoryStyle = (category) => {
+  const getCategoryStyle = (category, isDark) => {
     switch (category) {
       case "reading":
         return {
-          bg: "#B6A4FF",
-          color: "#6144D8",
+          bg: isDark ? "#2E1065" : "#B6A4FF", // Deep elegant purple vs light pastel violet
+          color: isDark ? "#C084FC" : "#6144D8", // Vibrant glowy lilac vs dark purple
           image: ImageAssets.R,
+          border: isDark ? "rgba(192, 132, 252, 0.25)" : "transparent",
         };
       case "listening":
         return {
-          bg: "#FFCB74",
-          color: "#D88E2B",
+          bg: isDark ? "#451A03" : "#FFCB74", // Deep rich amber vs warm pastel yellow
+          color: isDark ? "#FBBF24" : "#D88E2B", // Radiant yellow vs dark brown-orange
           image: ImageAssets.L,
+          border: isDark ? "rgba(251, 191, 36, 0.25)" : "transparent",
         };
       case "speaking_writing":
         return {
-          bg: "#D7F26F",
-          color: "#6D8A00",
+          bg: isDark ? "#14532D" : "#D7F26F", // Deep forest green vs light pastel lime
+          color: isDark ? "#D7F26F" : "#6D8A00", // Vibrant lime vs deep olive green
           image: [ImageAssets.S, ImageAssets.W],
+          border: isDark ? "rgba(215, 242, 111, 0.25)" : "transparent",
         };
       default:
         return {
-          bg: "#E2E8F0",
-          color: "#475569",
+          bg: isDark ? "#1E293B" : "#E2E8F0",
+          color: isDark ? "#94A3B8" : "#475569",
           image: ImageAssets.Full,
+          border: isDark ? "rgba(148, 163, 184, 0.25)" : "transparent",
         };
     }
   };
@@ -85,7 +92,7 @@ const StudentPteCourse = () => {
       {/* Categories Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
         {otherTests.map((test) => {
-          const style = getCategoryStyle(test.category);
+          const style = getCategoryStyle(test.category, isDark);
           return (
             <Link
               to={`/dashboard/pte/test-set/${test.id}`}
@@ -93,8 +100,11 @@ const StudentPteCourse = () => {
               className="group relative block h-full"
             >
               <div
-                className="p-8 h-full min-h-[180px] rounded-[2.5rem] flex items-center justify-between gap-4 transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
-                style={{ backgroundColor: style.bg }}
+                className="p-8 h-full min-h-[180px] rounded-[2.5rem] flex items-center justify-between gap-4 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border"
+                style={{ 
+                  backgroundColor: style.bg,
+                  borderColor: style.border
+                }}
               >
                 <div className="flex flex-col justify-center max-w-[50%]">
                   <h2

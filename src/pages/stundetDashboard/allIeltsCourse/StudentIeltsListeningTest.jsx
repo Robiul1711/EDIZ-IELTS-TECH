@@ -4,7 +4,9 @@ import { useApiQuery } from "@/hooks/apiQuery";
 import { useApiMutation } from "@/hooks/apiMutation";
 import TestHeader from "@/components/common/TestHeader";
 import FillGap from "@/components/studentDashboard/readingQuestions/FillGap";
+import FillGapOptions from "@/components/studentDashboard/readingQuestions/FillGapOptions";
 import MCQ from "@/components/studentDashboard/readingQuestions/MCQ";
+import MultipleChoiceGroup from "@/components/studentDashboard/readingQuestions/MultipleChoiceGroup";
 import Matching from "@/components/studentDashboard/readingQuestions/Matching";
 import TFNG from "@/components/studentDashboard/readingQuestions/TFNG";
 import { toast } from "react-hot-toast";
@@ -140,9 +142,25 @@ const StudentIeltsListeningTest = () => {
                   onChange={handleAnswerChange}
                 />
               );
+            case "multiple_choice_group":
+              return (
+                <MultipleChoiceGroup
+                  group={group}
+                  answers={answers}
+                  onChange={handleAnswerChange}
+                />
+              );
             case "fill_gap":
               return (
                 <FillGap
+                  group={group}
+                  answers={answers}
+                  onChange={handleAnswerChange}
+                />
+              );
+            case "fill_gap_options":
+              return (
+                <FillGapOptions
                   group={group}
                   answers={answers}
                   onChange={handleAnswerChange}

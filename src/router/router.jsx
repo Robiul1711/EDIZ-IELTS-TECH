@@ -69,6 +69,7 @@ import StartHomeWork from "@/pages/classroomDashboard/studentClassRoom/StartHome
 import SignUpPage from "@/pages/authPages/SignUpPage";
 import ExamDashboard from "@/pages/classroomDashboard/studentClassRoom/ExamTime";
 import StartExam from "@/pages/classroomDashboard/studentClassRoom/StartExam";
+import StartPteExam from "@/pages/classroomDashboard/studentClassRoom/StartPteExam";
 import NotFound from "@/pages/notFound/NotFound";
 import PrivateRoute from "@/routes/PrivateRoute";
 import ReadingResultDetail from "@/pages/stundetDashboard/allIeltsCourse/ReadingResultDetail";
@@ -288,6 +289,7 @@ const router = createBrowserRouter([
       { path: "view-results/:id", element: <ViewResultsStudents /> },
       { path: "start-homework/:id", element: <StartHomeWork /> },
       { path: "start-exam/:id", element: <StartExam /> },
+      { path: "start-pte-exam/:id", element: <StartPteExam /> },
     ],
   },
 

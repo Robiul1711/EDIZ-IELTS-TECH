@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import useAxiosSecure from "@/hooks/useAxiosSecure";
 import { File, Mic, Clock, ChevronLeft, ChevronRight, Send, Loader2, StopCircle, RotateCcw, Play, Volume2 } from "lucide-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 
-const PteTestAttempt = () => {
-  const { attemptId } = useParams();
+const StartPteExam = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
   const axiosSecure = useAxiosSecure();
   
@@ -24,32 +24,29 @@ const PteTestAttempt = () => {
   const chunksRef = useRef([]);
   const timerRef = useRef(null);
 
-  const { data: attemptData, isLoading, isError } = useQuery({
-    queryKey: ["pte-attempt", attemptId],
+  const { data: examData, isLoading, isError } = useQuery({
+    queryKey: ["student-pte-exam", id],
     queryFn: async () => {
-      const response = await axiosSecure.get(`/pte/test/attempt/${attemptId}`);
+      const response = await axiosSecure.get(`/student/pte-exam/${id}`);
       return response.data.data;
     },
-    enabled: !!attemptId,
+    enabled: !!id,
   });
 
-  // Derived questions from sections
+  // Derived questions
   const questions = useMemo(() => {
-    if (!attemptData?.sections) return [];
-    return attemptData.sections.reduce((acc, section) => {
-      return [...acc, ...section.questions];
-    }, []);
-  }, [attemptData]);
+    return examData?.questions || [];
+  }, [examData]);
 
   // Sync timeLeft with fetched data once
   useEffect(() => {
-    if (attemptData && (timeLeft === 0 || timeLeft === null)) {
-      const remainingTime = attemptData.attempt?.remaining_time_seconds ?? attemptData.remaining_time_seconds;
-      if (remainingTime !== undefined && remainingTime !== null) {
-        setTimeLeft(Number(remainingTime));
+    if (examData && (timeLeft === 0 || timeLeft === null)) {
+      const totalTime = examData.time; // In minutes
+      if (totalTime !== undefined && totalTime !== null) {
+        setTimeLeft(Number(totalTime) * 60);
       }
     }
-  }, [attemptData, timeLeft]);
+  }, [examData, timeLeft]);
 
   // Drag and Drop State and Handlers
   const [userAnswers, setUserAnswers] = useState({});
@@ -81,7 +78,7 @@ const PteTestAttempt = () => {
         setUserAnswers(initialAnswers);
       }
     }
-  }, [questions]); // Only re-run when questions are loaded/changed
+  }, [questions]);
 
   const handleDragStart = (e, item, sourceList, questionId, index = null) => {
     e.dataTransfer.setData("item", JSON.stringify(item));
@@ -239,24 +236,21 @@ const PteTestAttempt = () => {
   const submitAnswerMutation = useMutation({
     mutationFn: async ({ questionId, answers, timeTaken, audio }) => {
       let payload;
-      let headers = {};
 
       if (audio) {
         payload = new FormData();
         payload.append("question_id", questionId);
-        payload.append("answers", JSON.stringify(answers || {}));
         payload.append("time_taken", timeTaken);
         payload.append("audio", audio, `answer_${questionId}.webm`);
-        // axios automatically sets multipart boundary
       } else {
         payload = {
           question_id: questionId,
-          answers: answers || {},
+          answers: answers,
           time_taken: timeTaken,
         };
       }
 
-      const response = await axiosSecure.post(`/pte/test/submit-answer?pte_test_attempt_id=${attemptId}`, payload);
+      const response = await axiosSecure.post(`/student/pte-exam/${id}/submit`, payload);
       return response.data;
     },
     onError: (error) => {
@@ -267,12 +261,16 @@ const PteTestAttempt = () => {
 
   const completeTestMutation = useMutation({
     mutationFn: async () => {
-      const response = await axiosSecure.post(`/pte/test/attempt/${attemptId}/complete`);
+      const response = await axiosSecure.post(`/student/pte-exam/${id}/complete`);
       return response.data;
     },
+    onSuccess: () => {
+      toast.success("Exam completed and submitted successfully!");
+      navigate("/classroom/register-as-student");
+    },
     onError: (error) => {
-      console.error("Error completing test:", error);
-      toast.error("Failed to complete test.");
+      console.error("Error completing exam:", error);
+      toast.error("Failed to complete exam.");
     }
   });
 
@@ -285,6 +283,9 @@ const PteTestAttempt = () => {
 
     if (task_type === "re_order_paragraphs") {
       return target.map(p => {
+        if (p.id !== undefined && p.id !== null) {
+          return Number(p.id);
+        }
         return question.content.paragraphs.findIndex(orig => orig.text === p.text);
       });
     }
@@ -292,9 +293,19 @@ const PteTestAttempt = () => {
     if (task_type === "fill_in_the_blanks_drag_drop") {
       const formattedBlanks = {};
       for (const key in blanks) {
-        formattedBlanks[String(Number(key) + 1)] = blanks[key];
+        formattedBlanks[String(Number(key))] = blanks[key];
       }
       return formattedBlanks;
+    }
+
+    if (task_type === "fill_in_the_blanks_dropdown" || task_type === "fill_in_the_blanks_write_word") {
+      const formattedAnswers = {};
+      const rawAnswers = answers || {};
+      Object.keys(rawAnswers).forEach((key) => {
+        const zeroBasedKey = String(Number(key) - 1);
+        formattedAnswers[zeroBasedKey] = rawAnswers[key];
+      });
+      return formattedAnswers;
     }
 
     if (
@@ -303,10 +314,40 @@ const PteTestAttempt = () => {
       task_type === "highlight_correct_summary" ||
       task_type === "select_missing_word"
     ) {
-      return answers !== undefined ? [answers] : [];
+      if (answers !== undefined && answers !== null && question.content?.options) {
+        const selectedIdx = Number(answers);
+        if (task_type === "select_missing_word") {
+          return question.content.options[selectedIdx] || "";
+        } else {
+          const letters = ["A", "B", "C", "D", "E", "F", "G"];
+          return letters[selectedIdx] || "";
+        }
+      }
+      return answers !== undefined ? String(answers) : "";
     }
 
-    return answers;
+    if (
+      task_type === "multiple_choice_multiple_answer_reading" ||
+      task_type === "multiple_choice_multiple_answer_listening"
+    ) {
+      if (Array.isArray(answers) && question.content?.options) {
+        const letters = ["A", "B", "C", "D", "E", "F", "G"];
+        return answers.map(idx => letters[Number(idx)] || "");
+      }
+      return Array.isArray(answers) ? answers : [];
+    }
+
+    if (task_type === "highlight_incorrect_words") {
+      if (Array.isArray(answers) && question.content?.tokens) {
+        return answers.map(idx => {
+          const rawWord = question.content.tokens[Number(idx)] || "";
+          return rawWord.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?"']/g, "");
+        });
+      }
+      return Array.isArray(answers) ? answers : [];
+    }
+
+    return answers !== undefined ? answers : "";
   };
 
   const saveAndNavigate = async (nextIndex) => {
@@ -367,9 +408,8 @@ const PteTestAttempt = () => {
       await completeTestMutation.mutateAsync();
       
       setShowCompletionModal(true);
-      toast.success("Test completed successfully!");
     } catch (error) {
-      setHasSubmitted(false); // Reset if failed to allow retry
+      setHasSubmitted(false);
       toast.error("Submission or completion failed. Please try again.");
     }
   };
@@ -393,7 +433,7 @@ const PteTestAttempt = () => {
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [isLoading, timeLeft]); // Only restart if loading state changes (i.e., after fetch)
+  }, [isLoading, timeLeft]);
 
   const formatTime = (seconds) => {
     const hrs = Math.floor(seconds / 3600);
@@ -410,12 +450,12 @@ const PteTestAttempt = () => {
     );
   }
 
-  if (isError || !attemptData || questions.length === 0) {
+  if (isError || !examData || questions.length === 0) {
     return (
       <div className="p-6 text-center">
-        <p className="text-red-500 text-lg">Failed to load attempt data or no questions found.</p>
+        <p className="text-red-500 text-lg">Failed to load exam data or no questions found.</p>
         <button 
-          onClick={() => navigate("/dashboard/pte")}
+          onClick={() => navigate("/classroom/register-as-student")}
           className="mt-4 px-6 py-2 bg-primary text-primary-foreground rounded-lg"
         >
           Back to Dashboard
@@ -425,7 +465,6 @@ const PteTestAttempt = () => {
   }
 
   const currentQuestion = questions[currentQuestionIndex];
-  const currentSection = attemptData.sections.find(s => s.questions.some(q => q.id === currentQuestion.id));
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-slate-950 font-poppins">
@@ -433,11 +472,11 @@ const PteTestAttempt = () => {
       <header className="bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-800 px-4 md:px-8 py-4 flex items-center justify-between sticky top-0 z-50">
         <div className="flex items-center gap-4">
           <h1 className="text-xl font-bold dark:text-white hidden md:block">
-            {attemptData.attempt.mock_test.title}
+            {examData.title}
           </h1>
           <div className="h-6 w-px bg-gray-300 dark:bg-slate-700 hidden md:block"></div>
           <div className="text-sm font-medium text-gray-500 dark:text-slate-400">
-            Section: <span className="text-primary font-bold uppercase">{currentSection?.section_name}</span>
+            Instructor: <span className="text-primary font-bold uppercase">{examData.instructor}</span>
           </div>
         </div>
 
@@ -448,6 +487,7 @@ const PteTestAttempt = () => {
               {formatTime(timeLeft)}
             </span>
           </div>
+
           <button 
             onClick={handleSubmit}
             disabled={submitAnswerMutation.isPending}
@@ -485,7 +525,7 @@ const PteTestAttempt = () => {
            <p className="text-sm md:text-base font-medium text-gray-800 dark:text-amber-200/80 leading-relaxed break-words">
              {currentQuestion.instruction}
            </p>
-        </div>
+         </div>
 
         {/* Task Area */}
         <div className="bg-white dark:bg-slate-900 rounded-[1.5rem] md:rounded-[2rem] shadow-xl border border-gray-100 dark:border-slate-800 p-4 md:p-10 flex-1 min-h-[400px] overflow-hidden">
@@ -509,28 +549,32 @@ const PteTestAttempt = () => {
       {/* Footer Navigation */}
       <footer className="bg-white dark:bg-slate-900 border-t border-gray-200 dark:border-slate-800 px-4 md:px-8 py-4 sticky bottom-0 z-50">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-          <button 
+          <button
             onClick={handlePrevious}
             disabled={true}
-            className="flex items-center gap-2 px-6 py-3 rounded-xl font-bold transition-all text-gray-300 dark:text-slate-700 cursor-not-allowed opacity-50 flex-shrink-0"
+            className="flex items-center gap-2 px-5 py-3 rounded-xl border border-gray-250 dark:border-slate-800 text-gray-400 font-bold transition-all opacity-50 cursor-not-allowed flex-shrink-0"
           >
-            <ChevronLeft size={20} /> Previous
+            <ChevronLeft size={20} />
+            <span className="hidden sm:inline">Previous</span>
           </button>
 
-          <div className="hidden md:flex flex-wrap justify-center items-center gap-2 max-w-[55%] lg:max-w-[65%]">
-            {questions.map((_, idx) => {
+          {/* Pagination Indicators - wrap to multiple lines automatically if long */}
+          <div className="flex flex-wrap items-center justify-center gap-2 max-w-[55%] lg:max-w-[65%]">
+            {questions.map((q, idx) => {
+              const isActive = idx === currentQuestionIndex;
               const isPast = idx < currentQuestionIndex;
+
               return (
                 <button
                   key={idx}
-                  onClick={() => !isPast && saveAndNavigate(idx)}
-                  disabled={isPast}
-                  className={`w-8 h-8 rounded-lg text-xs font-bold transition-all flex-shrink-0 ${
-                    currentQuestionIndex === idx
-                    ? 'bg-primary text-primary-foreground shadow-md scale-110 font-black'
-                    : isPast
-                    ? 'bg-gray-50 dark:bg-slate-900 text-gray-300 dark:text-slate-700 cursor-not-allowed opacity-40'
-                    : 'bg-gray-100 dark:bg-slate-800 text-gray-400 dark:text-slate-500 hover:bg-gray-200 dark:hover:bg-slate-700'
+                  disabled={isPast || idx > currentQuestionIndex}
+                  onClick={() => saveAndNavigate(idx)}
+                  className={`w-10 h-10 rounded-xl font-bold text-sm transition-all flex items-center justify-center ${
+                    isActive
+                      ? "bg-primary text-primary-foreground scale-110 shadow-lg shadow-primary/20"
+                      : isPast
+                      ? "bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed opacity-60"
+                      : "bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 text-gray-700 dark:text-slate-300 hover:border-primary/50"
                   }`}
                 >
                   {idx + 1}
@@ -539,64 +583,66 @@ const PteTestAttempt = () => {
             })}
           </div>
 
-          <button 
-            onClick={handleNext}
-            disabled={currentQuestionIndex === questions.length - 1 || submitAnswerMutation.isPending}
-            className={`flex items-center gap-2 px-10 py-3 rounded-xl font-bold transition-all flex-shrink-0 ${
-              currentQuestionIndex === questions.length - 1 || submitAnswerMutation.isPending
-              ? 'text-gray-300 dark:text-slate-700 cursor-not-allowed' 
-              : 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20'
-            }`}
-          >
-            {submitAnswerMutation.isPending ? 'Saving...' : 'Next'} <ChevronRight size={20} />
-          </button>
+          {currentQuestionIndex === questions.length - 1 ? (
+            <button
+              onClick={handleSubmit}
+              disabled={submitAnswerMutation.isPending}
+              className="flex items-center gap-2 px-6 py-3 rounded-xl bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white font-bold transition-all shadow-md flex-shrink-0"
+            >
+              <span>Submit</span>
+              {submitAnswerMutation.isPending ? <Loader2 size={20} className="animate-spin" /> : <Send size={20} />}
+            </button>
+          ) : (
+            <button
+              onClick={handleNext}
+              disabled={submitAnswerMutation.isPending}
+              className="flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-primary-foreground hover:bg-primary/95 disabled:bg-gray-400 font-bold transition-all shadow-lg shadow-primary/25 flex-shrink-0"
+            >
+              <span>Next</span>
+              {submitAnswerMutation.isPending ? <Loader2 size={20} className="animate-spin" /> : <ChevronRight size={20} />}
+            </button>
+          )}
         </div>
       </footer>
 
       {/* Completion Modal */}
       {showCompletionModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
-          <div className="bg-white dark:bg-slate-900 rounded-[2rem] p-8 md:p-12 w-full max-w-md flex flex-col items-center text-center shadow-2xl border border-gray-100 dark:border-slate-800 animate-in fade-in zoom-in duration-300">
-            <div className="w-24 h-24 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded-full flex items-center justify-center mb-6">
-              <svg className="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+        <div className="fixed inset-0 bg-slate-900/60 dark:bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
+          <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-10 max-w-md w-full text-center border border-gray-150 dark:border-slate-800 shadow-2xl space-y-6">
+            <div className="w-20 h-20 bg-green-50 dark:bg-green-950/30 text-green-500 rounded-3xl flex items-center justify-center mx-auto shadow-inner">
+              <svg className="w-10 h-10 fill-current" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
               </svg>
             </div>
-            <h2 className="text-2xl md:text-3xl font-black text-slate-800 dark:text-white mb-4">Test Completed!</h2>
-            <p className="text-gray-500 dark:text-slate-400 mb-8 font-medium">
-              Your answers have been successfully submitted for evaluation. You can now view your result or take the test again.
+            <h3 className="text-2xl font-black text-slate-800 dark:text-white uppercase tracking-tight">Exam Successfully Completed</h3>
+            <p className="text-gray-500 dark:text-slate-400 text-sm font-medium leading-relaxed">
+              Your exam has been submitted successfully. The scoring engine is now processing your details. You will be redirected back to the classroom page.
             </p>
-            <div className="flex flex-col w-full gap-4">
-              <button
-                onClick={() => navigate(`/dashboard/pte/result/${attemptId}`)}
-                className="w-full py-4 bg-primary text-primary-foreground font-bold rounded-xl hover:bg-primary/90 transition-all shadow-lg shadow-primary/20"
-              >
-                Result
-              </button>
-              <button
-                onClick={() => navigate(`/dashboard/pte`)}
-                className="w-full py-4 bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-slate-300 font-bold rounded-xl hover:bg-gray-200 dark:hover:bg-slate-700 transition-all"
-              >
-                Take the Test Again
-              </button>
-            </div>
+            <button
+              onClick={() => navigate("/classroom/register-as-student")}
+              className="w-full py-4 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-2xl shadow-lg shadow-primary/20 transition-all active:scale-[0.99]"
+            >
+              Return to Dashboard
+            </button>
           </div>
         </div>
       )}
 
       {/* Confirmation Modal */}
       {showConfirmModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
-          <div className="bg-white dark:bg-slate-900 rounded-[2rem] p-8 md:p-10 w-full max-w-md flex flex-col items-center text-center shadow-2xl border border-gray-100 dark:border-slate-800 animate-in fade-in zoom-in duration-300">
-            <div className="w-20 h-20 bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 rounded-full flex items-center justify-center mb-6">
-              <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        <div className="fixed inset-0 bg-slate-900/60 dark:bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-10 max-w-md w-full text-center border border-gray-150 dark:border-slate-800 shadow-2xl space-y-6">
+            <div className="w-20 h-20 bg-amber-50 dark:bg-amber-950/30 text-amber-500 rounded-3xl flex items-center justify-center mx-auto">
+              <svg className="w-10 h-10 fill-current" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
               </svg>
             </div>
-            <h2 className="text-2xl font-black text-slate-800 dark:text-white mb-3">Submit Test?</h2>
-            <p className="text-gray-500 dark:text-slate-400 mb-8 font-medium">
-              Are you sure you want to finish the test? You won't be able to change your answers after submission.
-            </p>
+            <div>
+              <h3 className="text-2xl font-black text-slate-800 dark:text-white uppercase tracking-tight">Submit Exam?</h3>
+              <p className="text-gray-500 dark:text-slate-400 text-sm font-medium leading-relaxed mt-2">
+                Are you sure you want to finish and submit your exam attempt? This action is permanent and cannot be undone.
+              </p>
+            </div>
             <div className="flex flex-col md:flex-row w-full gap-4">
               <button
                 onClick={() => setShowConfirmModal(false)}
@@ -913,7 +959,7 @@ const TaskRenderer = ({
     // --- Section 3: Reading (Interactive Inputs) ---
     case "fill_in_the_blanks_dropdown":
       return (
-        <div className="p-6 bg-white dark:bg-slate-900 rounded-3xl border border-gray-100 dark:border-slate-800 shadow-sm">
+        <div className="p-6 bg-white dark:bg-slate-900 rounded-3xl border border-gray-150 dark:border-slate-800 shadow-sm">
            <p className="text-gray-700 dark:text-slate-200 text-sm md:text-base font-normal leading-[3rem]">
              {content.text.split(/\[\d+\]/).map((part, index) => (
                <React.Fragment key={index}>
@@ -941,20 +987,20 @@ const TaskRenderer = ({
       const fibaBank = currentAnswer.bank || content.all_options;
       return (
         <div className="space-y-6">
-          <div className="p-6 bg-white dark:bg-slate-900 rounded-3xl border border-gray-100 dark:border-slate-800 shadow-sm">
+          <div className="p-6 bg-white dark:bg-slate-900 rounded-3xl border border-gray-150 dark:border-slate-800 shadow-sm">
              <p className="text-gray-700 dark:text-slate-200 text-sm md:text-base font-normal leading-[3rem]">
                {content.text.split(/\[\d+\]/).map((part, index, arr) => (
                  <React.Fragment key={index}>
                    {part}
                    {index < arr.length - 1 && (
-                     <span 
-                        onDragOver={handleDragOver}
-                        onDrop={(e) => handleDrop(e, "fiba_blank", id, index)}
-                        className={`mx-2 inline-block min-w-[110px] h-9 border-2 border-dashed rounded-xl align-middle transition-all ${
-                          fibaAnswer[index] 
-                          ? 'border-primary bg-primary/5 text-primary text-center leading-[2rem] font-medium text-sm'
-                          : 'border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-slate-950/50'
-                        }`}
+                      <span 
+                         onDragOver={handleDragOver}
+                         onDrop={(e) => handleDrop(e, "fiba_blank", id, index)}
+                         className={`mx-2 inline-block min-w-[110px] h-9 border-2 border-dashed rounded-xl align-middle transition-all ${
+                           fibaAnswer[index] 
+                           ? 'border-primary bg-primary/5 text-primary text-center leading-[2rem] font-medium text-sm'
+                           : 'border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-slate-950/50'
+                         }`}
                       >
                         {fibaAnswer[index] && (
                           <span 
@@ -994,7 +1040,7 @@ const TaskRenderer = ({
 
     case "fill_in_the_blanks_write_word":
       return (
-        <div className="p-6 bg-white dark:bg-slate-900 rounded-3xl border border-gray-100 dark:border-slate-800 shadow-sm">
+        <div className="p-6 bg-white dark:bg-slate-900 rounded-3xl border border-gray-150 dark:border-slate-800 shadow-sm">
            {media_url && isAudio && (
               <div className="flex flex-col items-center gap-4 mb-6 p-6 bg-indigo-50/50 dark:bg-indigo-900/10 rounded-2xl">
                  <QuestionAudioPlayer src={media_url} keyId={id} />
@@ -1005,14 +1051,14 @@ const TaskRenderer = ({
                <React.Fragment key={index}>
                  {part}
                  {index < arr.length - 1 && (
-                     <input 
-                       type="text" 
-                       value={answers[index + 1] || ""}
-                       onChange={(e) => handleInputChange(id, task_type, e.target.value, index + 1)}
-                       className="mx-2 w-32 px-3 py-1 rounded-lg border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-sm font-medium text-primary focus:ring-2 focus:ring-primary/10 focus:border-primary outline-none transition-all text-center"
-                       placeholder="..."
-                     />
-                  )}
+                      <input 
+                        type="text" 
+                        value={answers[index + 1] || ""}
+                        onChange={(e) => handleInputChange(id, task_type, e.target.value, index + 1)}
+                        className="mx-2 w-32 px-3 py-1 rounded-lg border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-sm font-medium text-primary focus:ring-2 focus:ring-primary/10 focus:border-primary outline-none transition-all text-center"
+                        placeholder="..."
+                      />
+                   )}
                </React.Fragment>
              ))}
            </p>
@@ -1095,7 +1141,7 @@ const TaskRenderer = ({
                  <p className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest">Listening task reference</p>
               </div>
             ) : content.text ? (
-              <div className="p-6 lg:p-8 bg-white dark:bg-slate-900 rounded-3xl border border-gray-100 dark:border-slate-800 shadow-sm max-h-[400px] lg:max-h-[500px] overflow-y-auto scrollbar-thin prose dark:prose-invert prose-p:text-sm max-w-none">
+              <div className="p-6 lg:p-8 bg-white dark:bg-slate-900 rounded-3xl border border-gray-150 dark:border-slate-800 shadow-sm max-h-[400px] lg:max-h-[500px] overflow-y-auto scrollbar-thin prose dark:prose-invert prose-p:text-sm max-w-none">
                  <div 
                    className="text-gray-700 dark:text-slate-200 text-sm leading-relaxed"
                    dangerouslySetInnerHTML={{ __html: content.text }}
@@ -1159,7 +1205,7 @@ const TaskRenderer = ({
               <QuestionAudioPlayer src={media_url} keyId={id} />
               <p className="text-[10px] lg:text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest text-center">Click on words that differ from the recording</p>
            </div>
-           <div className="p-5 lg:p-8 bg-white dark:bg-slate-900 rounded-3xl border border-gray-100 dark:border-slate-800 shadow-inner overflow-hidden">
+           <div className="p-5 lg:p-8 bg-white dark:bg-slate-900 rounded-3xl border border-gray-150 dark:border-slate-800 shadow-inner overflow-hidden">
               <div className="flex flex-wrap gap-x-2 lg:gap-x-3 gap-y-4 lg:gap-y-6 leading-relaxed lg:leading-[3.5rem]">
                 {content.tokens.map((token, idx) => {
                   const isHighlighted = (Array.isArray(answers) && answers.includes(idx));
@@ -1197,4 +1243,4 @@ const TaskRenderer = ({
   }
 };
 
-export default PteTestAttempt;
+export default StartPteExam;

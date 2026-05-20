@@ -9,6 +9,14 @@ const PteTestDetails = () => {
   const { id } = useParams();
   const axiosSecure = useAxiosSecure();
 
+  const { data: testSets = [] } = useQuery({
+    queryKey: ["pte-test-sets"],
+    queryFn: async () => {
+      const response = await axiosSecure.get("/pte/all-test-sets?type=full");
+      return response.data.data || [];
+    }
+  });
+
   const { data, isLoading: loading } = useQuery({
     queryKey: ["pte-test-start", id],
     queryFn: async () => {
@@ -39,6 +47,21 @@ const PteTestDetails = () => {
 
   const { structure, attempt } = data;
 
+  const getNextPath = () => {
+    const currentTest = testSets.find(test => String(test.id) === String(id));
+    const category = currentTest?.category || attempt?.mock_test?.category || attempt?.category || "";
+    const attemptId = attempt.id;
+
+    if (category === "mock_test" || category === "speaking_writing") {
+      return `/pte/headset-check?attemptId=${attemptId}`;
+    } else if (category === "listening") {
+      return `/pte/listening/headset-check?attemptId=${attemptId}`;
+    } else if (category === "reading") {
+      return `/pte/keyboard-check?attemptId=${attemptId}`;
+    }
+    return `/dashboard/pte/test-attempt/${attemptId}`;
+  };
+
   return (
     <div className="flex flex-col min-h-screen items-center gap-6 md:gap-10 pb-10 font-poppins px-4">
       {/* Header Area */}
@@ -66,13 +89,13 @@ const PteTestDetails = () => {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-gray-50 dark:bg-slate-800/50 border-b border-gray-200 dark:border-slate-700">
-                  <th className="py-4 px-6 font-bold text-sm md:text-lg border-r border-gray-200 dark:border-slate-700 w-1/4 dark:text-slate-200 uppercase tracking-wider text-center">
+                  <th className="py-4 px-6 font-bold text-sm md:text-lg border-r border-gray-200 dark:border-slate-700 w-1/4 text-slate-800 dark:text-slate-200 uppercase tracking-wider text-center">
                     Section
                   </th>
-                  <th className="py-4 px-6 font-bold text-sm md:text-lg border-r border-gray-200 dark:border-slate-700 w-2/4 dark:text-slate-200 uppercase tracking-wider">
+                  <th className="py-4 px-6 font-bold text-sm md:text-lg border-r border-gray-200 dark:border-slate-700 w-2/4 text-slate-800 dark:text-slate-200 uppercase tracking-wider">
                     Content
                   </th>
-                  <th className="py-4 px-6 font-bold text-sm md:text-lg w-1/4 dark:text-slate-200 uppercase tracking-wider text-center">
+                  <th className="py-4 px-6 font-bold text-sm md:text-lg w-1/4 text-slate-800 dark:text-slate-200 uppercase tracking-wider text-center">
                     Time Allowed
                   </th>
                 </tr>
@@ -81,24 +104,24 @@ const PteTestDetails = () => {
                 {structure.map((section, sIdx) => (
                   <React.Fragment key={sIdx}>
                     {section.content.map((item, cIdx) => (
-                      <tr 
-                        key={`${sIdx}-${cIdx}`} 
+                      <tr
+                        key={`${sIdx}-${cIdx}`}
                         className="border-b border-gray-200 dark:border-slate-700 last:border-b-0"
                       >
                         {cIdx === 0 && (
                           <td
-                            className="py-6 px-6 font-bold text-slate-700 dark:text-slate-300 border-r border-gray-200 dark:border-slate-700 align-middle bg-slate-50/30 dark:bg-slate-800/20 text-center"
+                            className="py-6 px-6 font-bold text-slate-700 dark:text-slate-200 border-r border-gray-200 dark:border-slate-700 align-middle bg-slate-50/30 dark:bg-slate-800/20 text-center"
                             rowSpan={section.content.length}
                           >
                             {section.section_name}
                           </td>
                         )}
-                        <td className="py-4 px-6 border-r border-gray-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 dark:text-slate-400 font-medium transition-colors">
+                        <td className="py-4 px-6 border-r border-gray-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-850 text-slate-700 dark:text-slate-300 font-medium transition-colors">
                           {item.name}
                         </td>
                         {cIdx === 0 && (
                           <td
-                            className="py-6 px-6 align-middle text-center dark:text-slate-400 font-bold"
+                            className="py-6 px-6 align-middle text-center text-slate-800 dark:text-slate-300 font-bold"
                             rowSpan={section.content.length}
                           >
                             {section.total_time || "As per section"}
@@ -123,7 +146,7 @@ const PteTestDetails = () => {
         </Link>
 
         <Link
-          to={`/dashboard/pte/test-attempt/${attempt.id}`}
+          to={getNextPath()}
           className="w-full md:w-auto"
         >
           <button className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white w-full md:w-auto px-16 py-4 text-base md:text-lg shadow-lg shadow-indigo-200 dark:shadow-none rounded-xl font-bold flex items-center justify-center gap-3 transition-all hover:opacity-95 active:scale-95 group">

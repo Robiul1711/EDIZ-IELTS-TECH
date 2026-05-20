@@ -59,6 +59,7 @@ import SpeakingReview from "@/pages/stundetDashboard/review/SpeakingReview";
 import ListeningReview from "@/pages/stundetDashboard/review/ListeningReview";
 import ReadingReview from "@/pages/stundetDashboard/review/ReadingReview";
 import PrivacyPolicy from "@/pages/legal/PrivacyPolicy";
+import SpeakingResultDetail from "@/pages/stundetDashboard/allIeltsCourse/SpeakingResultDetail";
 import TermsAndConditions from "@/pages/legal/TermsAndConditions";
 import Profile from "@/pages/stundetDashboard/Profile";
 import HomeWork from "@/pages/classroomDashboard/teacherClassRoom/HomeWork";
@@ -207,7 +208,7 @@ const router = createBrowserRouter([
       { path: "reading-result/:test_no", element: <ReadingResultDetail /> },
       { path: "listening-result/:test_no", element: <ListeningResultDetail /> },
       { path: "writing-result/:test_no", element: <ReadingResultDetail /> }, // Placeholder
-      { path: "speaking-result/:test_no", element: <ReadingResultDetail /> },
+      { path: "speaking-result/:test_no", element: <SpeakingResultDetail /> },
       { path: "reading-review/:id", element: <ReadingReview /> },
       { path: "writing-review/:id", element: <WritingReview /> },
       { path: "speaking-review/:id", element: <SpeakingReview /> },

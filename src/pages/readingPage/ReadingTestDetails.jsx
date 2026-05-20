@@ -5,6 +5,7 @@ import { useApiMutation } from "@/hooks/apiMutation";
 import TestHeader from "@/components/common/TestHeader";
 import FillGap from "@/components/studentDashboard/readingQuestions/FillGap";
 import MCQ from "@/components/studentDashboard/readingQuestions/MCQ";
+import MultipleChoiceGroup from "@/components/studentDashboard/readingQuestions/MultipleChoiceGroup";
 import Matching from "@/components/studentDashboard/readingQuestions/Matching";
 import TFNG from "@/components/studentDashboard/readingQuestions/TFNG";
 import FillGapOptions from "@/components/studentDashboard/readingQuestions/FillGapOptions";
@@ -160,6 +161,14 @@ const ReadingTestDetails = () => {
             case "choice":
               return (
                 <MCQ
+                  group={group}
+                  answers={answers}
+                  onChange={handleAnswerChange}
+                />
+              );
+            case "multiple_choice_group":
+              return (
+                <MultipleChoiceGroup
                   group={group}
                   answers={answers}
                   onChange={handleAnswerChange}

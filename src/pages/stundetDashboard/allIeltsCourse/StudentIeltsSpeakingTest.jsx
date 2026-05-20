@@ -201,14 +201,52 @@ const StudentIeltsSpeakingTest = () => {
     setRecordingDuration(0);
   };
 
+  const { mutateAsync: submitSingleAnswer } = useApiMutation({
+    url: "/ielts/speaking/tests/submit",
+    method: "POST",
+    secure: true,
+  });
+
+  const [isSubmittingNext, setIsSubmittingNext] = useState(false);
+
   const formatDuration = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (step === "recording") stopRecording();
+
+    const currentAnswer = answers[currentQuestion.serial_number];
+    if (currentAnswer && !currentAnswer.isSubmitted) {
+      setIsSubmittingNext(true);
+      const timeSpent = Math.floor((Date.now() - startTime) / 1000);
+      const formData = new FormData();
+      formData.append("book_no", bookNo);
+      formData.append("test_no", test_no);
+      formData.append("type", type);
+      formData.append("serial_number", currentQuestion.serial_number);
+      formData.append("time_spent", timeSpent);
+      formData.append(`answer[${currentQuestion.serial_number}]`, currentAnswer.blob, `speaking_${currentQuestion.serial_number}.mp3`);
+
+      try {
+         await submitSingleAnswer(formData);
+         setAnswers(prev => ({
+           ...prev,
+           [currentQuestion.serial_number]: {
+             ...prev[currentQuestion.serial_number],
+             isSubmitted: true
+           }
+         }));
+      } catch (err) {
+         toast.error("Failed to submit answer. Please try again.");
+         setIsSubmittingNext(false);
+         return;
+      }
+      setIsSubmittingNext(false);
+    }
+
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(prev => prev + 1);
     } else if (activePart < testParts.length - 1) {
@@ -229,27 +267,37 @@ const StudentIeltsSpeakingTest = () => {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (step === "recording") stopRecording();
     
-    // Check if at least one recording is present
     if (Object.keys(answers).length === 0) {
       toast.error("Please record at least one answer before submitting.");
       return;
     }
 
-    const timeSpent = Math.floor((Date.now() - startTime) / 1000);
-    const formData = new FormData();
-    formData.append("book_no", bookNo);
-    formData.append("test_no", test_no);
-    formData.append("type", type);
-    formData.append("time_spent", timeSpent);
-
-    Object.entries(answers).forEach(([serial, data]) => {
-      formData.append(`answer[${serial}]`, data.blob, `speaking_${serial}.mp3`);
-    });
-
-    submitTest(formData);
+    const currentAnswer = answers[currentQuestion.serial_number];
+    if (currentAnswer && !currentAnswer.isSubmitted) {
+       setIsSubmittingNext(true);
+       const timeSpent = Math.floor((Date.now() - startTime) / 1000);
+       const formData = new FormData();
+       formData.append("book_no", bookNo);
+       formData.append("test_no", test_no);
+       formData.append("type", type);
+       formData.append("serial_number", currentQuestion.serial_number);
+       formData.append("time_spent", timeSpent);
+       formData.append(`answer[${currentQuestion.serial_number}]`, currentAnswer.blob, `speaking_${currentQuestion.serial_number}.mp3`);
+ 
+       try {
+          await submitSingleAnswer(formData);
+       } catch (err) {
+          toast.error("Failed to submit answer. Please try again.");
+          setIsSubmittingNext(false);
+          return;
+       }
+       setIsSubmittingNext(false);
+    }
+    
+    navigate(`/dashboard/speaking-result/${test_no}?book=${bookNo}&type=${type}`);
   };
 
   if (isLoading) {
@@ -448,21 +496,24 @@ const StudentIeltsSpeakingTest = () => {
         {isLastQuestionOfTest ? (
           <button
             onClick={handleSubmit}
-            disabled={isSubmitting || isSubmitted}
+            disabled={isSubmittingNext}
             className="group relative flex items-center gap-3 px-6 md:px-8 py-3 bg-indigo-600 text-white font-black rounded-2xl hover:bg-indigo-700 transition-all active:scale-[0.98] disabled:opacity-50 shadow-lg shadow-indigo-200 dark:shadow-none uppercase text-xs tracking-widest"
           >
-            <span>{isSubmitting ? "Uploading..." : isSubmitted ? "Submitted" : "Submit Test"}</span>
-            <div className="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center transition-transform group-hover:translate-x-1">
-              <Send size={16} strokeWidth={2.5} />
-            </div>
+            <span>{isSubmittingNext ? "Submitting..." : "Submit Test"}</span>
+            {!isSubmittingNext && (
+              <div className="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center transition-transform group-hover:translate-x-1">
+                <Send size={16} strokeWidth={2.5} />
+              </div>
+            )}
           </button>
         ) : (
           <button 
             onClick={handleNext}
-            className="flex items-center gap-2 px-6 md:px-8 py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-2xl font-bold hover:bg-slate-800 dark:hover:bg-slate-100 transition-all active:scale-95 shadow-lg shadow-slate-200 dark:shadow-none"
+            disabled={isSubmittingNext}
+            className="flex items-center gap-2 px-6 md:px-8 py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-2xl font-bold hover:bg-slate-800 dark:hover:bg-slate-100 transition-all active:scale-95 shadow-lg shadow-slate-200 dark:shadow-none disabled:opacity-50"
           >
-            <span className="hidden md:inline">Next</span>
-            <ChevronRight size={20} />
+            <span className="hidden md:inline">{isSubmittingNext ? "Saving..." : "Next"}</span>
+            {!isSubmittingNext && <ChevronRight size={20} />}
           </button>
         )}
       </footer>

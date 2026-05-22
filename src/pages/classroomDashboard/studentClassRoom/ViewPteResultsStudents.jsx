@@ -83,14 +83,14 @@ const SafeHtml = ({ content, className = "" }) => {
   return <span className={className}>{contentStr}</span>;
 };
 
-const ViewResultsStudents = () => {
+const ViewPteResultsStudents = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  // Fetch the submission result dynamically from the student exam submissions API
+  // Fetch the submission result dynamically from the student homework submissions API
   const { data: responseData, isLoading, isError, error } = useApiQuery({
-    queryKey: ["my-exam-submission", id],
-    url: `/student/my-exam-submissions/${id}`,
+    queryKey: ["my-submission", id],
+    url: `/student/my-submissions/${id}`,
     secure: true,
     enabled: !!id,
   });
@@ -161,9 +161,9 @@ const ViewResultsStudents = () => {
 
   const isComplete = submission.status === "complete";
   const skillName = submission.skill ? submission.skill.replace(/_/g, " ") : "N/A";
-  const examModel = submission.test_type || "PTE";
-  const isPte = examModel.toLowerCase().includes("pte");
-  const isIelts = examModel.toLowerCase().includes("ielts");
+  const homeworkModel = submission.homework_model || "PTE";
+  const isPte = homeworkModel.toLowerCase().includes("pte");
+  const isIelts = homeworkModel.toLowerCase().includes("ielts");
 
   // Safely parse evaluations_payload for IELTS or PTE structured reviews
   let evaluationsPayload = submission.evaluations_payload;
@@ -226,7 +226,7 @@ const ViewResultsStudents = () => {
         {/* Title and Category */}
         <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-5 mb-6">
           <h1 className="text-2xl md:text-3xl font-black text-slate-800 dark:text-white tracking-tight leading-tight">
-            {submission.exam_title || "Classroom Exam"}
+            {submission.homework_title || "Classroom Homework"}
           </h1>
           <span
             className={`inline-flex items-center px-4 py-1.5 rounded-full border text-xs font-black uppercase tracking-widest ${isPte
@@ -234,7 +234,7 @@ const ViewResultsStudents = () => {
                 : "border-indigo-200 dark:border-indigo-900/50 text-indigo-600 dark:text-indigo-400 bg-indigo-500/5"
               }`}
           >
-            {examModel}
+            {homeworkModel}
           </span>
         </div>
 
@@ -245,7 +245,7 @@ const ViewResultsStudents = () => {
               size={16}
               className="text-indigo-600 dark:text-indigo-400 group-hover/item:scale-110 transition-transform"
             />
-            <span className="font-semibold capitalize text-slate-700 dark:text-slate-305">
+            <span className="font-semibold capitalize text-slate-700 dark:text-slate-300">
               {skillName}
             </span>
           </div>
@@ -327,7 +327,7 @@ const ViewResultsStudents = () => {
               <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-gray-100 dark:border-slate-800/60 shadow-sm flex items-center justify-between">
                 <span className="text-xs font-bold text-slate-400 uppercase">Assessment</span>
                 <span className="text-sm font-extrabold text-slate-800 dark:text-white capitalize">
-                  {examModel} ({skillName})
+                  {homeworkModel} ({skillName})
                 </span>
               </div>
 
@@ -431,7 +431,7 @@ const ViewResultsStudents = () => {
                     <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
                       {isComplete
                         ? `Your submission has been graded and finalized with a score of ${submission.mark || (isIelts ? bandScore : totalScore)}. Detailed criteria-wise breakdowns will be visible here once available.`
-                        : "Your exam submission has been recorded. It is currently being evaluated by the instructor. Scores and feedback will update here once complete."
+                        : "Your homework submission has been recorded. It is currently being evaluated by the instructor. Scores and feedback will update here once complete."
                       }
                     </p>
                   </div>
@@ -444,7 +444,7 @@ const ViewResultsStudents = () => {
               <div className="flex items-center gap-2.5 text-xs text-slate-400 dark:text-slate-500">
                 <Activity size={14} className="text-emerald-500 animate-pulse" />
                 <span className="font-semibold">
-                  Exam Session Verified by edizphactory
+                  Homework Session Verified by edizphactory
                 </span>
               </div>
               <button
@@ -912,4 +912,4 @@ const renderMultipleChoice = (correctIndices, studentIndices) => {
   );
 };
 
-export default ViewResultsStudents;
+export default ViewPteResultsStudents;

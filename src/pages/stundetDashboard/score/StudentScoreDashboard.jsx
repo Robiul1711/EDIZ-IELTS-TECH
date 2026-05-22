@@ -6,18 +6,18 @@ const StudentScoreDashboard = () => {
   const [examType, setExamType] = useState("IELTS");
   const [activeTab, setActiveTab] = useState("section"); // 'section' or 'full'
   const { data: fullTestData, isLoading } = useApiQuery({
-    queryKey: ["full-test"],
-    url: `/student/scores/full-test`,
+    queryKey: ["full-test", examType.toLowerCase()],
+    url: `/student/scores/full-test?exam_type=${examType.toLowerCase()}`,
     secure: true,
   });
   const { data: homeWorkData, isLoading: isLoading2 } = useApiQuery({
-    queryKey: ["home-work"],
-    url: `/student/scores/homework`,
+    queryKey: ["home-work", examType.toLowerCase()],
+    url: `/student/scores/homework?exam_type=${examType.toLowerCase()}`,
     secure: true,
   });
   const { data: sectionData, isLoading: isLoading3 } = useApiQuery({
-    queryKey: ["section"],
-    url: `/student/scores/section`,
+    queryKey: ["section", examType.toLowerCase()],
+    url: `/student/scores/section?exam_type=${examType.toLowerCase()}`,
     secure: true,
   });
 
@@ -177,16 +177,10 @@ const StudentScoreDashboard = () => {
                 </div>
 
                 <div className="flex items-center gap-4 flex-wrap">
-                  {/* Score Status */}
-                  {item.status ? (
-                    <span className="px-5 py-2 bg-[#F5F3FF] text-[#604CDF] text-xs font-bold rounded-xl border border-[#604CDF]/10">
-                      {item.status}
-                    </span>
-                  ) : (
-                    <div className="px-5 py-2 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-sm font-black rounded-xl border border-slate-100 dark:border-slate-700 min-w-[65px] text-center">
-                      {item.score}
-                    </div>
-                  )}
+                  {/* Always show score, do not show status */}
+                  <div className="px-5 py-2 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-sm font-black rounded-xl border border-slate-100 dark:border-slate-700 min-w-[65px] text-center">
+                    {item.score}
+                  </div>
 
                   {/* Interaction Buttons */}
                   <div className="flex items-center gap-3">

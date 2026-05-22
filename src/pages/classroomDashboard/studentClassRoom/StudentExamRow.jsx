@@ -125,7 +125,7 @@ const StudentExamRow = ({ index, data }) => {
           </button>
         ) : isCompleted ? (
           <Link
-            to={`/classroom/register-as-student/view-results/${data.id}`}
+                to={`/classroom/register-as-student/view-exam-results/${data.submission_id}`}
             className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-slate-900 dark:bg-white dark:text-slate-900 text-white text-sm font-bold shadow-lg hover:opacity-90 transition-all"
           >
             View Results

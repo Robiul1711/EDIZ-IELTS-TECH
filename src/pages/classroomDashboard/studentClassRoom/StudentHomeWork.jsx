@@ -22,41 +22,56 @@ const HomeworkCard = ({ data, onViewResult }) => {
           {data.title}
         </h3>
         <div className="flex flex-wrap gap-2">
-          <span className="px-3 py-1 rounded-full border border-indigo-200 dark:border-indigo-900/50 text-indigo-600 dark:text-indigo-400 text-xs font-semibold">
-            {data.category}
+          <span className="px-3 py-1 rounded-full border border-indigo-200 dark:border-indigo-900/50 text-indigo-600 dark:text-indigo-400 text-xs font-semibold uppercase">
+            {data.test_type || "ielts"}
           </span>
+          {data.skill && (
+            <span className="px-3 py-1 rounded-full border border-teal-200 dark:border-teal-900/50 text-teal-600 dark:text-teal-400 text-xs font-semibold uppercase">
+              {data.skill.replace("_", " ")}
+            </span>
+          )}
           <span
-            className={`px-3 py-1 rounded-full ${data.status === "active" ? "bg-indigo-600" : "bg-green-500"} text-white text-xs font-semibold`}
+            className={`px-3 py-1 rounded-full text-white text-xs font-semibold ${
+              data.status === "complete" ? "bg-green-500" : "bg-amber-500"
+            }`}
           >
-            {data.status}
+            {data.status === "complete" ? "Complete" : "Not Complete"}
           </span>
         </div>
       </div>
 
       {/* Meta Info with Icons */}
-      <div className="flex items-center gap-4 text-slate-500 dark:text-slate-400 text-xs">
-        <div className="flex items-center gap-1.5">
-          <BookOpen
-            size={14}
-            className="text-indigo-600 dark:text-indigo-400"
-          />
-          <span>{data.book_no}</span>
+      {(data.book_no || data.test_no || data.part_no) && (
+        <div className="flex items-center gap-4 text-slate-500 dark:text-slate-400 text-xs">
+          {data.book_no && (
+            <div className="flex items-center gap-1.5">
+              <BookOpen
+                size={14}
+                className="text-indigo-600 dark:text-indigo-400"
+              />
+              <span>Book: {data.book_no}</span>
+            </div>
+          )}
+          {data.test_no && (
+            <div className="flex items-center gap-1.5">
+              <Monitor size={14} className="text-green-500" />
+              <span>Test: {data.test_no}</span>
+            </div>
+          )}
+          {data.part_no && (
+            <div className="flex items-center gap-1.5">
+              <PieChart size={14} className="text-slate-500 dark:text-slate-400" />
+              <span>Part: {data.part_no}</span>
+            </div>
+          )}
         </div>
-        <div className="flex items-center gap-1.5">
-          <Monitor size={14} className="text-green-500" />
-          <span>{data.test_no}</span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <PieChart size={14} className="text-slate-500 dark:text-slate-400" />
-          <span>{data.part_no}</span>
-        </div>
-      </div>
+      )}
 
       {/* Numerical Details */}
       <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-sm">
         <span>
           HW time:{" "}
-          <b className="text-slate-700 dark:text-slate-200">{data.time}</b>
+          <b className="text-slate-700 dark:text-slate-200">{data.time} min</b>
         </span>
         <span className="text-slate-300 dark:text-slate-600">|</span>
         <span>
@@ -71,16 +86,18 @@ const HomeworkCard = ({ data, onViewResult }) => {
           Due: <b className="text-slate-700 dark:text-slate-200">{data.due_date}</b>
         </span>
       </div>
-{console.log(data)}
+
       {data.status === "not_complete" ? (
         <Link
-          to={`/classroom/register-as-student/start-homework/${data.id}`}
+          to={`/classroom/register-as-student/${
+            data.test_type?.toLowerCase() === "pte" ? "start-pte-homework" : "start-homework"
+          }/${data.id}`}
           className="w-full py-2.5 rounded-lg bg-[#334156] hover:bg-[#2a3547] text-white font-semibold transition-colors mt-auto flex items-center justify-center"
         >
           Start Homework
         </Link>
       ) : (
-        <div className="flex  gap-2">
+        <div className="flex gap-2">
           <button
             onClick={() => onViewResult(data)}
             className="w-full py-2.5 rounded-lg bg-[#334156] hover:bg-[#2a3547] text-white font-semibold transition-colors mt-auto flex items-center justify-center"
@@ -88,7 +105,7 @@ const HomeworkCard = ({ data, onViewResult }) => {
             View Details
           </button>
           <Link
-            to={`/classroom/register-as-student/view-results/${data.id}`}
+              to={`/classroom/register-as-student/view-homework-results/${data?.submission_id}`}
             className="w-full py-2.5 rounded-lg bg-[#334156] hover:bg-[#2a3547] text-white font-semibold transition-colors mt-auto flex items-center justify-center"
           >
             View Result
@@ -113,6 +130,8 @@ const StudentHomeWork = () => {
       url: "/student/homework",
       secure: true,
     });
+  
+  const [activeFilterTab, setActiveFilterTab] = useState("all");
   const [selectedHomework, setSelectedHomework] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -120,6 +139,16 @@ const StudentHomeWork = () => {
     setSelectedHomework(hw);
     setIsModalOpen(true);
   };
+
+  const filteredOngoing = assignedHomeworks?.data?.ongoing?.filter((hw) => {
+    if (activeFilterTab === "all") return true;
+    return hw.test_type?.toLowerCase() === activeFilterTab;
+  }) || [];
+
+  const filteredSubmitted = assignedHomeworks?.data?.submitted?.filter((hw) => {
+    if (activeFilterTab === "all") return true;
+    return hw.test_type?.toLowerCase() === activeFilterTab;
+  }) || [];
 
   return (
     <div className="min-h-screen ">
@@ -160,6 +189,48 @@ const StudentHomeWork = () => {
         )}
       </div>
 
+      {/* Filter Tabs */}
+      <div className="flex items-center gap-4 mb-6">
+        <div className="flex gap-2 p-1 bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm">
+          <button
+            onClick={() => setActiveFilterTab("all")}
+            className={`px-5 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all ${
+              activeFilterTab === "all"
+                ? "bg-indigo-600 text-white shadow-lg shadow-indigo-500/30"
+                : "text-slate-400 dark:text-slate-500 hover:bg-slate-100 dark:hover:bg-zinc-800"
+            }`}
+          >
+            All
+          </button>
+          <button
+            onClick={() => setActiveFilterTab("ielts")}
+            className={`px-5 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all ${
+              activeFilterTab === "ielts"
+                ? "bg-indigo-600 text-white shadow-lg shadow-indigo-500/30"
+                : "text-slate-400 dark:text-slate-500 hover:bg-slate-100 dark:hover:bg-zinc-800"
+            }`}
+          >
+            IELTS
+          </button>
+          <button
+            onClick={() => setActiveFilterTab("pte")}
+            className={`px-5 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all ${
+              activeFilterTab === "pte"
+                ? "bg-indigo-600 text-white shadow-lg shadow-indigo-500/30"
+                : "text-slate-400 dark:text-slate-500 hover:bg-slate-100 dark:hover:bg-zinc-800"
+            }`}
+          >
+            PTE
+          </button>
+        </div>
+
+        <div className="h-4 w-px bg-slate-300 dark:bg-slate-700 mx-2" />
+
+        <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+          Showing {filteredOngoing.length + filteredSubmitted.length} Homeworks
+        </div>
+      </div>
+
       <div className="bg-white dark:bg-slate-900/50 rounded-3xl border border-gray-100 dark:border-slate-800 p-6  space-y-12 shadow-sm">
         {/* Active Homework Section */}
         <section className="space-y-6">
@@ -171,8 +242,8 @@ const StudentHomeWork = () => {
               Array(3)
                 .fill(0)
                 .map((_, i) => <HomeworkSkeleton key={i} />)
-            ) : assignedHomeworks?.data?.ongoing?.length > 0 ? (
-              assignedHomeworks?.data?.ongoing?.map((hw, idx) => (
+            ) : filteredOngoing.length > 0 ? (
+              filteredOngoing.map((hw, idx) => (
                 <HomeworkCard
                   key={idx}
                   data={hw}
@@ -197,8 +268,8 @@ const StudentHomeWork = () => {
               Array(3)
                 .fill(0)
                 .map((_, i) => <HomeworkSkeleton key={i} />)
-            ) : assignedHomeworks?.data?.submitted?.length > 0 ? (
-              assignedHomeworks?.data?.submitted?.map((hw, idx) => (
+            ) : filteredSubmitted.length > 0 ? (
+              filteredSubmitted.map((hw, idx) => (
                 <HomeworkCard
                   key={idx}
                   data={hw}

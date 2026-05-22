@@ -31,6 +31,8 @@ import ReadingTestDetails from "@/pages/readingPage/ReadingTestDetails";
 import StudentIeltsWritingTest from "@/pages/stundetDashboard/allIeltsCourse/StudentIeltsWritingTest";
 import StudentIeltsListeningTest from "@/pages/stundetDashboard/allIeltsCourse/StudentIeltsListeningTest";
 import StudentIeltsSpeakingTest from "@/pages/stundetDashboard/allIeltsCourse/StudentIeltsSpeakingTest";
+import FullTestController from "@/pages/stundetDashboard/allIeltsCourse/FullTestController";
+import FullTestResult from "@/pages/stundetDashboard/allIeltsCourse/FullTestResult";
 import ClassroomLayout from "@/layout/ClassroomLayout";
 import Register from "@/pages/classroomDashboard/register/Register";
 import TeacherDashboard from "@/pages/classroomDashboard/teacherClassRoom/TeacherDashboard";
@@ -60,6 +62,7 @@ import ListeningReview from "@/pages/stundetDashboard/review/ListeningReview";
 import ReadingReview from "@/pages/stundetDashboard/review/ReadingReview";
 import PrivacyPolicy from "@/pages/legal/PrivacyPolicy";
 import SpeakingResultDetail from "@/pages/stundetDashboard/allIeltsCourse/SpeakingResultDetail";
+import WritingResultDetail from "@/pages/stundetDashboard/allIeltsCourse/WritingResultDetail";
 import TermsAndConditions from "@/pages/legal/TermsAndConditions";
 import Profile from "@/pages/stundetDashboard/Profile";
 import HomeWork from "@/pages/classroomDashboard/teacherClassRoom/HomeWork";
@@ -84,7 +87,6 @@ import ReOrder from "@/pages/ptePage/reading/ReOrder";
 import Success from "@/pages/payment/Success";
 import Failed from "@/pages/payment/Failed";
 import Cancelled from "@/pages/payment/Cancelled";
-
 
 const router = createBrowserRouter([
   // Auth routes
@@ -138,34 +140,26 @@ const router = createBrowserRouter([
   {
     path: "/listening",
     element: <ListeningLayout />,
-    children: [
-      { index: true, element: <StudentIeltsListening /> },
-    ],
+    children: [{ index: true, element: <StudentIeltsListening /> }],
   },
   //Writing routes
   {
     path: "/writing",
     element: <WritingLayout />,
-    children: [
-      { index: true, element: <StudentIeltsWriting /> },
-    ],
+    children: [{ index: true, element: <StudentIeltsWriting /> }],
   },
 
   //speaking routes can be added here
   {
     path: "/speaking",
     element: <SpeakingLayout />,
-    children: [
-      { index: true, element: <StudentIeltsSpeaking /> },
-    ],
+    children: [{ index: true, element: <StudentIeltsSpeaking /> }],
   },
   //Reading routes
   {
     path: "/reading",
     element: <ReadingLayout />,
-    children: [
-      { index: true, element: <StudentIeltsReading /> },
-    ],
+    children: [{ index: true, element: <StudentIeltsReading /> }],
   },
   {
     path: "/reading-test/:test_no/part/:part_no",
@@ -182,6 +176,22 @@ const router = createBrowserRouter([
   {
     path: "/speaking-test/:test_no/part/:part_no",
     element: <StudentIeltsSpeakingTest />,
+  },
+  {
+    path: "/dashboard/ielts/full-test",
+    element: (
+      <PrivateRoute>
+        <FullTestController />
+      </PrivateRoute>
+    ),
+  },
+  {
+    path: "/dashboard/ielts/full-test/result",
+    element: (
+      <PrivateRoute>
+        <FullTestResult />
+      </PrivateRoute>
+    ),
   },
   // // Admin routes
   // {
@@ -208,13 +218,12 @@ const router = createBrowserRouter([
       { path: "profile", element: <Profile /> },
       { path: "reading-result/:test_no", element: <ReadingResultDetail /> },
       { path: "listening-result/:test_no", element: <ListeningResultDetail /> },
-      { path: "writing-result/:test_no", element: <ReadingResultDetail /> }, // Placeholder
+      { path: "writing-result/:test_no", element: <WritingResultDetail /> },
       { path: "speaking-result/:test_no", element: <SpeakingResultDetail /> },
       { path: "reading-review/:id", element: <ReadingReview /> },
       { path: "writing-review/:id", element: <WritingReview /> },
       { path: "speaking-review/:id", element: <SpeakingReview /> },
       { path: "listening-review/:id", element: <ListeningReview /> },
-
 
       { path: "pte", element: <StudentPteCourse /> },
       { path: "pte/test-set/:id", element: <PteTestDetails /> },
@@ -222,28 +231,28 @@ const router = createBrowserRouter([
       { path: "pte/result/:attemptId", element: <PteTestResult /> },
       {
         path: "pte-reading-syllubus",
-        element: <ReadingSyllubus />
+        element: <ReadingSyllubus />,
       },
       {
         path: "fill-in-blanks",
-        element: <FillinBlank />
+        element: <FillinBlank />,
       },
       {
         path: "mcq-single-answer",
-        element: <MCQSingleQuestion />
+        element: <MCQSingleQuestion />,
       },
       {
         path: "mcq-multiple-question",
-        element: <MCQquestion />
+        element: <MCQquestion />,
       },
       {
         path: "fill-in-blanks-2",
-        element: <FillinBlank2 />
+        element: <FillinBlank2 />,
       },
       {
         path: "reorder-paragraphs",
-        element: <ReOrder />
-      }
+        element: <ReOrder />,
+      },
     ],
   },
   // TeacherDashboard routes

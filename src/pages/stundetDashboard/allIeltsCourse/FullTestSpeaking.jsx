@@ -1,8 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useParams, useSearchParams, useNavigate } from "react-router-dom";
-import { useApiQuery } from "@/hooks/apiQuery";
 import { useApiMutation } from "@/hooks/apiMutation";
-import TestHeader from "@/components/common/TestHeader";
 import { toast } from "react-hot-toast";
 import {
   Mic,
@@ -18,36 +15,16 @@ import {
   FileText,
 } from "lucide-react";
 
-const StudentIeltsSpeakingTest = () => {
-  const { test_no, part_no } = useParams();
-  const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
-  const bookNo = searchParams.get("book_no") || searchParams.get("book");
-  const type = searchParams.get("type") || "academic";
-
-  const { data: fetchResult, isLoading } = useApiQuery({
-    queryKey: ["speaking-test-details", test_no, bookNo, type],
-    url: `/ielts/speaking/tests/1`,
-    params: { book_no: bookNo, test_no: test_no, type },
-    secure: true,
-  });
-
+const FullTestSpeaking = ({ data: testParts, session, onComplete }) => {
   const {
-    mutate: submitTest,
-    isPending: isSubmitting,
-    isSuccess: isSubmitted,
+    mutateAsync: submitSingleAnswer,
   } = useApiMutation({
-    url: "/ielts/speaking/tests/submit",
+    url: "/ielts/full-test/submit-section",
     method: "POST",
     secure: true,
-    onSuccess: () => {
-      navigate(
-        `/dashboard/speaking-result/${test_no}?book=${bookNo}&type=${type}`,
-      );
-    },
   });
 
-  const testParts = fetchResult?.data || [];
+  const [isSubmittingNext, setIsSubmittingNext] = useState(false);
 
   // State variables
   const [activePart, setActivePart] = useState(0);
@@ -76,13 +53,6 @@ const StudentIeltsSpeakingTest = () => {
   const isLastQuestionOfTest =
     activePart === testParts.length - 1 &&
     currentQuestionIndex === questions.length - 1;
-
-  // Sync activePart with URL param on mount
-  useEffect(() => {
-    if (part_no) {
-      setActivePart(parseInt(part_no) - 1);
-    }
-  }, [part_no]);
 
   // When question changes, reset state
   useEffect(() => {
@@ -208,14 +178,6 @@ const StudentIeltsSpeakingTest = () => {
     setRecordingDuration(0);
   };
 
-  const { mutateAsync: submitSingleAnswer } = useApiMutation({
-    url: "/ielts/speaking/tests/submit",
-    method: "POST",
-    secure: true,
-  });
-
-  const [isSubmittingNext, setIsSubmittingNext] = useState(false);
-
   const formatDuration = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -230,9 +192,8 @@ const StudentIeltsSpeakingTest = () => {
       setIsSubmittingNext(true);
       const timeSpent = Math.floor((Date.now() - startTime) / 1000);
       const formData = new FormData();
-      formData.append("book_no", bookNo);
-      formData.append("test_no", test_no);
-      formData.append("type", type);
+      formData.append("session_id", session.id);
+      formData.append("skill", "speaking");
       formData.append("serial_number", currentQuestion.serial_number);
       formData.append("time_spent", timeSpent);
       formData.append(
@@ -294,9 +255,8 @@ const StudentIeltsSpeakingTest = () => {
       setIsSubmittingNext(true);
       const timeSpent = Math.floor((Date.now() - startTime) / 1000);
       const formData = new FormData();
-      formData.append("book_no", bookNo);
-      formData.append("test_no", test_no);
-      formData.append("type", type);
+      formData.append("session_id", session.id);
+      formData.append("skill", "speaking");
       formData.append("serial_number", currentQuestion.serial_number);
       formData.append("time_spent", timeSpent);
       formData.append(
@@ -315,38 +275,15 @@ const StudentIeltsSpeakingTest = () => {
       setIsSubmittingNext(false);
     }
 
-    navigate(
-      `/dashboard/speaking-result/${test_no}?book=${bookNo}&type=${type}`,
-    );
+    onComplete();
   };
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-slate-50 dark:bg-slate-950">
-        <div className="flex flex-col items-center">
-          <div className="w-16 h-16 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
-          <p className="mt-4 text-slate-500 font-bold text-xs uppercase tracking-widest animate-pulse">
-            Initializing Lab...
-          </p>
-        </div>
-      </div>
-    );
-  }
 
   const currentAnswer = currentQuestion
     ? answers[currentQuestion.serial_number]
     : null;
 
   return (
-    <div className="flex flex-col h-screen bg-white dark:bg-slate-950 overflow-hidden font-sans">
-      <TestHeader
-        durationInSeconds={testParts.reduce(
-          (acc, part) => acc + (part.duration_seconds || 900),
-          0,
-        )}
-        onExit="/dashboard/ielts/speaking"
-      />
-
+    <div className="flex flex-col flex-1 overflow-hidden font-sans">
       <main className="flex-1 flex flex-col md:flex-row overflow-hidden relative">
         {/* Left Side: Avatar & Question */}
         <div className="md:w-1/2 h-full overflow-y-auto p-6 lg:p-12 border-r border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 custom-scrollbar flex flex-col items-center justify-center">
@@ -356,7 +293,7 @@ const StudentIeltsSpeakingTest = () => {
                 Part {testPart?.part_no || activePart + 1}
               </div>
               <h1 className="text-2xl font-black text-slate-900 dark:text-white leading-tight">
-                {testPart?.title || "Speaking Test Part"}
+                {testPart?.title || "Speaking Component"}
               </h1>
             </header>
 
@@ -462,7 +399,7 @@ const StudentIeltsSpeakingTest = () => {
 
               <button
                 onClick={step === "recording" ? stopRecording : startRecording}
-                disabled={isSubmitted || step === "speaking"}
+                disabled={isSubmittingNext || step === "speaking"}
                 className={`relative w-40 h-40 rounded-[3rem] flex flex-col items-center justify-center transition-all duration-300 active:scale-95 shadow-2xl group z-20 ${
                   step === "recording"
                     ? "bg-red-500 text-white shadow-red-200"
@@ -572,7 +509,7 @@ const StudentIeltsSpeakingTest = () => {
             <span className="hidden md:inline">
               {isSubmittingNext ? "Saving..." : "Next"}
             </span>
-            {!isSubmittingNext && <ChevronRight size={20} />}
+            <ChevronRight size={20} />
           </button>
         )}
       </footer>
@@ -599,4 +536,4 @@ const StudentIeltsSpeakingTest = () => {
   );
 };
 
-export default StudentIeltsSpeakingTest;
+export default FullTestSpeaking;

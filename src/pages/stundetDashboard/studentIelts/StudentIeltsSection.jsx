@@ -69,7 +69,7 @@ const StudentIeltsSection = () => {
       />
       {/* Full Test Banner */}
       <div
-        onClick={(e) => handleLinkClick(e, "/reading")}
+        onClick={(e) => handleLinkClick(e, "/dashboard/ielts/full-test")}
         className="group block w-full cursor-pointer"
       >
         <div className="p-6 xxs:p-8  rounded lg:rounded-2xl bg-white dark:bg-slate-900 hover:bg-gray-200 dark:hover:bg-slate-800 transition-all duration-300 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden shadow-sm hover:shadow-md border border-transparent dark:border-slate-800">

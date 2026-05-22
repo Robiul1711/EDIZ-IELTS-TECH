@@ -12,29 +12,19 @@ import FillGapOptions from "@/components/studentDashboard/readingQuestions/FillG
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-const ReadingTestDetails = () => {
-  const { test_no, part_no } = useParams();
+const FullTestReading = ({ data: testDetails, session, onComplete }) => {
   const [searchParams] = useSearchParams();
   const bookNo = searchParams.get("book_no") || searchParams.get("book");
   const type = searchParams.get("type") || "academic";
 
-  const { data: testDetails, isLoading } = useApiQuery({
-    queryKey: ["reading-test-details", test_no, bookNo, type],
-    url: "/ielts/reading",
-    params: { book_no: bookNo, test_no: test_no, type },
-    secure: true,
-  });
-
   const navigate = useNavigate();
 
   const { mutate: submitTest, isPending: isSubmitting } = useApiMutation({
-    url: "/ielts/reading/tests/submit",
+    url: "/ielts/full-test/submit-section",
     method: "POST",
     secure: true,
     onSuccess: () => {
-      navigate(
-        `/dashboard/reading-result/${test_no}?book=${bookNo}&type=${type}`,
-      );
+      onComplete();
     },
   });
 
@@ -43,14 +33,7 @@ const ReadingTestDetails = () => {
   const [startTime] = useState(Date.now());
   const questionRefs = useRef({});
 
-  // Reset active part if URL change or data change
-  useEffect(() => {
-    if (part_no) {
-      setActivePart(parseInt(part_no) - 1);
-    } else {
-      setActivePart(0);
-    }
-  }, [test_no, part_no, bookNo]);
+
 
   const handleAnswerChange = (serialNumber, value) => {
     setAnswers((prev) => ({ ...prev, [serialNumber]: value }));
@@ -79,9 +62,8 @@ const ReadingTestDetails = () => {
 
     // Prepare form data
     const formData = new FormData();
-    formData.append("book_no", bookNo);
-    formData.append("test_no", test_no);
-    formData.append("type", type);
+    formData.append("session_id", session.id);
+    formData.append("skill", "reading");
     formData.append("time_spent", timeSpent);
 
     Object.entries(answers).forEach(([sn, val]) => {
@@ -91,20 +73,9 @@ const ReadingTestDetails = () => {
     submitTest(formData);
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-[calc(100vh-5rem)]">
-        <div className="relative">
-          <div className="w-16 h-16 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
-          <div className="mt-4 text-slate-500 font-medium animate-pulse">
-            Loading Test...
-          </div>
-        </div>
-      </div>
-    );
-  }
 
-  const passages = testDetails?.data || [];
+
+  const passages = testDetails || [];
   const currentPassage = passages[activePart];
 
   if (!currentPassage)
@@ -215,12 +186,7 @@ const ReadingTestDetails = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-white dark:bg-slate-950 overflow-hidden">
-      <TestHeader
-        durationInSeconds={currentPassage.duration_seconds || 1200}
-        onExit="/dashboard/ielts/reading"
-      />
-
+    <div className="flex flex-col flex-1 overflow-hidden">
       <main className="flex-1 flex overflow-hidden flex-col md:flex-row">
         {/* Passage Left Section */}
         <section className="w-full md:w-1/2 h-full overflow-y-auto p-4 lg:p-8 border-r border-slate-200 dark:border-slate-800 custom-scrollbar bg-white dark:bg-slate-900">
@@ -387,4 +353,4 @@ const ReadingTestDetails = () => {
   );
 };
 
-export default ReadingTestDetails;
+export default FullTestReading;

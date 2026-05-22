@@ -136,7 +136,7 @@ const QuestionGroupRenderer = ({ group }) => {
             {group.type.replace("_", " ")}
           </span>
         </div>
-        {group.instruction && (
+        {group.instruction && !/\d+\[blank\]/.test(group.instruction) && (
           <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-100 dark:border-slate-800">
             <p
               className="text-sm font-medium text-slate-600 dark:text-slate-300 italic leading-relaxed"
@@ -213,7 +213,6 @@ const IdentifyInfoView = ({ group }) => {
   );
 };
 
-
 const FillGapView = ({ group }) => {
   // Build a lookup map from serial_number -> question data
   const questionMap = {};
@@ -223,31 +222,30 @@ const FillGapView = ({ group }) => {
 
   // Replace N[blank] tokens in the text with styled HTML chips
   const sourceText = group.passage_text || group.instruction || "";
-  const processedHtml = sourceText.replace(
-    /(\d+)\[blank\]/g,
-    (match, num) => {
-      const q = questionMap[parseInt(num)];
-      if (!q) return match;
+  const processedHtml = sourceText.replace(/(\d+)\[blank\]/g, (match, num) => {
+    const q = questionMap[parseInt(num)];
+    if (!q) return match;
 
-      const userAns = q.user_answer || "";
-      const correctAns = q.correct_answer || "";
-      const isCorrect = q.is_correct;
+    const userAns = q.user_answer || "";
+    const correctAns = q.correct_answer || "";
+    const isCorrect = q.is_correct;
 
-      if (isCorrect) {
-        // Green chip — correct answer
-        return `<span style="display:inline-flex;align-items:center;gap:4px;margin:0 2px;padding:2px 10px;border-radius:9999px;background:#dcfce7;border:1.5px solid #86efac;color:#16a34a;font-weight:700;font-size:0.85em;vertical-align:middle;">
+    if (isCorrect) {
+      // Green chip — correct answer
+      return `<span style="display:inline-flex;align-items:center;gap:4px;margin:0 2px;padding:2px 10px;border-radius:9999px;background:#dcfce7;border:1.5px solid #86efac;color:#16a34a;font-weight:700;font-size:0.85em;vertical-align:middle;">
           <span style="width:16px;height:16px;border-radius:50%;background:#16a34a;color:#fff;font-size:0.65em;font-weight:900;display:inline-flex;align-items:center;justify-content:center;">${num}</span>
           ${userAns}
         </span>`;
-      } else {
-        // Red for wrong user answer + green for correct answer
-        return `<span style="display:inline-flex;align-items:center;gap:4px;margin:0 2px;vertical-align:middle;">
-          ${userAns
-            ? `<span style="padding:2px 10px;border-radius:9999px;background:#fee2e2;border:1.5px solid #fca5a5;color:#dc2626;font-weight:700;font-size:0.85em;text-decoration:line-through;display:inline-flex;align-items:center;gap:4px;">
+    } else {
+      // Red for wrong user answer + green for correct answer
+      return `<span style="display:inline-flex;align-items:center;gap:4px;margin:0 2px;vertical-align:middle;">
+          ${
+            userAns
+              ? `<span style="padding:2px 10px;border-radius:9999px;background:#fee2e2;border:1.5px solid #fca5a5;color:#dc2626;font-weight:700;font-size:0.85em;text-decoration:line-through;display:inline-flex;align-items:center;gap:4px;">
                 <span style="width:16px;height:16px;border-radius:50%;background:#dc2626;color:#fff;font-size:0.65em;font-weight:900;display:inline-flex;align-items:center;justify-content:center;">${num}</span>
                 ${userAns}
               </span>`
-            : `<span style="padding:2px 10px;border-radius:9999px;background:#fee2e2;border:1.5px dashed #fca5a5;color:#dc2626;font-weight:700;font-size:0.85em;display:inline-flex;align-items:center;gap:4px;">
+              : `<span style="padding:2px 10px;border-radius:9999px;background:#fee2e2;border:1.5px dashed #fca5a5;color:#dc2626;font-weight:700;font-size:0.85em;display:inline-flex;align-items:center;gap:4px;">
                 <span style="width:16px;height:16px;border-radius:50%;background:#dc2626;color:#fff;font-size:0.65em;font-weight:900;display:inline-flex;align-items:center;justify-content:center;">${num}</span>
                 empty
               </span>`
@@ -256,9 +254,8 @@ const FillGapView = ({ group }) => {
             ✓ ${correctAns}
           </span>
         </span>`;
-      }
     }
-  );
+  });
 
   return (
     <div className="space-y-4">
@@ -282,7 +279,6 @@ const FillGapView = ({ group }) => {
     </div>
   );
 };
-
 
 const ChoiceView = ({ group }) => {
   return (

@@ -3,6 +3,7 @@ import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import { useApiQuery } from "@/hooks/apiQuery";
 import { useApiMutation } from "@/hooks/apiMutation";
 import TestHeader from "@/components/common/TestHeader";
+import { toast } from "react-hot-toast";
 import {
   ChevronLeft,
   ChevronRight,
@@ -29,20 +30,15 @@ const StudentIeltsWritingTest = () => {
     secure: true,
   });
 
-  const {
-    mutate: submitTest,
-    isPending: isSubmitting,
-    isSuccess: isSubmitted,
-  } = useApiMutation({
+  const { mutateAsync: submitSingleAnswer } = useApiMutation({
     url: "/ielts/writing/tests/submit",
     method: "POST",
     secure: true,
-    onSuccess: () => {
-      navigate(`/dashboard/writing-result/${test_no}?book=${bookNo}&type=${type}`);
-    },
   });
 
   const [activePart, setActivePart] = useState(0);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   // Sync activePart with URL param
   useEffect(() => {
@@ -69,21 +65,68 @@ const StudentIeltsWritingTest = () => {
     setAnswers((prev) => ({ ...prev, [activePart + 1]: value }));
   };
 
-  const handleSubmit = () => {
-    const timeSpent = Math.floor((Date.now() - startTime) / 1000);
+  const savePartAnswer = async (partIdx) => {
+    const partNo = partIdx + 1;
+    const answer = answers[partNo];
+    if (!answer || answer.trim() === "") return;
 
+    const timeSpent = Math.floor((Date.now() - startTime) / 1000);
     const formData = new FormData();
     formData.append("book_no", bookNo);
     formData.append("test_no", test_no);
     formData.append("type", type);
+    formData.append("serial_number", partNo);
+    formData.append("part_no", partNo);
+    formData.append("task_no", partNo);
+    formData.append("part", partNo);
+    formData.append("task", partNo);
     formData.append("time_spent", timeSpent);
+    formData.append(`answer[${partNo}]`, answer);
 
-    // Add answers for all parts
-    Object.entries(answers).forEach(([partNo, answer]) => {
-      formData.append(`answer[${partNo}]`, answer);
-    });
+    await submitSingleAnswer(formData);
+  };
 
-    submitTest(formData);
+  const handlePartChange = async (newPartIdx) => {
+    if (newPartIdx === activePart) return;
+
+    const currentAnswer = answers[activePart + 1];
+    if (currentAnswer && currentAnswer.trim() !== "") {
+      setIsSaving(true);
+      try {
+        await savePartAnswer(activePart);
+      } catch (err) {
+        console.error("Failed to auto-save part answer", err);
+      }
+      setIsSaving(false);
+    }
+    setActivePart(newPartIdx);
+  };
+
+  const handleSubmit = async () => {
+    const currentAnswer = answers[activePart + 1];
+    const hasAnyAnswer = Object.values(answers).some(
+      (val) => val && val.trim() !== "",
+    );
+
+    if ((!currentAnswer || currentAnswer.trim() === "") && !hasAnyAnswer) {
+      toast.error("Please enter an answer before submitting.");
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      if (currentAnswer && currentAnswer.trim() !== "") {
+        await savePartAnswer(activePart);
+      }
+      setIsSubmitted(true);
+      navigate(
+        `/dashboard/writing-result/${test_no}?book=${bookNo}&type=${type}`,
+      );
+    } catch (err) {
+      console.error("Failed to submit test", err);
+      toast.error("Failed to submit test. Please try again.");
+    }
+    setIsSaving(false);
   };
 
   // Resize handler
@@ -278,7 +321,8 @@ const StudentIeltsWritingTest = () => {
         <div className="flex gap-3">
           <button
             type="button"
-            onClick={() => setActivePart(0)}
+            disabled={isSaving}
+            onClick={() => handlePartChange(0)}
             className={`px-8 h-12 flex items-center justify-center rounded-2xl font-black text-xs uppercase tracking-[0.2em] transition-all ${
               activePart === 0
                 ? "bg-indigo-600 text-white shadow-lg shadow-indigo-200 dark:shadow-none"
@@ -289,7 +333,8 @@ const StudentIeltsWritingTest = () => {
           </button>
           <button
             type="button"
-            onClick={() => setActivePart(1)}
+            disabled={isSaving}
+            onClick={() => handlePartChange(1)}
             className={`px-8 h-12 flex items-center justify-center rounded-2xl font-black text-xs uppercase tracking-[0.2em] transition-all ${
               activePart === 1
                 ? "bg-indigo-600 text-white shadow-lg shadow-indigo-200 dark:shadow-none"
@@ -303,26 +348,38 @@ const StudentIeltsWritingTest = () => {
         <div className="flex-1" />
 
         <div className="flex items-center gap-4">
-          <button
-            type="button"
-            disabled={isSubmitting || isSubmitted}
-            onClick={handleSubmit}
-            className="group relative flex items-center gap-4 px-10 h-14 bg-indigo-600 text-white font-black rounded-2xl hover:bg-indigo-700 transition-all active:scale-[0.98] disabled:opacity-50 disabled:grayscale shadow-xl shadow-indigo-100 dark:shadow-none uppercase text-xs tracking-[0.2em]"
-          >
-            <span>
-              {isSubmitting
-                ? "Submitting..."
-                : isSubmitted
-                  ? "Submitted"
-                  : "Submit Test"}
-            </span>
-            <div
-              className={`w-8 h-8 rounded-xl bg-indigo-500/50 flex items-center justify-center transition-transform group-hover:translate-x-1 ${isSubmitted ? "hidden" : ""}`}
+          {activePart < testParts.length - 1 ? (
+            <button
+              type="button"
+              disabled={isSaving}
+              onClick={() => handlePartChange(activePart + 1)}
+              className="flex items-center gap-2 px-8 h-14 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-2xl font-bold hover:bg-slate-800 dark:hover:bg-slate-100 transition-all active:scale-95 shadow-lg shadow-slate-200 dark:shadow-none disabled:opacity-50 cursor-pointer"
             >
-              <Send size={16} strokeWidth={2.5} />
-            </div>
-            {isSubmitted && <CheckCircle2 size={18} />}
-          </button>
+              <span>{isSaving ? "Saving..." : "Next"}</span>
+              {!isSaving && <ChevronRight size={20} />}
+            </button>
+          ) : (
+            <button
+              type="button"
+              disabled={isSaving || isSubmitted}
+              onClick={handleSubmit}
+              className="group relative flex items-center gap-4 px-10 h-14 bg-indigo-600 text-white font-black rounded-2xl hover:bg-indigo-700 transition-all active:scale-[0.98] disabled:opacity-50 disabled:grayscale shadow-xl shadow-indigo-100 dark:shadow-none uppercase text-xs tracking-[0.2em] cursor-pointer"
+            >
+              <span>
+                {isSaving
+                  ? "Saving..."
+                  : isSubmitted
+                    ? "Submitted"
+                    : "Submit Test"}
+              </span>
+              {!isSaving && !isSubmitted && (
+                <div className="w-8 h-8 rounded-xl bg-indigo-500/50 flex items-center justify-center transition-transform group-hover:translate-x-1">
+                  <Send size={16} strokeWidth={2.5} />
+                </div>
+              )}
+              {isSubmitted && <CheckCircle2 size={18} />}
+            </button>
+          )}
         </div>
       </footer>
 

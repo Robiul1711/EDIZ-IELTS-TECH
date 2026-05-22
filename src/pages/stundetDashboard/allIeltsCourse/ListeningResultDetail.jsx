@@ -1,7 +1,13 @@
 import React from "react";
 import { useSearchParams, useNavigate, useParams } from "react-router-dom";
 import { useApiQuery } from "@/hooks/apiQuery";
-import { ChevronLeft, Clock, CheckCircle, Info, Headphones } from "lucide-react";
+import {
+  ChevronLeft,
+  Clock,
+  CheckCircle,
+  Info,
+  Headphones,
+} from "lucide-react";
 
 const ListeningResultDetail = () => {
   const navigate = useNavigate();
@@ -19,7 +25,7 @@ const ListeningResultDetail = () => {
 
   if (isLoading) {
     return (
-            <div className="flex items-center justify-center h-[calc(100vh-15rem)]">
+      <div className="flex items-center justify-center h-[calc(100vh-15rem)]">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#604CDF]"></div>
       </div>
     );
@@ -47,9 +53,12 @@ const ListeningResultDetail = () => {
           </button>
           <div>
             <h1 className="text-2xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
-              Listening Results <Headphones size={20} className="text-[#604CDF]" />
+              Listening Results{" "}
+              <Headphones size={20} className="text-[#604CDF]" />
             </h1>
-            <p className="text-sm text-slate-500">Review your performance and detailed feedback</p>
+            <p className="text-sm text-slate-500">
+              Review your performance and detailed feedback
+            </p>
           </div>
         </div>
 
@@ -61,7 +70,10 @@ const ListeningResultDetail = () => {
             </span>
           </div>
           <div className="flex items-center gap-2 bg-emerald-50 dark:bg-emerald-900/30 px-4 py-2 rounded-xl border border-emerald-100 dark:border-emerald-800/50">
-            <CheckCircle size={18} className="text-emerald-600 dark:text-emerald-400" />
+            <CheckCircle
+              size={18}
+              className="text-emerald-600 dark:text-emerald-400"
+            />
             <span className="text-sm font-bold text-emerald-700 dark:text-emerald-300">
               {data.correct_answers}/{data.total_questions} Correct
             </span>
@@ -80,7 +92,9 @@ const ListeningResultDetail = () => {
               <span className="bg-[#604CDF] w-8 h-8 flex items-center justify-center rounded-lg font-bold">
                 {part.part_no}
               </span>
-              <h2 className="text-lg font-bold uppercase tracking-wide">{part.title}</h2>
+              <h2 className="text-lg font-bold uppercase tracking-wide">
+                {part.title}
+              </h2>
             </div>
 
             <div className="grid grid-cols-1 gap-8">
@@ -127,7 +141,10 @@ const QuestionGroupRenderer = ({ group }) => {
         </div>
         {group.instruction && !/\d+\[blank\]/.test(group.instruction) && (
           <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 overflow-x-auto">
-            <div className="text-sm font-medium text-slate-700 dark:text-slate-300 leading-relaxed" dangerouslySetInnerHTML={{ __html: group.instruction }} />
+            <div
+              className="text-sm font-medium text-slate-700 dark:text-slate-300 leading-relaxed"
+              dangerouslySetInnerHTML={{ __html: group.instruction }}
+            />
           </div>
         )}
       </div>
@@ -165,12 +182,13 @@ const FillGapView = ({ group }) => {
             </span>`;
         } else {
           return `<span style="display:inline-flex;align-items:center;gap:4px;margin:0 2px;vertical-align:middle;">
-              ${userAns
-                ? `<span style="padding:2px 10px;border-radius:9999px;background:#fee2e2;border:1.5px solid #fca5a5;color:#dc2626;font-weight:700;font-size:0.85em;text-decoration:line-through;display:inline-flex;align-items:center;gap:4px;">
+              ${
+                userAns
+                  ? `<span style="padding:2px 10px;border-radius:9999px;background:#fee2e2;border:1.5px solid #fca5a5;color:#dc2626;font-weight:700;font-size:0.85em;text-decoration:line-through;display:inline-flex;align-items:center;gap:4px;">
                     <span style="width:16px;height:16px;border-radius:50%;background:#dc2626;color:#fff;font-size:0.65em;font-weight:900;display:inline-flex;align-items:center;justify-content:center;">${num}</span>
                     ${userAns}
                   </span>`
-                : `<span style="padding:2px 10px;border-radius:9999px;background:#fee2e2;border:1.5px dashed #fca5a5;color:#dc2626;font-weight:700;font-size:0.85em;display:inline-flex;align-items:center;gap:4px;">
+                  : `<span style="padding:2px 10px;border-radius:9999px;background:#fee2e2;border:1.5px dashed #fca5a5;color:#dc2626;font-weight:700;font-size:0.85em;display:inline-flex;align-items:center;gap:4px;">
                     <span style="width:16px;height:16px;border-radius:50%;background:#dc2626;color:#fff;font-size:0.65em;font-weight:900;display:inline-flex;align-items:center;justify-content:center;">${num}</span>
                     empty
                   </span>`
@@ -180,7 +198,7 @@ const FillGapView = ({ group }) => {
               </span>
             </span>`;
         }
-      }
+      },
     );
 
     return (
@@ -210,26 +228,40 @@ const FillGapView = ({ group }) => {
         <div
           key={q.serial_number}
           className={`p-4 rounded-xl border flex flex-col gap-3 ${
-            q.is_correct ? "bg-emerald-50/30 border-emerald-100 dark:bg-emerald-900/10 dark:border-emerald-800/30" : "bg-red-50/30 border-red-100 dark:bg-red-900/10 dark:border-red-800/30"
+            q.is_correct
+              ? "bg-emerald-50/30 border-emerald-100 dark:bg-emerald-900/10 dark:border-emerald-800/30"
+              : "bg-red-50/30 border-red-100 dark:bg-red-900/10 dark:border-red-800/30"
           }`}
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <span className={`w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-full font-bold text-sm ${
-                q.is_correct ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"
-              }`}>
+              <span
+                className={`w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-full font-bold text-sm ${
+                  q.is_correct
+                    ? "bg-emerald-100 text-emerald-700"
+                    : "bg-red-100 text-red-700"
+                }`}
+              >
                 {q.serial_number}
               </span>
               <div className="flex flex-col">
-                <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Your Answer</span>
-                <span className={`text-sm font-bold ${q.is_correct ? "text-emerald-600" : "text-red-600"}`}>
+                <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">
+                  Your Answer
+                </span>
+                <span
+                  className={`text-sm font-bold ${q.is_correct ? "text-emerald-600" : "text-red-600"}`}
+                >
                   {q.user_answer || "Empty"}
                 </span>
               </div>
             </div>
             <div className="flex flex-col items-end border-l pl-4 border-slate-200 dark:border-slate-700">
-              <span className="text-[10px] text-emerald-500 uppercase font-bold tracking-wider">Correct</span>
-              <span className="text-sm font-bold text-emerald-700 dark:text-emerald-400">{q.correct_answer}</span>
+              <span className="text-[10px] text-emerald-500 uppercase font-bold tracking-wider">
+                Correct
+              </span>
+              <span className="text-sm font-bold text-emerald-700 dark:text-emerald-400">
+                {q.correct_answer}
+              </span>
             </div>
           </div>
           {q.explanation && (
@@ -242,7 +274,6 @@ const FillGapView = ({ group }) => {
       ))}
     </div>
   );
-
 };
 
 const ChoiceView = ({ group }) => {
@@ -251,25 +282,42 @@ const ChoiceView = ({ group }) => {
       {group.questions.map((q) => (
         <div key={q.serial_number} className="space-y-4">
           <div className="flex items-start gap-4">
-            <span className={`w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-full font-bold text-sm ${
-              q.is_correct ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"
-            }`}>
+            <span
+              className={`w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-full font-bold text-sm ${
+                q.is_correct
+                  ? "bg-emerald-100 text-emerald-700"
+                  : "bg-red-100 text-red-700"
+              }`}
+            >
               {q.serial_number}
             </span>
-            <p className="text-slate-800 dark:text-white font-bold leading-relaxed pt-1" dangerouslySetInnerHTML={{ __html: q.question_text }} />
+            <p
+              className="text-slate-800 dark:text-white font-bold leading-relaxed pt-1"
+              dangerouslySetInnerHTML={{ __html: q.question_text }}
+            />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 ml-12">
-            <div className={`p-4 rounded-xl border flex flex-col gap-1 ${
-              q.is_correct ? "bg-emerald-50 border-emerald-200" : "bg-red-50 border-red-200"
-            }`}>
-              <span className="text-[10px] uppercase font-bold text-slate-400">Your Answer</span>
-              <span className={`text-sm font-bold ${q.is_correct ? "text-emerald-700" : "text-red-700"}`}>
+            <div
+              className={`p-4 rounded-xl border flex flex-col gap-1 ${
+                q.is_correct
+                  ? "bg-emerald-50 border-emerald-200"
+                  : "bg-red-50 border-red-200"
+              }`}
+            >
+              <span className="text-[10px] uppercase font-bold text-slate-400">
+                Your Answer
+              </span>
+              <span
+                className={`text-sm font-bold ${q.is_correct ? "text-emerald-700" : "text-red-700"}`}
+              >
                 {q.user_answer || "No selection"}
               </span>
             </div>
             {!q.is_correct && (
               <div className="p-4 rounded-xl border border-emerald-200 bg-emerald-50 flex flex-col gap-1">
-                <span className="text-[10px] uppercase font-bold text-emerald-500">Correct Answer</span>
+                <span className="text-[10px] uppercase font-bold text-emerald-500">
+                  Correct Answer
+                </span>
                 <span className="text-sm font-bold text-emerald-700">
                   {q.correct_answer}
                 </span>
@@ -293,12 +341,12 @@ const MultipleQuestionView = ({ group }) => {
   return (
     <div className="space-y-6">
       {commonQuestionText && (
-        <div 
+        <div
           className="text-slate-700 dark:text-slate-200 font-bold text-sm leading-relaxed p-5 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-100 dark:border-slate-700/50"
-          dangerouslySetInnerHTML={{ __html: commonQuestionText }} 
+          dangerouslySetInnerHTML={{ __html: commonQuestionText }}
         />
       )}
-      
+
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {group.questions.map((q) => (
           <div
@@ -310,23 +358,33 @@ const MultipleQuestionView = ({ group }) => {
             }`}
           >
             <div className="flex items-center gap-4">
-              <span className={`w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-xl font-bold text-base ${
-                q.is_correct ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"
-              }`}>
+              <span
+                className={`w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-xl font-bold text-base ${
+                  q.is_correct
+                    ? "bg-emerald-100 text-emerald-700"
+                    : "bg-red-100 text-red-700"
+                }`}
+              >
                 {q.serial_number}
               </span>
-              
+
               <div className="flex-1 flex items-center justify-between">
                 <div className="flex flex-col gap-1">
-                  <span className="text-[10px] uppercase font-bold text-slate-400">Your Answer</span>
-                  <span className={`text-sm font-bold uppercase ${q.is_correct ? "text-emerald-700 dark:text-emerald-400" : "text-red-600 dark:text-red-400"}`}>
+                  <span className="text-[10px] uppercase font-bold text-slate-400">
+                    Your Answer
+                  </span>
+                  <span
+                    className={`text-sm font-bold uppercase ${q.is_correct ? "text-emerald-700 dark:text-emerald-400" : "text-red-600 dark:text-red-400"}`}
+                  >
                     {q.user_answer || "Empty"}
                   </span>
                 </div>
-                
+
                 {!q.is_correct && (
                   <div className="flex flex-col gap-1 pl-4 border-l border-red-200/50 dark:border-red-800/30">
-                    <span className="text-[10px] uppercase font-bold text-emerald-500">Correct</span>
+                    <span className="text-[10px] uppercase font-bold text-emerald-500">
+                      Correct
+                    </span>
                     <span className="text-sm font-bold uppercase text-emerald-700 dark:text-emerald-400">
                       {q.correct_answer}
                     </span>
@@ -361,18 +419,27 @@ const IdentifyInfoView = ({ group }) => {
         >
           <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
             <div className="flex items-start gap-4 flex-1">
-              <span className={`w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-full font-bold text-sm ${
-                q.is_correct ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"
-              }`}>
+              <span
+                className={`w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-full font-bold text-sm ${
+                  q.is_correct
+                    ? "bg-emerald-100 text-emerald-700"
+                    : "bg-red-100 text-red-700"
+                }`}
+              >
                 {q.serial_number}
               </span>
-              <p className="text-slate-700 dark:text-slate-300 font-medium leading-relaxed pt-1" dangerouslySetInnerHTML={{ __html: q.question_text }} />
+              <p
+                className="text-slate-700 dark:text-slate-300 font-medium leading-relaxed pt-1"
+                dangerouslySetInnerHTML={{ __html: q.question_text }}
+              />
             </div>
-            
+
             <div className="flex flex-col gap-2 shrink-0 md:min-w-[200px]">
               <div className="flex items-center justify-between text-xs px-3 py-2 bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700">
                 <span className="text-slate-500">Your Answer:</span>
-                <span className={`font-bold ${q.is_correct ? "text-emerald-600" : "text-red-600"}`}>
+                <span
+                  className={`font-bold ${q.is_correct ? "text-emerald-600" : "text-red-600"}`}
+                >
                   {q.user_answer || "N/A"}
                 </span>
               </div>
@@ -401,13 +468,23 @@ const DefaultQuestionView = ({ group }) => {
   return (
     <div className="space-y-4">
       {group.questions.map((q) => (
-        <div key={q.serial_number} className="p-4 border rounded-xl flex items-center justify-between">
+        <div
+          key={q.serial_number}
+          className="p-4 border rounded-xl flex items-center justify-between"
+        >
           <div className="flex items-center gap-3">
             <span className="font-bold text-slate-400">{q.serial_number}.</span>
-            <span className="text-sm text-slate-700" dangerouslySetInnerHTML={{ __html: q.question_text || "Question" }} />
+            <span
+              className="text-sm text-slate-700"
+              dangerouslySetInnerHTML={{
+                __html: q.question_text || "Question",
+              }}
+            />
           </div>
           <div className="flex items-center gap-4">
-            <span className={`text-sm font-bold ${q.is_correct ? "text-emerald-600" : "text-red-600"}`}>
+            <span
+              className={`text-sm font-bold ${q.is_correct ? "text-emerald-600" : "text-red-600"}`}
+            >
               {q.user_answer || "Empty"}
             </span>
             {!q.is_correct && (

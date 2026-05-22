@@ -24,32 +24,22 @@ import {
   FileText,
 } from "lucide-react";
 
-const StudentIeltsListeningTest = () => {
-  const { test_no, part_no } = useParams();
+const FullTestListening = ({ data, session, onComplete }) => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const bookNo = searchParams.get("book_no") || searchParams.get("book");
   const type = searchParams.get("type") || "academic";
-
-  const { data: testDetails, isLoading } = useApiQuery({
-    queryKey: ["listening-test-details", test_no, bookNo, type],
-    url: `/ielts/listening/tests/1`, // Fetching to get whole test data
-    params: { book_no: bookNo, test_no: test_no, type },
-    secure: true,
-  });
 
   const {
     mutate: submitTest,
     isPending: isSubmitting,
     isSuccess: isSubmitted,
   } = useApiMutation({
-    url: "/ielts/listening/tests/submit",
+    url: "/ielts/full-test/submit-section",
     method: "POST",
     secure: true,
     onSuccess: () => {
-      navigate(
-        `/dashboard/listening-result/${test_no}?book=${bookNo}&type=${type}`,
-      );
+      onComplete();
     },
   });
 
@@ -62,14 +52,10 @@ const StudentIeltsListeningTest = () => {
 
   const [activePart, setActivePart] = useState(0);
 
-  // Sync activePart with URL param
-  useEffect(() => {
-    if (part_no) {
-      setActivePart(parseInt(part_no) - 1);
-    }
-  }, [part_no]);
 
-  const testParts = testDetails?.data || [];
+
+
+  const testParts = data || [];
   const testPart = testParts[activePart] || {};
   const questionGroups = testPart?.questions || [];
 
@@ -102,9 +88,8 @@ const StudentIeltsListeningTest = () => {
   const handleSubmit = () => {
     const timeSpent = Math.floor((Date.now() - startTime) / 1000);
     const formData = new FormData();
-    formData.append("book_no", bookNo);
-    formData.append("test_no", test_no);
-    formData.append("type", type);
+    formData.append("session_id", session.id);
+    formData.append("skill", "listening");
     formData.append("time_spent", timeSpent);
 
     Object.entries(answers).forEach(([index, value]) => {
@@ -193,25 +178,10 @@ const StudentIeltsListeningTest = () => {
     );
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-slate-50 dark:bg-slate-950 font-sans">
-        <div className="relative flex flex-col items-center">
-          <div className="w-16 h-16 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
-          <div className="mt-6 text-slate-500 font-black tracking-widest uppercase text-[10px] animate-pulse">
-            Establishing Connection...
-          </div>
-        </div>
-      </div>
-    );
-  }
+
 
   return (
-    <div className="flex flex-col h-screen bg-white dark:bg-slate-950 overflow-hidden font-sans">
-      <TestHeader
-        durationInSeconds={testPart?.duration_seconds || 1800}
-        onExit="/dashboard/ielts/listening"
-      />
+    <div className="flex flex-col flex-1 overflow-hidden font-sans">
 
       <main className="flex-1 flex flex-col md:flex-row overflow-hidden relative">
         {/* Left Side: Audio Player & Transcript */}
@@ -384,4 +354,4 @@ const StudentIeltsListeningTest = () => {
   );
 };
 
-export default StudentIeltsListeningTest;
+export default FullTestListening;

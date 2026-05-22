@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from "react";
+import { Link } from "react-router-dom";
 import { useApiQuery } from "@/hooks/apiQuery";
 import {
   FileText,
@@ -292,9 +293,12 @@ const ReportRow = ({ index, item, type }) => {
         </span>
       </td>
       <td className="px-6 py-5 text-right">
-        <button className="p-2.5 rounded-xl bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-slate-300 hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-600 transition-all shadow-sm active:scale-95 group/btn">
+        <Link 
+          to={`/classroom/register-as-student/view-results/${item.submission_id}`}
+          className="inline-block p-2.5 rounded-xl bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-slate-300 hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-600 transition-all shadow-sm active:scale-95 group/btn"
+        >
           <Eye size={18} className="group-hover/btn:scale-110 transition-transform" />
-        </button>
+        </Link>
       </td>
     </motion.tr>
   );

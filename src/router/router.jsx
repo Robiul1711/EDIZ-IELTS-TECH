@@ -83,6 +83,8 @@ import ReOrder from "@/pages/ptePage/reading/ReOrder";
 import Success from "@/pages/payment/Success";
 import Failed from "@/pages/payment/Failed";
 import Cancelled from "@/pages/payment/Cancelled";
+import StartPteHomeWork from "@/pages/classroomDashboard/studentClassRoom/StartPteHomeWork";
+import ViewPteResultsStudents from "@/pages/classroomDashboard/studentClassRoom/ViewPteResultsStudents";
 
 
 const router = createBrowserRouter([
@@ -286,8 +288,10 @@ const router = createBrowserRouter([
       { path: "report", element: <Report /> },
       { path: "exam-history", element: <ExamHistory /> },
       { path: "student-home-work", element: <StudentHomeWork /> },
-      { path: "view-results/:id", element: <ViewResultsStudents /> },
+      { path: "view-exam-results/:id", element: <ViewResultsStudents /> },
+      { path: "view-homework-results/:id", element: <ViewPteResultsStudents /> },
       { path: "start-homework/:id", element: <StartHomeWork /> },
+      { path: "start-pte-homework/:id", element: <StartPteHomeWork /> },
       { path: "start-exam/:id", element: <StartExam /> },
       { path: "start-pte-exam/:id", element: <StartPteExam /> },
     ],

@@ -469,14 +469,14 @@ const FullTestSpeaking = ({ data: testParts, session, onComplete }) => {
 
       {/* Footer Navigation */}
       <footer className="h-20 md:h-24 bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between px-4 lg:px-12 z-50">
-        <button
+        {/* <button
           onClick={handlePrev}
           disabled={activePart === 0 && currentQuestionIndex === 0}
           className="flex items-center gap-2 px-4 md:px-6 py-3 rounded-2xl font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors disabled:opacity-50 disabled:hover:bg-transparent"
         >
           <ChevronLeft size={20} />
           <span className="hidden md:inline">Previous</span>
-        </button>
+        </button> */}
 
         <div className="text-center hidden sm:block">
           <div className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-1">

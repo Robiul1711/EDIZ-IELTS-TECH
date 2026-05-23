@@ -14,10 +14,34 @@ import {
 } from "lucide-react";
 
 const SKILLS = [
-  { id: "listening", label: "Listening", icon: Headphones, color: "text-[#604CDF]", bg: "bg-indigo-50" },
-  { id: "reading", label: "Reading", icon: BookOpen, color: "text-emerald-600", bg: "bg-emerald-50" },
-  { id: "writing", label: "Writing", icon: PenTool, color: "text-amber-600", bg: "bg-amber-50" },
-  { id: "speaking", label: "Speaking", icon: Mic, color: "text-rose-600", bg: "bg-rose-50" },
+  {
+    id: "listening",
+    label: "Listening",
+    icon: Headphones,
+    color: "text-[#604CDF]",
+    bg: "bg-indigo-50",
+  },
+  {
+    id: "reading",
+    label: "Reading",
+    icon: BookOpen,
+    color: "text-emerald-600",
+    bg: "bg-emerald-50",
+  },
+  {
+    id: "writing",
+    label: "Writing",
+    icon: PenTool,
+    color: "text-amber-600",
+    bg: "bg-amber-50",
+  },
+  {
+    id: "speaking",
+    label: "Speaking",
+    icon: Mic,
+    color: "text-rose-600",
+    bg: "bg-rose-50",
+  },
 ];
 
 const FullTestResult = () => {
@@ -92,7 +116,9 @@ const FullTestResult = () => {
             <div className="flex items-center gap-2 bg-slate-50 dark:bg-slate-800 px-4 py-2 rounded-xl border border-slate-100 dark:border-slate-700">
               <Clock size={18} className="text-slate-600 dark:text-slate-400" />
               <span className="text-sm font-bold text-slate-700 dark:text-slate-300">
-                {formatTime(skillData.time_spent || resultData?.time_spent || 0)}
+                {formatTime(
+                  skillData.time_spent || resultData?.time_spent || 0,
+                )}
               </span>
             </div>
             {skillData.total_questions ? (
@@ -102,12 +128,17 @@ const FullTestResult = () => {
                   className="text-emerald-600 dark:text-emerald-400"
                 />
                 <span className="text-sm font-bold text-emerald-700 dark:text-emerald-300">
-                  {skillData.correct_answers}/{skillData.total_questions} Correct
+                  {skillData.correct_answers}/{skillData.total_questions}{" "}
+                  Correct
                 </span>
               </div>
             ) : null}
             <div className="bg-[#604CDF] text-white px-6 py-2 rounded-xl shadow-lg shadow-indigo-200 dark:shadow-none font-bold">
-              Band Score: {skillData.band_score || skillData.overall_score || resultData?.overall_band || "N/A"}
+              Band Score:{" "}
+              {skillData.band_score ||
+                skillData.overall_score ||
+                resultData?.overall_band ||
+                "N/A"}
             </div>
           </div>
         )}
@@ -146,7 +177,9 @@ const FullTestResult = () => {
           </div>
         ) : !resultData || results.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-[400px] bg-white dark:bg-slate-900 rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-sm">
-            <p className="text-slate-500 font-bold text-lg">No results found for {activeSkill}.</p>
+            <p className="text-slate-500 font-bold text-lg">
+              No results found for {activeSkill}.
+            </p>
           </div>
         ) : (
           <div className="space-y-12">
@@ -158,7 +191,8 @@ const FullTestResult = () => {
                       {part.part_no || pIdx + 1}
                     </span>
                     <h2 className="text-lg font-bold uppercase tracking-wide">
-                      {part.title || `${activeSkill} Part ${part.part_no || pIdx + 1}`}
+                      {part.title ||
+                        `${activeSkill} Part ${part.part_no || pIdx + 1}`}
                     </h2>
                   </div>
 
@@ -183,7 +217,7 @@ const FullTestResult = () => {
 // ─── Writing & Speaking Renderer ──────────────────────────────────────────────
 const WritingSpeakingRenderer = ({ results, skill }) => {
   const [currentSerial, setCurrentSerial] = useState(
-    results[0]?.part_no || results[0]?.serial_number
+    results[0]?.part_no || results[0]?.serial_number,
   );
 
   const currentResult =
@@ -235,14 +269,25 @@ const WritingSpeakingRenderer = ({ results, skill }) => {
             <div
               className="text-slate-800 dark:text-white font-medium leading-relaxed"
               dangerouslySetInnerHTML={{
-                __html: currentResult?.question_text || currentResult?.prompt || "Task Prompt",
+                __html:
+                  currentResult?.question_text ||
+                  currentResult?.prompt ||
+                  "Task Prompt",
               }}
             />
             {currentResult?.image && (
-              <img src={currentResult.image} alt="Task visual" className="mt-4 rounded-xl max-h-60" />
+              <img
+                src={currentResult.image}
+                alt="Task visual"
+                className="mt-4 rounded-xl max-h-60"
+              />
             )}
             {skill === "speaking" && currentResult?.audio_url && (
-              <audio src={currentResult.audio_url} controls className="mt-4 w-full h-10" />
+              <audio
+                src={currentResult.audio_url}
+                controls
+                className="mt-4 w-full h-10"
+              />
             )}
           </div>
 
@@ -258,7 +303,11 @@ const WritingSpeakingRenderer = ({ results, skill }) => {
               )}
             </div>
             {skill === "speaking" && currentResult?.user_audio_url ? (
-               <audio src={currentResult.user_audio_url} controls className="w-full h-10" />
+              <audio
+                src={currentResult.user_audio_url}
+                controls
+                className="w-full h-10"
+              />
             ) : (
               <p className="text-slate-700 dark:text-slate-300 font-medium text-sm leading-relaxed whitespace-pre-wrap">
                 {studentAnswerText || "No answer provided."}
@@ -270,31 +319,34 @@ const WritingSpeakingRenderer = ({ results, skill }) => {
         {/* Feedback Column */}
         <div className="space-y-6">
           <div className="bg-white dark:bg-slate-900 rounded-[2rem] p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-             <div className="flex items-center justify-between mb-4">
-               <h3 className="text-[#604CDF] font-black text-lg">AI Feedback</h3>
-               <span className="text-xl font-black bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-400 px-4 py-1 rounded-xl border border-indigo-100 dark:border-indigo-800/50">
-                 Band: {currentResult?.score || currentResult?.band_score || "N/A"}
-               </span>
-             </div>
-             {currentResult?.feedback ? (
-               <div className="prose prose-sm dark:prose-invert text-slate-600 dark:text-slate-300">
-                 {currentResult.feedback}
-               </div>
-             ) : (
-               <p className="text-slate-400 text-sm italic">Feedback not available.</p>
-             )}
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-[#604CDF] font-black text-lg">AI Feedback</h3>
+              <span className="text-xl font-black bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-400 px-4 py-1 rounded-xl border border-indigo-100 dark:border-indigo-800/50">
+                Band:{" "}
+                {currentResult?.score || currentResult?.band_score || "N/A"}
+              </span>
+            </div>
+            {currentResult?.feedback ? (
+              <div className="prose prose-sm dark:prose-invert text-slate-600 dark:text-slate-300">
+                {currentResult.feedback}
+              </div>
+            ) : (
+              <p className="text-slate-400 text-sm italic">
+                Feedback not available.
+              </p>
+            )}
           </div>
-          
+
           {currentResult?.model_answer && (
-             <div className="bg-emerald-50/50 dark:bg-emerald-900/10 rounded-[2rem] p-6 shadow-sm border border-emerald-100 dark:border-emerald-800/30">
-                <h3 className="text-emerald-700 font-bold mb-4 uppercase tracking-wider text-xs">
-                  Model Answer
-                </h3>
-                <div
-                  className="prose prose-sm dark:prose-invert text-slate-700 dark:text-slate-300"
-                  dangerouslySetInnerHTML={{ __html: currentResult.model_answer }}
-                />
-             </div>
+            <div className="bg-emerald-50/50 dark:bg-emerald-900/10 rounded-[2rem] p-6 shadow-sm border border-emerald-100 dark:border-emerald-800/30">
+              <h3 className="text-emerald-700 font-bold mb-4 uppercase tracking-wider text-xs">
+                Model Answer
+              </h3>
+              <div
+                className="prose prose-sm dark:prose-invert text-slate-700 dark:text-slate-300"
+                dangerouslySetInnerHTML={{ __html: currentResult.model_answer }}
+              />
+            </div>
           )}
         </div>
       </div>
@@ -358,20 +410,22 @@ const FillGapView = ({ group }) => {
   const hasBlankPattern = /\d+\[blank\]/.test(sourceText);
 
   if (hasBlankPattern) {
-    const processedHtml = sourceText.replace(/(\d+)\[blank\]/g, (match, num) => {
-      const q = questionMap[parseInt(num)];
-      if (!q) return match;
-      const userAns = q.user_answer || "";
-      const correctAns = q.correct_answer || "";
-      const isCorrect = q.is_correct;
+    const processedHtml = sourceText.replace(
+      /(\d+)\[blank\]/g,
+      (match, num) => {
+        const q = questionMap[parseInt(num)];
+        if (!q) return match;
+        const userAns = q.user_answer || "";
+        const correctAns = q.correct_answer || "";
+        const isCorrect = q.is_correct;
 
-      if (isCorrect) {
-        return `<span style="display:inline-flex;align-items:center;gap:4px;margin:0 2px;padding:2px 10px;border-radius:9999px;background:#dcfce7;border:1.5px solid #86efac;color:#16a34a;font-weight:700;font-size:0.85em;vertical-align:middle;">
+        if (isCorrect) {
+          return `<span style="display:inline-flex;align-items:center;gap:4px;margin:0 2px;padding:2px 10px;border-radius:9999px;background:#dcfce7;border:1.5px solid #86efac;color:#16a34a;font-weight:700;font-size:0.85em;vertical-align:middle;">
             <span style="width:16px;height:16px;border-radius:50%;background:#16a34a;color:#fff;font-size:0.65em;font-weight:900;display:inline-flex;align-items:center;justify-content:center;">${num}</span>
             ${userAns}
           </span>`;
-      } else {
-        return `<span style="display:inline-flex;align-items:center;gap:4px;margin:0 2px;vertical-align:middle;">
+        } else {
+          return `<span style="display:inline-flex;align-items:center;gap:4px;margin:0 2px;vertical-align:middle;">
             ${
               userAns
                 ? `<span style="padding:2px 10px;border-radius:9999px;background:#fee2e2;border:1.5px solid #fca5a5;color:#dc2626;font-weight:700;font-size:0.85em;text-decoration:line-through;display:inline-flex;align-items:center;gap:4px;">
@@ -387,8 +441,9 @@ const FillGapView = ({ group }) => {
               ✓ ${correctAns}
             </span>
           </span>`;
-      }
-    });
+        }
+      },
+    );
 
     return (
       <div className="space-y-4">
@@ -403,7 +458,7 @@ const FillGapView = ({ group }) => {
           </div>
         </div>
         <div
-          className="bg-slate-50 dark:bg-slate-800/30 p-6 rounded-2xl border border-slate-100 dark:border-slate-800 text-sm leading-[2.2] text-slate-700 dark:text-slate-300"
+          className="bg-slate-50 dark:bg-slate-800/30 p-6 rounded-2xl border border-slate-100 dark:border-slate-800 text-sm leading-[2.2] text-slate-700 dark:text-slate-300 prose prose-slate max-w-none dark:prose-invert prose-table:w-full prose-td:border prose-td:border-slate-300 dark:prose-td:border-slate-600 prose-td:p-3 prose-th:border prose-th:border-slate-300 dark:prose-th:border-slate-600 prose-th:p-3"
           dangerouslySetInnerHTML={{ __html: processedHtml }}
         />
       </div>
@@ -425,7 +480,9 @@ const FillGapView = ({ group }) => {
             <div className="flex items-center gap-4">
               <span
                 className={`w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-full font-bold text-sm ${
-                  q.is_correct ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"
+                  q.is_correct
+                    ? "bg-emerald-100 text-emerald-700"
+                    : "bg-red-100 text-red-700"
                 }`}
               >
                 {q.serial_number}
@@ -434,7 +491,9 @@ const FillGapView = ({ group }) => {
                 <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">
                   Your Answer
                 </span>
-                <span className={`text-sm font-bold ${q.is_correct ? "text-emerald-600" : "text-red-600"}`}>
+                <span
+                  className={`text-sm font-bold ${q.is_correct ? "text-emerald-600" : "text-red-600"}`}
+                >
                   {q.user_answer || "Empty"}
                 </span>
               </div>
@@ -467,7 +526,9 @@ const ChoiceView = ({ group }) => (
         <div className="flex items-start gap-4">
           <span
             className={`w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-full font-bold text-sm ${
-              q.is_correct ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"
+              q.is_correct
+                ? "bg-emerald-100 text-emerald-700"
+                : "bg-red-100 text-red-700"
             }`}
           >
             {q.serial_number}
@@ -480,18 +541,28 @@ const ChoiceView = ({ group }) => (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 ml-12">
           <div
             className={`p-4 rounded-xl border flex flex-col gap-1 ${
-              q.is_correct ? "bg-emerald-50 border-emerald-200" : "bg-red-50 border-red-200"
+              q.is_correct
+                ? "bg-emerald-50 border-emerald-200"
+                : "bg-red-50 border-red-200"
             }`}
           >
-            <span className="text-[10px] uppercase font-bold text-slate-400">Your Answer</span>
-            <span className={`text-sm font-bold ${q.is_correct ? "text-emerald-700" : "text-red-700"}`}>
+            <span className="text-[10px] uppercase font-bold text-slate-400">
+              Your Answer
+            </span>
+            <span
+              className={`text-sm font-bold ${q.is_correct ? "text-emerald-700" : "text-red-700"}`}
+            >
               {q.user_answer || "No selection"}
             </span>
           </div>
           {!q.is_correct && (
             <div className="p-4 rounded-xl border border-emerald-200 bg-emerald-50 flex flex-col gap-1">
-              <span className="text-[10px] uppercase font-bold text-emerald-500">Correct Answer</span>
-              <span className="text-sm font-bold text-emerald-700">{q.correct_answer}</span>
+              <span className="text-[10px] uppercase font-bold text-emerald-500">
+                Correct Answer
+              </span>
+              <span className="text-sm font-bold text-emerald-700">
+                {q.correct_answer}
+              </span>
             </div>
           )}
         </div>
@@ -523,17 +594,23 @@ const MultipleQuestionView = ({ group }) => {
             <div className="flex items-center gap-4">
               <span
                 className={`w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-xl font-bold text-base ${
-                  q.is_correct ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"
+                  q.is_correct
+                    ? "bg-emerald-100 text-emerald-700"
+                    : "bg-red-100 text-red-700"
                 }`}
               >
                 {q.serial_number}
               </span>
               <div className="flex-1 flex items-center justify-between">
                 <div className="flex flex-col gap-1">
-                  <span className="text-[10px] uppercase font-bold text-slate-400">Your Answer</span>
+                  <span className="text-[10px] uppercase font-bold text-slate-400">
+                    Your Answer
+                  </span>
                   <span
                     className={`text-sm font-bold uppercase ${
-                      q.is_correct ? "text-emerald-700 dark:text-emerald-400" : "text-red-600 dark:text-red-400"
+                      q.is_correct
+                        ? "text-emerald-700 dark:text-emerald-400"
+                        : "text-red-600 dark:text-red-400"
                     }`}
                   >
                     {q.user_answer || "Empty"}
@@ -541,7 +618,9 @@ const MultipleQuestionView = ({ group }) => {
                 </div>
                 {!q.is_correct && (
                   <div className="flex flex-col gap-1 pl-4 border-l border-red-200/50 dark:border-red-800/30">
-                    <span className="text-[10px] uppercase font-bold text-emerald-500">Correct</span>
+                    <span className="text-[10px] uppercase font-bold text-emerald-500">
+                      Correct
+                    </span>
                     <span className="text-sm font-bold uppercase text-emerald-700 dark:text-emerald-400">
                       {q.correct_answer}
                     </span>
@@ -571,7 +650,9 @@ const IdentifyInfoView = ({ group }) => (
           <div className="flex items-start gap-4 flex-1">
             <span
               className={`w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-full font-bold text-sm ${
-                q.is_correct ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"
+                q.is_correct
+                  ? "bg-emerald-100 text-emerald-700"
+                  : "bg-red-100 text-red-700"
               }`}
             >
               {q.serial_number}
@@ -584,7 +665,9 @@ const IdentifyInfoView = ({ group }) => (
           <div className="flex flex-col gap-2 shrink-0 md:min-w-[200px]">
             <div className="flex items-center justify-between text-xs px-3 py-2 bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700">
               <span className="text-slate-500">Your Answer:</span>
-              <span className={`font-bold ${q.is_correct ? "text-emerald-600" : "text-red-600"}`}>
+              <span
+                className={`font-bold ${q.is_correct ? "text-emerald-600" : "text-red-600"}`}
+              >
                 {q.user_answer || "N/A"}
               </span>
             </div>
@@ -606,7 +689,10 @@ const IdentifyInfoView = ({ group }) => (
 const DefaultQuestionView = ({ group }) => (
   <div className="space-y-4">
     {group.questions.map((q) => (
-      <div key={q.serial_number} className="p-4 border rounded-xl flex items-center justify-between">
+      <div
+        key={q.serial_number}
+        className="p-4 border rounded-xl flex items-center justify-between"
+      >
         <div className="flex items-center gap-3">
           <span className="font-bold text-slate-400">{q.serial_number}.</span>
           <span
@@ -615,10 +701,16 @@ const DefaultQuestionView = ({ group }) => (
           />
         </div>
         <div className="flex items-center gap-4">
-          <span className={`text-sm font-bold ${q.is_correct ? "text-emerald-600" : "text-red-600"}`}>
+          <span
+            className={`text-sm font-bold ${q.is_correct ? "text-emerald-600" : "text-red-600"}`}
+          >
             {q.user_answer}
           </span>
-          {!q.is_correct && <span className="text-sm font-bold text-emerald-600">{q.correct_answer}</span>}
+          {!q.is_correct && (
+            <span className="text-sm font-bold text-emerald-600">
+              {q.correct_answer}
+            </span>
+          )}
         </div>
       </div>
     ))}

@@ -252,3 +252,18 @@ button{
   scrollbar-width: thin;
   scrollbar-color: #8370FF transparent;
 }
+
+/* Fix for IELTS Instruction Tables */
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+.prose th, .prose td {
+  border: 1px solid #cbd5e1 !important;
+  padding: 0.75rem;
+}
+.dark .prose th, .dark .prose td {
+  border-color: #475569 !important;
+}

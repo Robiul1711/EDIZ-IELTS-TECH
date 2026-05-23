@@ -29,8 +29,9 @@ const FillGap = ({ group, answers, onChange }) => {
           className="text-slate-800 dark:text-slate-200 font-bold text-base mb-4 leading-relaxed"
           dangerouslySetInnerHTML={{ __html: group.question_details }}
         />
+        {console.log(group.instruction)}
         <div 
-          className="fill-gap-content prose prose-slate dark:prose-invert max-w-none text-slate-700 dark:text-slate-300 leading-[1.8] text-base"
+          className="fill-gap-content prose prose-slate dark:prose-invert max-w-none text-slate-700 dark:text-slate-300 leading-[1.8] text-base prose-table:w-full prose-td:border prose-td:border-slate-300 dark:prose-td:border-white prose-td:p-3 prose-th:border prose-th:border-slate-300 dark:prose-th:border-white prose-th:p-3"
           dangerouslySetInnerHTML={{ __html: html }}
           ref={(el) => {
             if (!el) return;
@@ -45,7 +46,7 @@ const FillGap = ({ group, answers, onChange }) => {
                 input.type = "text";
                 input.value = answers[sn] || "";
                 input.placeholder = sn;
-                input.className = "w-24 md:w-32 px-3 py-1 bg-indigo-50/50 dark:bg-indigo-900/20 border-b-2 border-indigo-200 dark:border-indigo-800 focus:border-indigo-600 dark:focus:border-indigo-400 outline-none transition-all text-indigo-900 dark:text-indigo-100 font-black text-center rounded-t-lg";
+                input.className = "w-24 md:w-32 px-3  bg-indigo-50/50 dark:bg-indigo-900/20 border-b-2 border-indigo-200 dark:border-indigo-800 focus:border-indigo-600 dark:focus:border-indigo-400 outline-none transition-all text-indigo-900 dark:text-indigo-100 font-black text-center rounded-t-lg";
                 
                 input.onchange = (e) => onChange(sn, e.target.value);
                 input.oninput = (e) => {

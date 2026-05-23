@@ -142,7 +142,7 @@ const QuestionGroupRenderer = ({ group }) => {
         {group.instruction && !/\d+\[blank\]/.test(group.instruction) && (
           <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 overflow-x-auto">
             <div
-              className="text-sm font-medium text-slate-700 dark:text-slate-300 leading-relaxed"
+              className="text-sm font-medium text-slate-700 dark:text-slate-300 leading-relaxed prose prose-slate max-w-none dark:prose-invert prose-table:w-full prose-td:border prose-td:border-slate-300 dark:prose-td:border-slate-600 prose-td:p-3 prose-th:border prose-th:border-slate-300 dark:prose-th:border-slate-600 prose-th:p-3"
               dangerouslySetInnerHTML={{ __html: group.instruction }}
             />
           </div>
@@ -214,7 +214,7 @@ const FillGapView = ({ group }) => {
           </div>
         </div>
         <div
-          className="bg-slate-50 dark:bg-slate-800/30 p-6 rounded-2xl border border-slate-100 dark:border-slate-800 text-sm leading-[2.2] text-slate-700 dark:text-slate-300"
+          className="bg-slate-50 dark:bg-slate-800/30 p-6 rounded-2xl border border-slate-100 dark:border-slate-800 text-sm leading-[2.2] text-slate-700 dark:text-slate-300 prose prose-slate max-w-none dark:prose-invert prose-table:w-full prose-td:border prose-td:border-slate-300 dark:prose-td:border-slate-600 prose-td:p-3 prose-th:border prose-th:border-slate-300 dark:prose-th:border-slate-600 prose-th:p-3"
           dangerouslySetInnerHTML={{ __html: processedHtml }}
         />
       </div>

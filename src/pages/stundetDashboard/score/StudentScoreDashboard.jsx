@@ -181,6 +181,7 @@ const StudentScoreDashboard = () => {
                   <div className="px-5 py-2 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-sm font-black rounded-xl border border-slate-100 dark:border-slate-700 min-w-[65px] text-center">
                     {item.score}
                   </div>
+                  {/* some changes  */}
 
                   {/* Interaction Buttons */}
                   <div className="flex items-center gap-3">
